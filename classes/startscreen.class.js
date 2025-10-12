@@ -16,6 +16,7 @@ class StartScreen {
         this.draw();
         this.canvas.addEventListener('click', this.handleClick);
         this.canvas.addEventListener('touchstart', this.handleClick);
+        this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
     }
 
     draw() {
@@ -24,14 +25,31 @@ class StartScreen {
         ctx.drawImage(this.startImage, 0, 0, canvas.width, canvas.height);
 
         // Draw play button
-        ctx.fillStyle = '#fdd835';
-        ctx.fillRect(playButton.x, playButton.y, playButton.width, playButton.height);
+        ctx.fillStyle = '#ffffffff';
+        
 
         ctx.fillStyle = 'black';
-        ctx.font = '28px zabras';
+        ctx.font = '66px zabras';
         ctx.textAlign = 'center';
         ctx.fillText('PLAY', playButton.x + playButton.width / 2, playButton.y + 38);
     }
+
+    handleHover(event) {
+    const rect = this.canvas.getBoundingClientRect();
+    const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
+    const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
+
+    if (
+        x >= this.playButton.x &&
+        x <= this.playButton.x + this.playButton.width &&
+        y >= this.playButton.y &&
+        y <= this.playButton.y + this.playButton.height
+    ) {
+        this.canvas.style.cursor = 'pointer'; // Show pointer
+    } else {
+        this.canvas.style.cursor = 'default'; // Default cursor
+    }
+}
 
     handleClick(event) {
         const rect = this.canvas.getBoundingClientRect();
