@@ -1,12 +1,19 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let startScreen;
 
-function init(){
-    canvas = document.getElementById('canvas')
-    world = new World(canvas , keyboard)
 
-}
+window.onload = function () {
+    canvas = document.getElementById('canvas');
+    startScreen = new StartScreen(canvas, startGame); // pass init() as callback
+    startScreen.show();
+};
+
+function startGame() {
+    initlevel1();
+    world = new World(canvas, keyboard);}
+
 
 window.addEventListener("keydown", (e) => {
     if(e.keyCode == 39){
