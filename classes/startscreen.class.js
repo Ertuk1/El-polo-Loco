@@ -11,15 +11,15 @@ class StartScreen {
 
     show() {
         this.startImage.onload = () => {
-            this.draw();
+            this.drawstartscreen();
         };
-        this.draw();
+        this.drawstartscreen();
         this.canvas.addEventListener('click', this.handleClick);
         this.canvas.addEventListener('touchstart', this.handleClick);
         this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
     }
 
-    draw() {
+    drawstartscreen() {
         const { ctx, canvas, playButton } = this;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(this.startImage, 0, 0, canvas.width, canvas.height);

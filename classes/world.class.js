@@ -20,7 +20,7 @@ class World {
     bottleStatusBar = new BottleStatusBar();
     bossHpBar = new BossStatusbar(this.level.enemies[0]);
     bossHpBarVisible = false;
-
+    gameOverShown = false;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -54,6 +54,28 @@ class World {
     this.bossHpBar = new BossStatusbar(endboss); // Initialize with the boss
     }
 
+checkGameOver() {
+    if (this.character.isDead() && !this.gameOverShown) {
+
+        setTimeout(() => {
+            this.gameOverShown = true;
+        }, 2000); // Delay to allow death animation to play
+        
+
+        // Stop the main game loop
+        clearInterval(this.draw); 
+
+        // Clear canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Show Game Over screen
+        const gameOverScreen = new GameOverScreen(this.canvas, () => {
+            startGame(); // restart game
+        });
+        gameOverScreen.show();
+    }
+}
+
     checkEndbossProximity() {
         
         const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
@@ -82,6 +104,7 @@ class World {
             this.checkCollisions();
             this.checkThrowobjects();
             this.checkEndbossProximity();  // Continuously check character position
+            this.checkGameOver() ;
         }, 10);
     }
 
@@ -199,6 +222,10 @@ class World {
     }
 
     draw() {
+        if (this.gameOverShown == true) {
+            return}
+        
+
         this.ctx.clearRect(0,0, canvas.width, canvas.height)
 
         this.ctx.translate(this.camera_x, 0)

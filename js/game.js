@@ -12,7 +12,8 @@ window.onload = function () {
 
 function startGame() {
     initlevel1();
-    world = new World(canvas, keyboard);}
+    world = new World(canvas, keyboard);
+    world.gameOverShown = false;}
 
 
 window.addEventListener("keydown", (e) => {
