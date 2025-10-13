@@ -55,25 +55,28 @@ class World {
     }
 
 checkGameOver() {
-    if (this.character.isDead() && !this.gameOverShown) {
+    // Prevent multiple triggers
+    if (this.gameOverShown || !this.character.isDead()) return;
 
-        setTimeout(() => {
-            this.gameOverShown = true;
-        }, 2000); // Delay to allow death animation to play
+    
+
+    // Wait 2 seconds for death animation before showing the Game Over screen
+    setTimeout(() => {
+        // Stop the game loop cleanly
+        cancelAnimationFrame(this.animationFrame);
         
-
-        // Stop the main game loop
-        clearInterval(this.draw); 
-
-        // Clear canvas
+        this.gameOverShown = true;
+        // Clear the canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Show Game Over screen
+        
+        // Show the Game Over screen
         const gameOverScreen = new GameOverScreen(this.canvas, () => {
-            startGame(); // restart game
+            const newCanvas = recreateCanvas();
+            startGame(newCanvas);
+            
         });
         gameOverScreen.show();
-    }
+    }, 3000);
 }
 
     checkEndbossProximity() {
@@ -254,10 +257,8 @@ checkGameOver() {
 
         this.ctx.translate(-this.camera_x, 0)
 
-        self = this
-        requestAnimationFrame(function(){
-            self.draw();
-        })
+            // Draw everything again by calling draw() recursively  
+         this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
 
     addObjectsToMap(objects) {

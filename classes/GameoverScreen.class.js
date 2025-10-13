@@ -3,33 +3,25 @@ class GameOverScreen {
         this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
         this.replayCallback = replayCallback;
-        this.replayButton = { 
-    x: this.canvas.width / 2 - 100, // center horizontally
-    y: this.canvas.height * 0.8,    // 80% down the screen
-    width: 200, 
-    height: 60 
-};
+        this.replayButton = { x: 260, y: 360, width: 200, height: 60 }; // moved slightly lower
         this.gameOverImage = new Image();
         this.gameOverImage.src = 'IMG/9_intro_outro_screens/game_over/you lost.png';
         this.handleClick = this.handleClick.bind(this);
     }
 
     show() {
-        this.gameOverImage.onload = () => {
-            this.drawgameover();
-        };
-        this.drawgameover();
+        this.gameOverImage.onload = () => this.drawGameOver();
+        this.drawGameOver();
         this.canvas.addEventListener('click', this.handleClick);
         this.canvas.addEventListener('touchstart', this.handleClick);
         this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
     }
 
-    drawgameover() {
+    drawGameOver() {
         const { ctx, canvas, replayButton } = this;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(this.gameOverImage, 0, 0, canvas.width, canvas.height);
 
-        // Draw replay button (transparent, just text)
         ctx.fillStyle = 'white';
         ctx.font = '66px zabras';
         ctx.textAlign = 'center';
@@ -69,9 +61,8 @@ class GameOverScreen {
     }
 
     startReplay() {
-        this.canvas.removeEventListener('click', this.handleClick);
-        this.canvas.removeEventListener('touchstart', this.handleClick);
+        const newCanvas = recreateCanvas();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.replayCallback(); // call the main game restart function
+        this.replayCallback(newCanvas);
     }
 }

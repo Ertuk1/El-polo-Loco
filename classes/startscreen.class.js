@@ -8,25 +8,18 @@ class StartScreen {
         this.startImage.src = 'IMG/9_intro_outro_screens/start/startscreen_2.png';
         this.handleClick = this.handleClick.bind(this); // keep 'this' context
     }
-
     show() {
-        this.startImage.onload = () => {
-            this.drawstartscreen();
-        };
-        this.drawstartscreen();
+        this.startImage.onload = () => this.draw();
+        this.draw();
         this.canvas.addEventListener('click', this.handleClick);
         this.canvas.addEventListener('touchstart', this.handleClick);
         this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
     }
 
-    drawstartscreen() {
+    draw() {
         const { ctx, canvas, playButton } = this;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(this.startImage, 0, 0, canvas.width, canvas.height);
-
-        // Draw play button
-        ctx.fillStyle = '#ffffffff';
-        
 
         ctx.fillStyle = 'black';
         ctx.font = '66px zabras';
@@ -35,21 +28,21 @@ class StartScreen {
     }
 
     handleHover(event) {
-    const rect = this.canvas.getBoundingClientRect();
-    const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
-    const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
+        const rect = this.canvas.getBoundingClientRect();
+        const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
+        const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
 
-    if (
-        x >= this.playButton.x &&
-        x <= this.playButton.x + this.playButton.width &&
-        y >= this.playButton.y &&
-        y <= this.playButton.y + this.playButton.height
-    ) {
-        this.canvas.style.cursor = 'pointer'; // Show pointer
-    } else {
-        this.canvas.style.cursor = 'default'; // Default cursor
+        if (
+            x >= this.playButton.x &&
+            x <= this.playButton.x + this.playButton.width &&
+            y >= this.playButton.y &&
+            y <= this.playButton.y + this.playButton.height
+        ) {
+            this.canvas.style.cursor = 'pointer';
+        } else {
+            this.canvas.style.cursor = 'default';
+        }
     }
-}
 
     handleClick(event) {
         const rect = this.canvas.getBoundingClientRect();
@@ -67,9 +60,8 @@ class StartScreen {
     }
 
     startPlay() {
-        this.canvas.removeEventListener('click', this.handleClick);
-        this.canvas.removeEventListener('touchstart', this.handleClick);
+        const newCanvas = recreateCanvas();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.startCallback(); // call the main game start function
+        this.startCallback(newCanvas);
     }
 }

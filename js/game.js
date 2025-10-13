@@ -5,16 +5,31 @@ let startScreen;
 
 
 window.onload = function () {
-    canvas = document.getElementById('canvas');
-    startScreen = new StartScreen(canvas, startGame); // pass init() as callback
-    startScreen.show();
+    initStartScreen();
 };
 
-function startGame() {
+function initStartScreen() {
+    canvas = document.getElementById('canvas');
+    startScreen = new StartScreen(canvas, startGame);
+    startScreen.show();
+}
+
+function startGame(newCanvas) {
+    canvas = newCanvas || document.getElementById('canvas');
     initlevel1();
     world = new World(canvas, keyboard);
-    world.gameOverShown = false;}
+}
 
+/**
+ * Recreates a new canvas inside the game container and returns it.
+ * This wipes all previous game state, sounds, and intervals.
+ */
+function recreateCanvas() {
+    const container = document.getElementById('gameContainer');
+    container.innerHTML = '<canvas id="canvas" width="720" height="480"></canvas>';
+    canvas = document.getElementById('canvas');
+    return canvas;
+}
 
 window.addEventListener("keydown", (e) => {
     if(e.keyCode == 39){
