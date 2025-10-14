@@ -3,6 +3,22 @@ let world;
 let keyboard = new Keyboard();
 let startScreen;
 
+// === Global Mute Control ===
+let GLOBAL_MUTE = false;
+const originalPlay = HTMLMediaElement.prototype.play;
+
+HTMLMediaElement.prototype.play = function (...args) {
+    if (GLOBAL_MUTE) {
+        this.muted = true;
+        this.pause();
+        this.currentTime = 0; // optional: reset
+        return Promise.resolve();
+    } else {
+        this.muted = false;
+        return originalPlay.apply(this, args);
+    }
+};
+
 
 window.onload = function () {
     initStartScreen();

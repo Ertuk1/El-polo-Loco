@@ -26,6 +26,7 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.keyboard = keyboard;
+        this.muteButton = new MuteButton(this.canvas);
         this.draw();
         this.setWorld();
         this.run();
@@ -52,6 +53,11 @@ class World {
         this.runboss();
     const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
     this.bossHpBar = new BossStatusbar(endboss); // Initialize with the boss
+
+    this.sounds = [this.walkingSound, this.bottleThrowSound, this.chickenSound].filter(Boolean);
+    
+    this.draw();
+    this.run();
     }
 
 checkGameOver() {
@@ -246,6 +252,8 @@ checkGameOver() {
         this.addToMap(this.statusbar);
         if(this.bossHpBarVisible == true){
         this.addToMap(this.bossHpBar);}
+
+        this.muteButton.draw();
     
         this.ctx.translate(this.camera_x, 0)
         //Fixed ITEMS
