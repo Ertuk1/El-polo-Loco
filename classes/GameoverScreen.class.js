@@ -7,6 +7,7 @@ class GameOverScreen {
         this.gameOverImage = new Image();
         this.gameOverImage.src = 'IMG/9_intro_outro_screens/game_over/you lost.png';
         this.handleClick = this.handleClick.bind(this);
+        
     }
 
     show() {
@@ -25,7 +26,7 @@ class GameOverScreen {
         ctx.fillStyle = 'white';
         ctx.font = '66px zabras';
         ctx.textAlign = 'center';
-        ctx.fillText('REPLAY', replayButton.x + replayButton.width / 2, replayButton.y + 38);
+        ctx.fillText('REPLAY', replayButton.x + replayButton.width / 2, replayButton.y + 38);       
     }
 
     handleHover(event) {

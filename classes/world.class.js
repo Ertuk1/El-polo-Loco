@@ -10,6 +10,7 @@ class World {
     throwableObjects = [ ]
     isDead = false;
     chickenSound = new Audio('audio/chicken.mp3')
+    gameoversound = new Audio('audio/gameover.mp3');
     bottles = [];
     bottleCount = 0;
     bottleImage = new Image('')
@@ -71,7 +72,10 @@ checkGameOver() {
         // Stop the game loop cleanly
         cancelAnimationFrame(this.animationFrame);
         
+        this.gameoversound.currentTime = 0;
+        this.gameoversound.play();
         this.gameOverShown = true;
+
         // Clear the canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
@@ -79,10 +83,12 @@ checkGameOver() {
         const gameOverScreen = new GameOverScreen(this.canvas, () => {
             const newCanvas = recreateCanvas();
             startGame(newCanvas);
+
+            
             
         });
         gameOverScreen.show();
-    }, 3000);
+    }, 1000);
 }
 
     checkEndbossProximity() {
@@ -208,8 +214,10 @@ checkGameOver() {
         this.coins.forEach((coin, index) => {
             if (this.character.isColliding(coin)) {
                 this.collectCoin()
-                this.character.speed += 0.5;
-                console.log('Coin collected!');
+            const s = this.character.collectSound.cloneNode();
+            s.volume = this.character.collectSound.volume;
+            
+            s.play();
                 this.coins.splice(index, 1);  // Remove coin from the array
                 
             }
@@ -231,8 +239,7 @@ checkGameOver() {
     }
 
     draw() {
-        if (this.gameOverShown == true) {
-            return}
+        if (this.victoryShown || this.gameOverShown) return;
         
 
         this.ctx.clearRect(0,0, canvas.width, canvas.height)
@@ -306,6 +313,20 @@ checkGameOver() {
     }
 
 
+    showVictoryScreen() {
+    this.victoryShown = true;
     
+    document.querySelectorAll("audio").forEach(a => a.muted = true);
+
+    cancelAnimationFrame(this.animationFrameId);
+
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.victoryScreen = new VictoryScreen(this.canvas, () => {
+        startGame(); // your existing replay logic
+    });
+
+    this.victoryScreen.show();
+}
 
 }

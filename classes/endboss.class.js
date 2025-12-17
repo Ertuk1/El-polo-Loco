@@ -228,11 +228,19 @@ BossMove() {
             }, 1000); // Duration of the hurt animation
         }
     }
+
+    triggerVictory() {
+    setTimeout(() => {
+        world.showVictoryScreen(); 
+    }, 1500); // time for death animation
+}
     
 
     die() {
-        if (!this.isDead1) {
+        if (!this.isDead1 && !this.victoryTriggered) {
             this.isDead1 = true;
+             this.victoryTriggered = true;
+            this.triggerVictory();
             this.clearAllIntervals();
             this.animateDeath();
             setTimeout(() => {

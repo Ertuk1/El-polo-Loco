@@ -87,6 +87,10 @@ constructor(){
    this.animate();
    this.applyGravity();
    this.lastActionTime = Date.now();
+   this.collectSound = new Audio('audio/collectcoin.mp3');
+   this.collectSound.volume = 0.4;
+   this.collectSound.currentTime = 0.9;
+   this.jumpSound = new Audio('audio/jump.mp3');
 }
 
 animate() {
@@ -112,6 +116,7 @@ animate() {
 
         if ((this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround()) {
             this.jump();
+            this.jumpSound.play();
             this.resetIdleTimer();
         }
 
