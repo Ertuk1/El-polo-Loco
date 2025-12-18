@@ -64,6 +64,7 @@ class VictoryScreen {
         ) {
             this.hide();
             this.onReplay();
+            recreateCanvas();
         }
     }
 }

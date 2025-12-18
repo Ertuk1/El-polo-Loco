@@ -3,6 +3,25 @@ let world;
 let keyboard = new Keyboard();
 let startScreen;
 
+function recreateCanvas() {
+    const container = document.getElementById('game-container');
+
+    // Remove old canvas if it exists
+    const oldCanvas = document.getElementById('canvas');
+    if (oldCanvas) oldCanvas.remove();
+
+    // Create new canvas
+    const newCanvas = document.createElement('canvas');
+    newCanvas.id = 'canvas';
+    newCanvas.width = 720;
+    newCanvas.height = 480;
+
+    container.appendChild(newCanvas);
+
+    return newCanvas;
+}
+
+
 // === Global Mute Control ===
 let GLOBAL_MUTE = false;
 const originalPlay = HTMLMediaElement.prototype.play;
@@ -31,7 +50,7 @@ function initStartScreen() {
 }
 
 function startGame(newCanvas) {
-    canvas = newCanvas || document.getElementById('canvas');
+    canvas = recreateCanvas();
     initlevel1();
     world = new World(canvas, keyboard);
 }
