@@ -49,8 +49,7 @@ function initStartScreen() {
     startScreen.show();
 }
 
-function startGame(newCanvas) {
-    canvas = recreateCanvas();
+function startGame(canvas) {
     initlevel1();
     world = new World(canvas, keyboard);
 }

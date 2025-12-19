@@ -6,7 +6,7 @@ class MuteButton {
         this.x = canvas.width - 70; // position (top-right corner)
         this.y = 20;
         this.size = 50;
-        this.isMuted = false;
+        this.isMuted = GLOBAL_MUTE;
 
         this.soundOnImg = new Image();
         this.soundOnImg.src = 'IMG/muteButtons/icons8-ton-67.png';

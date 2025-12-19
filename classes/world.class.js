@@ -70,7 +70,7 @@ checkGameOver() {
     // Wait 2 seconds for death animation before showing the Game Over screen
     setTimeout(() => {
         // Stop the game loop cleanly
-        cancelAnimationFrame(this.animationFrame);
+        this.stop();
         
         this.gameoversound.currentTime = 0;
         this.gameoversound.play();
@@ -142,10 +142,24 @@ checkGameOver() {
     }
 
     run(){
-        setInterval(() => {
+        this.intervalId = setInterval(() => {
             this.checkCollisions();
             this.checkThrowobjects();
         }, 200);
+    }
+
+    stop() {
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+        }
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+        // Stop all audio to prevent overlapping sounds on restart
+        document.querySelectorAll("audio").forEach(a => {
+            a.pause();
+            a.currentTime = 0;
+        });
     }
 
     checkThrowobjects() {
@@ -318,12 +332,13 @@ checkGameOver() {
     
     document.querySelectorAll("audio").forEach(a => a.muted = true);
 
-    cancelAnimationFrame(this.animationFrameId);
+    this.stop();
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.victoryScreen = new VictoryScreen(this.canvas, () => {
-        startGame(); // your existing replay logic
+        const newCanvas = recreateCanvas();
+        startGame(newCanvas);
     });
 
     this.victoryScreen.show();
