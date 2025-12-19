@@ -164,6 +164,7 @@ checkGameOver() {
             a.currentTime = 0;
         });
         this.mobileControls.remove();
+        if (this.character) this.character.stop();
     }
 
     checkThrowobjects() {

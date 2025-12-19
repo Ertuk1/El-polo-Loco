@@ -6,6 +6,7 @@ speed = 3.5;
 idleTime = 0; 
 lastActionTime = 0; 
 lastHurtSoundTime = 0;
+snorePlayed = false;
 
 world;
 walking_sound = new Audio('audio/running.mp3');
@@ -91,10 +92,15 @@ constructor(){
    this.collectSound.volume = 0.4;
    this.collectSound.currentTime = 0.9;
    this.jumpSound = new Audio('audio/jump.mp3');
+   this.snore.addEventListener('ended', () => {
+       if (this.snorePlayed && !GLOBAL_MUTE) {
+           this.snore.play();
+       }
+   });
 }
 
 animate() {
-    setInterval(() => {
+    this.movementInterval = setInterval(() => {
         this.walking_sound.pause();
 
         const isMoving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT || 
@@ -133,7 +139,7 @@ animate() {
         this.world.camera_x = -this.x + 100;
     }, 1000 / 60);
 
-    setInterval(() => {
+    this.animationInterval = setInterval(() => {
         if (this.isDead()) {
             this.playAnimation(this.IMAGES_DEAD);
             this.snore.pause();
@@ -155,9 +161,10 @@ animate() {
             this.hurt.pause();
         } else if (this.idleTime >= 5000) { // Long idle after 2 seconds
             this.playAnimation(this.IMAGES_LONG_IDLE);
-            if (!GLOBAL_MUTE) {
+            if (!this.snorePlayed && !GLOBAL_MUTE) {
                 this.snore.play();
             }
+            this.snorePlayed = true;
             this.hurt.pause();
         } else if (this.idleTime > 0) { // Normal idle when not moving
             this.playAnimation(this.IMAGES_IDLE);
@@ -166,6 +173,7 @@ animate() {
         } else {
             this.playAnimation(this.IMAGES_WALKING);
             this.snore.pause();
+            this.snorePlayed = false;
             this.hurt.pause();
         }
     }, 1000 / 10);
@@ -186,6 +194,13 @@ animate() {
         if ( !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) {
             this.idleTime = Date.now() - this.lastActionTime;
         }
+    }
+
+    stop() {
+        if (this.movementInterval) clearInterval(this.movementInterval);
+        if (this.animationInterval) clearInterval(this.animationInterval);
+        this.snore.pause();
+        this.snorePlayed = false;
     }
 
 }
