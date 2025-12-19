@@ -22,10 +22,12 @@ class VictoryScreen {
         this.victoryImg.onload = () => this.draw();
         this.draw();
         this.canvas.addEventListener("click", this.handleClick);
+        this.canvas.addEventListener("touchstart", this.handleClick);
     }
 
     hide() {
         this.canvas.removeEventListener("click", this.handleClick);
+        this.canvas.removeEventListener("touchstart", this.handleClick);
     }
 
     draw() {
@@ -52,15 +54,20 @@ class VictoryScreen {
     }
 
     handleClick(event) {
+        event.preventDefault();
         const rect = this.canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
+        const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
+        const canvasX = x * scaleX;
+        const canvasY = y * scaleY;
 
         if (
-            x >= this.button.x &&
-            x <= this.button.x + this.button.w &&
-            y >= this.button.y &&
-            y <= this.button.y + this.button.h
+            canvasX >= this.button.x &&
+            canvasX <= this.button.x + this.button.w &&
+            canvasY >= this.button.y &&
+            canvasY <= this.button.y + this.button.h
         ) {
             this.hide();
             this.onReplay();

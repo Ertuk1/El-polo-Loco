@@ -103,20 +103,26 @@ animate() {
         if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
             this.moveRight();
             this.otherDirection = false;
-            this.walking_sound.play();
+            if (!GLOBAL_MUTE) {
+                this.walking_sound.play();
+            }
             this.resetIdleTimer();
         }
 
         if (this.world.keyboard.LEFT && this.x > 0) {
             this.moveLeft();
             this.otherDirection = true;
-            this.walking_sound.play();
+            if (!GLOBAL_MUTE) {
+                this.walking_sound.play();
+            }
             this.resetIdleTimer();
         }
 
         if ((this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround()) {
             this.jump();
-            this.jumpSound.play();
+            if (!GLOBAL_MUTE) {
+                this.jumpSound.play();
+            }
             this.resetIdleTimer();
         }
 
@@ -139,7 +145,9 @@ animate() {
         
             const now = Date.now();
             if (now - this.lastHurtSoundTime > 1000) { // 1 second cooldown
-                this.hurt.play();
+                if (!GLOBAL_MUTE) {
+                    this.hurt.play();
+                }
                 this.lastHurtSoundTime = now;}
         } else if (this.isAboveGround()) {
             this.playAnimation(this.IMAGES_JUMPING);
@@ -147,7 +155,9 @@ animate() {
             this.hurt.pause();
         } else if (this.idleTime >= 5000) { // Long idle after 2 seconds
             this.playAnimation(this.IMAGES_LONG_IDLE);
-            this.snore.play();
+            if (!GLOBAL_MUTE) {
+                this.snore.play();
+            }
             this.hurt.pause();
         } else if (this.idleTime > 0) { // Normal idle when not moving
             this.playAnimation(this.IMAGES_IDLE);

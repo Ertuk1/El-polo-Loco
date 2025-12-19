@@ -28,6 +28,7 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.muteButton = new MuteButton(this.canvas);
+        this.mobileControls = new MobileControls(this.canvas, this.keyboard);
         this.draw();
         this.setWorld();
         this.run();
@@ -73,7 +74,9 @@ checkGameOver() {
         this.stop();
         
         this.gameoversound.currentTime = 0;
-        this.gameoversound.play();
+        if (!GLOBAL_MUTE) {
+            this.gameoversound.play();
+        }
         this.gameOverShown = true;
 
         // Clear the canvas
@@ -160,6 +163,7 @@ checkGameOver() {
             a.pause();
             a.currentTime = 0;
         });
+        this.mobileControls.remove();
     }
 
     checkThrowobjects() {
@@ -191,7 +195,9 @@ checkGameOver() {
                     const isFalling = this.character.speedY < 0; // <- important fix!
 
     if (isAbove && isFalling) {
-        this.chickenSound.play();
+        if (!GLOBAL_MUTE) {
+            this.chickenSound.play();
+        }
         console.log('Character jumped on chicken');
         enemy.die();
                     } else {
@@ -231,7 +237,9 @@ checkGameOver() {
             const s = this.character.collectSound.cloneNode();
             s.volume = this.character.collectSound.volume;
             
-            s.play();
+            if (!GLOBAL_MUTE) {
+                s.play();
+            }
                 this.coins.splice(index, 1);  // Remove coin from the array
                 
             }
@@ -275,6 +283,10 @@ checkGameOver() {
         this.addToMap(this.bossHpBar);}
 
         this.muteButton.draw();
+
+        if ('ontouchstart' in window) {
+            this.mobileControls.draw(this.ctx);
+        }
     
         this.ctx.translate(this.camera_x, 0)
         //Fixed ITEMS

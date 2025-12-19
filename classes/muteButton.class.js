@@ -14,7 +14,9 @@ class MuteButton {
         this.soundOffImg.src = 'IMG/muteButtons/icons8-ton-stummschalten-67.png';
 
         this.handleClick = this.handleClick.bind(this);
+        this.handleTouch = this.handleTouch.bind(this);
         this.canvas.addEventListener('click', this.handleClick);
+        this.canvas.addEventListener('touchstart', this.handleTouch);
     }
 
     draw() {
@@ -37,6 +39,25 @@ class MuteButton {
         }
     }
 
+    handleTouch(event) {
+        event.preventDefault();
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+        const touch = event.touches[0];
+        const canvasX = (touch.clientX - rect.left) * scaleX;
+        const canvasY = (touch.clientY - rect.top) * scaleY;
+
+        if (
+            canvasX >= this.x &&
+            canvasX <= this.x + this.size &&
+            canvasY >= this.y &&
+            canvasY <= this.y + this.size
+        ) {
+            this.toggleMute();
+        }
+    }
+
  toggleMute() {
     this.isMuted = !this.isMuted;
     GLOBAL_MUTE = this.isMuted;
@@ -47,5 +68,6 @@ class MuteButton {
 
     remove() {
         this.canvas.removeEventListener('click', this.handleClick);
+        this.canvas.removeEventListener('touchstart', this.handleTouch);
     }
 }

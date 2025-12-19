@@ -49,9 +49,55 @@ function initStartScreen() {
     startScreen.show();
 }
 
+function preloadAssets(canvas, callback) {
+    const ctx = canvas.getContext('2d');
+    const images = [
+        'IMG/9_intro_outro_screens/start/startscreen_2.png',
+        'IMG/9_intro_outro_screens/game_over/you lost.png',
+        'IMG/9_intro_outro_screens/win/won_1.png',
+        'IMG/muteButtons/icons8-ton-67.png',
+        'IMG/muteButtons/icons8-ton-stummschalten-67.png',
+        'IMG/2_character_pepe/1_idle/idle/I-1.png',
+        'IMG/2_character_pepe/2_walk/W-21.png',
+        'IMG/2_character_pepe/3_jump/J-31.png',
+        'IMG/2_character_pepe/4_hurt/H-41.png',
+        'IMG/2_character_pepe/5_dead/D-51.png',
+        'IMG/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
+        'IMG/4_enemie_boss_chicken/1_walk/G1.png',
+        'IMG/6_salsa_bottle/salsa_bottle.png',
+        'IMG/8_coin/coin_1.png'
+    ];
+    let loaded = 0;
+    const total = images.length;
+
+    const drawProgress = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        ctx.font = '30px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Loading... ${loaded}/${total}`, canvas.width / 2, canvas.height / 2);
+    };
+
+    drawProgress();
+
+    images.forEach(src => {
+        const img = new Image();
+        img.onload = () => {
+            loaded++;
+            drawProgress();
+            if (loaded === total) {
+                callback();
+            }
+        };
+        img.src = src;
+    });
+}
+
 function startGame(canvas) {
-    initlevel1();
-    world = new World(canvas, keyboard);
+    preloadAssets(canvas, () => {
+        initlevel1();
+        world = new World(canvas, keyboard);
+    });
 }
 
 /**

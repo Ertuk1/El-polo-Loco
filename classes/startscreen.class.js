@@ -29,14 +29,18 @@ class StartScreen {
 
     handleHover(event) {
         const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
         const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
         const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
+        const canvasX = x * scaleX;
+        const canvasY = y * scaleY;
 
         if (
-            x >= this.playButton.x &&
-            x <= this.playButton.x + this.playButton.width &&
-            y >= this.playButton.y &&
-            y <= this.playButton.y + this.playButton.height
+            canvasX >= this.playButton.x &&
+            canvasX <= this.playButton.x + this.playButton.width &&
+            canvasY >= this.playButton.y &&
+            canvasY <= this.playButton.y + this.playButton.height
         ) {
             this.canvas.style.cursor = 'pointer';
         } else {
@@ -45,15 +49,20 @@ class StartScreen {
     }
 
     handleClick(event) {
+        event.preventDefault(); // Prevent default touch behavior
         const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
         const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
         const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
+        const canvasX = x * scaleX;
+        const canvasY = y * scaleY;
 
         if (
-            x >= this.playButton.x &&
-            x <= this.playButton.x + this.playButton.width &&
-            y >= this.playButton.y &&
-            y <= this.playButton.y + this.playButton.height
+            canvasX >= this.playButton.x &&
+            canvasX <= this.playButton.x + this.playButton.width &&
+            canvasY >= this.playButton.y &&
+            canvasY <= this.playButton.y + this.playButton.height
         ) {
             this.startPlay();
         }

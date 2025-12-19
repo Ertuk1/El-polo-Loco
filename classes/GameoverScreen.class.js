@@ -31,14 +31,18 @@ class GameOverScreen {
 
     handleHover(event) {
         const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
         const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
         const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
+        const canvasX = x * scaleX;
+        const canvasY = y * scaleY;
 
         if (
-            x >= this.replayButton.x &&
-            x <= this.replayButton.x + this.replayButton.width &&
-            y >= this.replayButton.y &&
-            y <= this.replayButton.y + this.replayButton.height
+            canvasX >= this.replayButton.x &&
+            canvasX <= this.replayButton.x + this.replayButton.width &&
+            canvasY >= this.replayButton.y &&
+            canvasY <= this.replayButton.y + this.replayButton.height
         ) {
             this.canvas.style.cursor = 'pointer';
         } else {
@@ -47,15 +51,20 @@ class GameOverScreen {
     }
 
     handleClick(event) {
+        event.preventDefault();
         const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
         const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
         const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
+        const canvasX = x * scaleX;
+        const canvasY = y * scaleY;
 
         if (
-            x >= this.replayButton.x &&
-            x <= this.replayButton.x + this.replayButton.width &&
-            y >= this.replayButton.y &&
-            y <= this.replayButton.y + this.replayButton.height
+            canvasX >= this.replayButton.x &&
+            canvasX <= this.replayButton.x + this.replayButton.width &&
+            canvasY >= this.replayButton.y &&
+            canvasY <= this.replayButton.y + this.replayButton.height
         ) {
             this.startReplay();
         }

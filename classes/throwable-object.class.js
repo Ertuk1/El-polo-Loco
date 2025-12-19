@@ -35,7 +35,9 @@ class ThrowableObject extends moveableObject {
     trow() {
         this.speedY = 30;
         this.applyGravity();
-        this.throwSound.play();
+        if (!GLOBAL_MUTE) {
+            this.throwSound.play();
+        }
     
         let intervalId = setInterval(() => {
             this.x += 10;  
@@ -60,7 +62,9 @@ class ThrowableObject extends moveableObject {
     triggerBreakingAnimation() {
         this.isBroken = true;
         this.currentImageIndex = 0;
-        this.breakSound.play();  
+        if (!GLOBAL_MUTE) {
+            this.breakSound.play();
+        }  
 
         let breakIntervalId = setInterval(() => {
             
