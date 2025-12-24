@@ -156,3 +156,32 @@ window.addEventListener("keyup", (e) => {
     
 
 })
+
+
+function isMobile() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function checkOrientation() {
+    const overlay = document.getElementById('rotate-overlay');
+
+    if (!isMobile()) {
+        overlay.style.display = 'none';
+        return;
+    }
+
+    const isPortrait = window.innerHeight > window.innerWidth;
+
+    if (isPortrait) {
+        overlay.style.display = 'flex';
+    } else {
+        overlay.style.display = 'none';
+    }
+}
+
+// Listen for changes
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', checkOrientation);
+
+// Run once on load
+window.addEventListener('load', checkOrientation);
