@@ -3,7 +3,7 @@ class FullscreenButton {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.isMobile = window.innerWidth <= 720;
-        this.isSmallMobile = window.innerWidth < 400;
+        this.isSmallMobile = window.innerWidth < 410;
         this.size = this.isMobile ? (this.isSmallMobile ? 100 : 80) : 50;
         this.x = canvas.width - (this.isMobile ? (this.isSmallMobile ? 120 : 120) : 140);
         this.y = this.isMobile ? (this.isSmallMobile ? 100 : 60) : 20;
@@ -15,8 +15,16 @@ class FullscreenButton {
 
         this.handleClick = this.handleClick.bind(this);
         this.handleTouch = this.handleTouch.bind(this);
-        document.addEventListener('click', this.handleClick);
-        document.addEventListener('touchstart', this.handleTouch);
+        this.canvas.addEventListener('click', this.handleClick);
+        this.canvas.addEventListener('touchstart', this.handleTouch, { passive: false });
+        
+        this.handleClick = this.handleClick.bind(this);
+        this.handleTouch = this.handleTouch.bind(this);
+
+        this.canvas.addEventListener('click', this.handleClick);
+        this.canvas.addEventListener('touchstart', this.handleTouch, { passive: false });
+
+
     }
 
     draw() {
@@ -46,7 +54,7 @@ class FullscreenButton {
     }
 
     handleTouch(event) {
-        event.preventDefault();
+        
         const rect = this.canvas.getBoundingClientRect();
         const scaleX = this.canvas.width / rect.width;
         const scaleY = this.canvas.height / rect.height;

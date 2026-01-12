@@ -33,35 +33,7 @@ canvas {
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
-}
-
-#mobile-fullscreen-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-    flex-direction: column;
-}
-
-.fullscreen-message {
-    text-align: center;
-    color: white;
-    font-size: 24px;
-}
-
-#mobile-fullscreen-btn {
-    margin-top: 20px;
-    padding: 15px 30px;
-    font-size: 18px;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    z-index: 9999;
 }
 
 .rotate-message {
@@ -93,4 +65,25 @@ canvas {
     canvas {height: 100vh;}
     h1{display: none;}
     
+}
+
+#gameContainer {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    overflow: hidden;
+}
+
+canvas {
+    image-rendering: pixelated;
+    touch-action: none;
+
+    /* CRITICAL */
+    width: auto;
+    height: auto;
+    max-width: 100vw;
+    max-height: 100vh;
 }

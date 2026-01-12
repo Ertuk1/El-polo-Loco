@@ -3,10 +3,10 @@ class MobileControls {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.mobileControls = {
-            left: { x: 20, y: this.canvas.height - 100, w: 80, h: 80 },
-            right: { x: 120, y: this.canvas.height - 100, w: 80, h: 80 },
-            jump: { x: this.canvas.width - 100, y: this.canvas.height - 100, w: 80, h: 80 },
-            throw: { x: this.canvas.width - 200, y: this.canvas.height - 100, w: 80, h: 80 }
+            left:  { x: 0.05, y: 0.80, w: 0.12, h: 0.12 },
+            right: { x: 0.20, y: 0.80, w: 0.12, h: 0.12 },
+            throw: { x: 0.70, y: 0.80, w: 0.12, h: 0.12 },
+            jump:  { x: 0.85, y: 0.80, w: 0.12, h: 0.12 }
         };
         this.handleTouchStartBound = this.handleTouchStart.bind(this);
         this.handleTouchEndBound = this.handleTouchEnd.bind(this);
@@ -14,9 +14,27 @@ class MobileControls {
         this.canvas.addEventListener('touchend', this.handleTouchEndBound);
     }
 
-    isInButton(x, y, button) {
-        return x >= button.x && x <= button.x + button.w && y >= button.y && y <= button.y + button.h;
-    }
+    getButtonPx(btn) {
+    return {
+        x: btn.x * this.canvas.width,
+        y: btn.y * this.canvas.height,
+        w: btn.w * this.canvas.width,
+        h: btn.h * this.canvas.width   // square buttons
+    };
+}
+
+
+isInButton(x, y, button) {
+    const b = this.getButtonPx(button);
+    return (
+        x >= b.x &&
+        x <= b.x + b.w &&
+        y >= b.y &&
+        y <= b.y + b.h
+    );
+}
+
+
 
     handleTouchStart(e) {
         e.preventDefault();
@@ -69,22 +87,28 @@ class MobileControls {
         }
     }
 
-    draw(ctx) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.fillRect(this.mobileControls.left.x, this.mobileControls.left.y, this.mobileControls.left.w, this.mobileControls.left.h);
-        ctx.fillRect(this.mobileControls.right.x, this.mobileControls.right.y, this.mobileControls.right.w, this.mobileControls.right.h);
-        ctx.fillRect(this.mobileControls.jump.x, this.mobileControls.jump.y, this.mobileControls.jump.w, this.mobileControls.jump.h);
-        ctx.fillRect(this.mobileControls.throw.x, this.mobileControls.throw.y, this.mobileControls.throw.w, this.mobileControls.throw.h);
+draw(ctx) {
+    const l = this.getButtonPx(this.mobileControls.left);
+    const r = this.getButtonPx(this.mobileControls.right);
+    const j = this.getButtonPx(this.mobileControls.jump);
+    const t = this.getButtonPx(this.mobileControls.throw);
 
-        ctx.fillStyle = 'white';
-        ctx.font = '30px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('←', this.mobileControls.left.x + this.mobileControls.left.w / 2, this.mobileControls.left.y + this.mobileControls.left.h / 2);
-        ctx.fillText('→', this.mobileControls.right.x + this.mobileControls.right.w / 2, this.mobileControls.right.y + this.mobileControls.right.h / 2);
-        ctx.fillText('↑', this.mobileControls.jump.x + this.mobileControls.jump.w / 2, this.mobileControls.jump.y + this.mobileControls.jump.h / 2);
-        ctx.fillText('D', this.mobileControls.throw.x + this.mobileControls.throw.w / 2, this.mobileControls.throw.y + this.mobileControls.throw.h / 2);
-    }
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(l.x, l.y, l.w, l.h);
+    ctx.fillRect(r.x, r.y, r.w, r.h);
+    ctx.fillRect(j.x, j.y, j.w, j.h);
+    ctx.fillRect(t.x, t.y, t.w, t.h);
+
+    ctx.fillStyle = 'white';
+    ctx.font = '30px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('←', l.x + l.w / 2, l.y + l.h / 2);
+    ctx.fillText('→', r.x + r.w / 2, r.y + r.h / 2);
+    ctx.fillText('↑', j.x + j.w / 2, j.y + j.h / 2);
+    ctx.fillText('D', t.x + t.w / 2, t.y + t.h / 2);
+}
+
 
     remove() {
         this.canvas.removeEventListener('touchstart', this.handleTouchStartBound);
