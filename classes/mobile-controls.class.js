@@ -16,10 +16,10 @@ class MobileControls {
 
     getButtonPx(btn) {
     return {
-        x: btn.x * this.canvas.width,
-        y: btn.y * this.canvas.height,
-        w: btn.w * this.canvas.width,
-        h: btn.h * this.canvas.width   // square buttons
+        x: btn.x * 720,
+        y: btn.y * 480,
+        w: btn.w * 720,
+        h: btn.h * 720   // square buttons
     };
 }
 

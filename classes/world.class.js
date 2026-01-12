@@ -28,8 +28,8 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.muteButton = new MuteButton(this.canvas);
-        this.fullscreenButton = new FullscreenButton(this.canvas);
         this.mobileControls = new MobileControls(this.canvas, this.keyboard);
+        this.bossIntroActive = false; // Flag to control boss intro sequence
         this.draw();
         this.setWorld();
         this.run();
@@ -108,11 +108,11 @@ checkGameOver() {
             // Trigger Endboss animation if character reaches x position (e.g., 2000)
             if (this.character.x >= 2000 ) {
                 this.bossHpBarVisible=true;;
+                this.bossIntroActive = true; // Lock character movement during intro
                 
                 setTimeout(() => {
-                   
                     endboss.isWalking = true;
-                    
+                    this.bossIntroActive = false; // Allow character movement after intro
                 }, 3000);  // Delay by 3 seconds
             }
         } 
@@ -149,7 +149,7 @@ checkGameOver() {
         this.intervalId = setInterval(() => {
             this.checkCollisions();
             this.checkThrowobjects();
-        }, 200);
+        }, 50);
     }
 
     stop() {
@@ -169,12 +169,13 @@ checkGameOver() {
     }
 
     checkThrowobjects() {
-        if (this.keyboard.D && !this.throwCooldown) {
+        if (this.keyboard.D && !this.throwCooldown && !this.bossIntroActive) {
             if (this.bottleCount < 1) {
                 return null;
             }
             this.throwBottleUpdate()
-            let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 150);
+            let bottleX = this.character.otherDirection ? this.character.x - 50 : this.character.x + 100;
+            let bottle = new ThrowableObject(bottleX, this.character.y + 150, this.character.otherDirection);
             this.throwableObjects.push(bottle);
             
                 
@@ -265,8 +266,13 @@ checkGameOver() {
     draw() {
         if (this.victoryShown || this.gameOverShown) return;
         
+        const scaleX = this.canvas.width / 720;
+        const scaleY = this.canvas.height / 480;
+        
+        this.ctx.save();
+        this.ctx.scale(scaleX, scaleY);
 
-        this.ctx.clearRect(0,0, canvas.width, canvas.height)
+        this.ctx.clearRect(0,0, 720, 480)
 
         this.ctx.translate(this.camera_x, 0)
         this.addObjectsToMap(this.level.backgroundObjects)
@@ -285,7 +291,6 @@ checkGameOver() {
         this.addToMap(this.bossHpBar);}
 
         this.muteButton.draw();
-        this.fullscreenButton.draw();
 
         if ('ontouchstart' in window) {
             this.mobileControls.draw(this.ctx);
@@ -300,6 +305,8 @@ checkGameOver() {
         this.addObjectsToMap(this.throwableObjects)
 
         this.ctx.translate(-this.camera_x, 0)
+        
+        this.ctx.restore();
 
             // Draw everything again by calling draw() recursively  
          this.animationFrameId = requestAnimationFrame(() => this.draw());

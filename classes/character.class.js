@@ -90,7 +90,7 @@ constructor(){
    this.lastActionTime = Date.now();
    this.collectSound = new Audio('audio/collectcoin.mp3');
    this.collectSound.volume = 0.4;
-   this.collectSound.currentTime = 0.9;
+   this.collectSound.currentTime = 3.5;
    this.jumpSound = new Audio('audio/jump.mp3');
    this.snore.addEventListener('ended', () => {
        if (this.snorePlayed && !GLOBAL_MUTE) {
@@ -106,7 +106,7 @@ animate() {
         const isMoving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT || 
                          this.world.keyboard.UP || this.world.keyboard.SPACE;
 
-        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+        if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.world.bossIntroActive) {
             this.moveRight();
             this.otherDirection = false;
             if (!GLOBAL_MUTE) {
@@ -115,7 +115,7 @@ animate() {
             this.resetIdleTimer();
         }
 
-        if (this.world.keyboard.LEFT && this.x > 0) {
+        if (this.world.keyboard.LEFT && this.x > 0 && !this.world.bossIntroActive) {
             this.moveLeft();
             this.otherDirection = true;
             if (!GLOBAL_MUTE) {
@@ -124,7 +124,7 @@ animate() {
             this.resetIdleTimer();
         }
 
-        if ((this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround()) {
+        if ((this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround() && !this.world.bossIntroActive) {
             this.jump();
             if (!GLOBAL_MUTE) {
                 this.jumpSound.play();

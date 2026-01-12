@@ -2,25 +2,42 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 let startScreen;
-let needFullscreen = false;
+
+
 
 function recreateCanvas() {
-    const container = document.getElementById('game-container');
+    const container = document.getElementById('gameContainer'); // ← must match HTML
 
-    // Remove old canvas if it exists
-    const oldCanvas = document.getElementById('canvas');
-    if (oldCanvas) oldCanvas.remove();
+    if (!container) {
+        console.error("gameContainer not found");
+        return null;
+    }
 
-    // Create new canvas
+    const oldCanvas = container.querySelector('canvas');
+    if (oldCanvas) {
+        oldCanvas.remove();
+    }
+
     const newCanvas = document.createElement('canvas');
     newCanvas.id = 'canvas';
     newCanvas.width = 720;
     newCanvas.height = 480;
 
     container.appendChild(newCanvas);
-
     return newCanvas;
 }
+
+
+function startGame() {
+    canvas = recreateCanvas();
+
+    preloadAssets(canvas, () => {
+        initlevel1();
+        world = new World(canvas, keyboard);
+    });
+}
+
+
 
 
 // === Global Mute Control ===
@@ -94,29 +111,7 @@ function preloadAssets(canvas, callback) {
     });
 }
 
-function startGame(canvas) {
-    preloadAssets(canvas, () => {
-        initlevel1();
-        world = new World(canvas, keyboard);
-        if (needFullscreen) {
-            canvas.requestFullscreen().catch(err => {
-                console.log(`Error re-entering fullscreen: ${err.message}`);
-            });
-            needFullscreen = false;
-        }
-    });
-}
 
-/**
- * Recreates a new canvas inside the game container and returns it.
- * This wipes all previous game state, sounds, and intervals.
- */
-function recreateCanvas() {
-    const container = document.getElementById('gameContainer');
-    container.innerHTML = '<canvas id="canvas" width="720" height="480"></canvas>';
-    canvas = document.getElementById('canvas');
-    return canvas;
-}
 
 window.addEventListener("keydown", (e) => {
     if(e.keyCode == 39){
@@ -170,12 +165,10 @@ function isMobile() {
 }
 
 function checkOrientation() {
-    const rotateOverlay = document.getElementById('rotate-overlay');
-    const fullscreenOverlay = document.getElementById('mobile-fullscreen-overlay');
+    const rotateOverlay = document.getElementById('rotateOverlay');
 
     if (!isMobile()) {
         rotateOverlay.style.display = 'none';
-        fullscreenOverlay.style.display = 'none';
         return;
     }
 
@@ -183,14 +176,8 @@ function checkOrientation() {
 
     if (isPortrait) {
         rotateOverlay.style.display = 'flex';
-        fullscreenOverlay.style.display = 'none';
     } else {
         rotateOverlay.style.display = 'none';
-        if (document.fullscreenElement) {
-            fullscreenOverlay.style.display = 'none';
-        } else {
-            fullscreenOverlay.style.display = 'flex';
-        }
     }
 }
 
@@ -201,13 +188,4 @@ window.addEventListener('orientationchange', checkOrientation);
 // Run once on load
 window.addEventListener('load', () => {
     checkOrientation();
-    document.getElementById('mobile-fullscreen-btn').addEventListener('click', () => {
-        const canvas = document.getElementById('canvas');
-        canvas.requestFullscreen().then(() => {
-            document.getElementById('mobile-fullscreen-overlay').style.display = 'none';
-            needFullscreen = true;
-        }).catch(err => {
-            console.log(`Error attempting to enable full-screen mode: ${err.message}`);
-        });
-    });
 });
