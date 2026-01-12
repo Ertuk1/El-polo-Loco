@@ -2,6 +2,7 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 let startScreen;
+let needFullscreen = false;
 
 function recreateCanvas() {
     const container = document.getElementById('game-container');
@@ -97,6 +98,12 @@ function startGame(canvas) {
     preloadAssets(canvas, () => {
         initlevel1();
         world = new World(canvas, keyboard);
+        if (needFullscreen) {
+            canvas.requestFullscreen().catch(err => {
+                console.log(`Error re-entering fullscreen: ${err.message}`);
+            });
+            needFullscreen = false;
+        }
     });
 }
 
@@ -163,19 +170,27 @@ function isMobile() {
 }
 
 function checkOrientation() {
-    const overlay = document.getElementById('rotate-overlay');
+    const rotateOverlay = document.getElementById('rotate-overlay');
+    const fullscreenOverlay = document.getElementById('mobile-fullscreen-overlay');
 
     if (!isMobile()) {
-        overlay.style.display = 'none';
+        rotateOverlay.style.display = 'none';
+        fullscreenOverlay.style.display = 'none';
         return;
     }
 
     const isPortrait = window.innerHeight > window.innerWidth;
 
     if (isPortrait) {
-        overlay.style.display = 'flex';
+        rotateOverlay.style.display = 'flex';
+        fullscreenOverlay.style.display = 'none';
     } else {
-        overlay.style.display = 'none';
+        rotateOverlay.style.display = 'none';
+        if (document.fullscreenElement) {
+            fullscreenOverlay.style.display = 'none';
+        } else {
+            fullscreenOverlay.style.display = 'flex';
+        }
     }
 }
 
@@ -184,4 +199,15 @@ window.addEventListener('resize', checkOrientation);
 window.addEventListener('orientationchange', checkOrientation);
 
 // Run once on load
-window.addEventListener('load', checkOrientation);
+window.addEventListener('load', () => {
+    checkOrientation();
+    document.getElementById('mobile-fullscreen-btn').addEventListener('click', () => {
+        const canvas = document.getElementById('canvas');
+        canvas.requestFullscreen().then(() => {
+            document.getElementById('mobile-fullscreen-overlay').style.display = 'none';
+            needFullscreen = true;
+        }).catch(err => {
+            console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+        });
+    });
+});

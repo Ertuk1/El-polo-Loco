@@ -1,19 +1,17 @@
-class MuteButton {
-    constructor(canvas, sounds) {
+class FullscreenButton {
+    constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.sounds = sounds; // optional: pass in game sounds later
         this.isMobile = window.innerWidth <= 720;
         this.isSmallMobile = window.innerWidth < 400;
         this.size = this.isMobile ? (this.isSmallMobile ? 100 : 80) : 50;
-        this.x = canvas.width - (this.isMobile ? (this.isSmallMobile ? 240 : 220) : 70); // position (top-right corner)
+        this.x = canvas.width - (this.isMobile ? (this.isSmallMobile ? 120 : 120) : 140);
         this.y = this.isMobile ? (this.isSmallMobile ? 100 : 60) : 20;
-        this.isMuted = GLOBAL_MUTE;
 
-        this.soundOnImg = new Image();
-        this.soundOnImg.src = 'IMG/muteButtons/icons8-ton-67.png';
-        this.soundOffImg = new Image();
-        this.soundOffImg.src = 'IMG/muteButtons/icons8-ton-stummschalten-67.png';
+        this.fullscreenImg = new Image();
+        this.fullscreenImg.src = 'IMG/full-screen.png';
+        this.minimizeImg = new Image();
+        this.minimizeImg.src = 'IMG/minimize.png';
 
         this.handleClick = this.handleClick.bind(this);
         this.handleTouch = this.handleTouch.bind(this);
@@ -22,7 +20,8 @@ class MuteButton {
     }
 
     draw() {
-        const img = this.isMuted ? this.soundOffImg : this.soundOnImg;
+        const isFullscreen = !!document.fullscreenElement;
+        const img = isFullscreen ? this.minimizeImg : this.fullscreenImg;
         this.ctx.drawImage(img, this.x, this.y, this.size, this.size);
     }
 
@@ -42,7 +41,7 @@ class MuteButton {
             canvasY >= this.y - offset &&
             canvasY <= this.y + this.size + offset
         ) {
-            this.toggleMute();
+            this.toggleFullscreen();
         }
     }
 
@@ -64,17 +63,19 @@ class MuteButton {
             canvasY >= this.y - offset &&
             canvasY <= this.y + this.size + offset
         ) {
-            this.toggleMute();
+            this.toggleFullscreen();
         }
     }
 
- toggleMute() {
-    this.isMuted = !this.isMuted;
-    GLOBAL_MUTE = this.isMuted;
-
-    // Optional: also instantly mute/unmute any currently playing audio
-    document.querySelectorAll('audio').forEach(a => a.muted = this.isMuted);
-}
+    toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            this.canvas.requestFullscreen().catch(err => {
+                console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
 
     remove() {
         this.canvas.removeEventListener('click', this.handleClick);

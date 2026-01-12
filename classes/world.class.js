@@ -28,6 +28,7 @@ class World {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.muteButton = new MuteButton(this.canvas);
+        this.fullscreenButton = new FullscreenButton(this.canvas);
         this.mobileControls = new MobileControls(this.canvas, this.keyboard);
         this.draw();
         this.setWorld();
@@ -284,6 +285,7 @@ checkGameOver() {
         this.addToMap(this.bossHpBar);}
 
         this.muteButton.draw();
+        this.fullscreenButton.draw();
 
         if ('ontouchstart' in window) {
             this.mobileControls.draw(this.ctx);
