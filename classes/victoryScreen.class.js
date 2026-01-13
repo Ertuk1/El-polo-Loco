@@ -1,12 +1,20 @@
 class VictoryScreen {
-    constructor(canvas, onReplay) {
+    constructor(canvas, callbacks) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
-        this.onReplay = onReplay;
+        this.onReplay = callbacks.replay;
+        this.onHome = callbacks.home;
 
-        this.button = {
+        this.replayButton = {
             x: canvas.width / 2 - 100,
             y: canvas.height / 2 + 40,
+            w: 200,
+            h: 60
+        };
+
+        this.homeButton = {
+            x: canvas.width / 2 - 100,
+            y: canvas.height / 2 + 120,
             w: 200,
             h: 60
         };
@@ -14,7 +22,6 @@ class VictoryScreen {
         this.victoryImg = new Image();
         this.victoryImg.src = 'IMG/9_intro_outro_screens/win/won_1.png';
 
-        this.handleClick = this.handleClick.bind(this);
         this.handleClick = this.handleClick.bind(this);
     }
 
@@ -44,13 +51,20 @@ class VictoryScreen {
         );
 
         // Replay button
-        
-        this.ctx.fillRect(this.button.x, this.button.y, this.button.w, this.button.h);
+        this.ctx.fillStyle = "black";
+        this.ctx.fillRect(this.replayButton.x, this.replayButton.y, this.replayButton.w, this.replayButton.h);
 
         this.ctx.fillStyle = "white";
         this.ctx.textAlign = 'center';
         this.ctx.font = "66px zabras";
-        this.ctx.fillText("Replay", this.canvas.width / 2, this.button.y + 40);
+        this.ctx.fillText("Replay", this.canvas.width / 2, this.replayButton.y + 40);
+
+        // Home button
+        this.ctx.fillStyle = "black";
+        this.ctx.fillRect(this.homeButton.x, this.homeButton.y, this.homeButton.w, this.homeButton.h);
+
+        this.ctx.fillStyle = "white";
+        this.ctx.fillText("Home", this.canvas.width / 2, this.homeButton.y + 40);
     }
 
     handleClick(event) {
@@ -64,13 +78,21 @@ class VictoryScreen {
         const canvasY = y * scaleY;
 
         if (
-            canvasX >= this.button.x &&
-            canvasX <= this.button.x + this.button.w &&
-            canvasY >= this.button.y &&
-            canvasY <= this.button.y + this.button.h
+            canvasX >= this.replayButton.x &&
+            canvasX <= this.replayButton.x + this.replayButton.w &&
+            canvasY >= this.replayButton.y &&
+            canvasY <= this.replayButton.y + this.replayButton.h
         ) {
             this.hide();
             this.onReplay();
+        } else if (
+            canvasX >= this.homeButton.x &&
+            canvasX <= this.homeButton.x + this.homeButton.w &&
+            canvasY >= this.homeButton.y &&
+            canvasY <= this.homeButton.y + this.homeButton.h
+        ) {
+            this.hide();
+            this.onHome();
         }
     }
 }

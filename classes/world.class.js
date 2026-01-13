@@ -86,12 +86,9 @@ checkGameOver() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
         // Show the Game Over screen
-        const gameOverScreen = new GameOverScreen(this.canvas, () => {
-            const newCanvas = recreateCanvas();
-            startGame(newCanvas);
-
-            
-            
+        const gameOverScreen = new GameOverScreen(this.canvas, {
+            replay: (newCanvas) => startGame(newCanvas),
+            home: (newCanvas) => showStartScreen()
         });
         gameOverScreen.show();
     }, 1000);
@@ -359,9 +356,15 @@ checkGameOver() {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.victoryScreen = new VictoryScreen(this.canvas, () => {
-        const newCanvas = recreateCanvas();
-        startGame(newCanvas);
+    this.victoryScreen = new VictoryScreen(this.canvas, {
+        replay: () => {
+            const newCanvas = recreateCanvas();
+            startGame(newCanvas);
+        },
+        home: () => {
+            const newCanvas = recreateCanvas();
+            showStartScreen();
+        }
     });
 
     this.victoryScreen.show();

@@ -28,8 +28,8 @@ function recreateCanvas() {
 }
 
 
-function startGame() {
-    canvas = recreateCanvas();
+function startGame(canvasParam) {
+    canvas = canvasParam;
 
     preloadAssets(canvas, () => {
         initlevel1();
@@ -63,6 +63,12 @@ window.onload = function () {
 
 function initStartScreen() {
     canvas = document.getElementById('canvas');
+    startScreen = new StartScreen(canvas, startGame);
+    startScreen.show();
+}
+
+function showStartScreen() {
+    canvas = recreateCanvas();
     startScreen = new StartScreen(canvas, startGame);
     startScreen.show();
 }
