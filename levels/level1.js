@@ -4,6 +4,9 @@ function initlevel1() {
         new chicken(),
         new chicken(),
         new chicken(),
+        new SmallChicken(),
+        new SmallChicken(),
+        new SmallChicken(),
         
     ],
     [

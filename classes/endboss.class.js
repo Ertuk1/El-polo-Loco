@@ -228,6 +228,16 @@ BossMove() {
             this.bossHurt=true;
             this.hp -= damage;
             
+            // Play hurt sound
+            if (!GLOBAL_MUTE) {
+                const hurtSound = new Audio('audio/fussing-rooster-in-indian-village-natural-ambience-330927.mp3');
+                hurtSound.play();
+                setTimeout(() => {
+                    hurtSound.pause();
+                    hurtSound.currentTime = 0;
+                }, 1000);
+            }
+            
             this.hurtanimation()
             console.log(`Bottle hit the Endboss! HP: ${this.hp}`);
 
@@ -271,6 +281,13 @@ BossMove() {
         if (!this.isDead1 && !this.victoryTriggered) {
             this.isDead1 = true;
              this.victoryTriggered = true;
+            
+            // Play death sound
+            if (!GLOBAL_MUTE) {
+                const deathSound = new Audio('audio/clucking-chicken-440624.mp3');
+                deathSound.play();
+            }
+            
             this.triggerVictory();
             this.clearAllIntervals();
             this.animateDeath();

@@ -4,8 +4,8 @@ class GameOverScreen {
         this.ctx = this.canvas.getContext('2d');
         this.onReplay = callbacks.replay;
         this.onHome = callbacks.home;
-        this.replayButton = { x: 260, y: 360, width: 200, height: 60 }; // moved slightly lower
-        this.homeButton = { x: 260, y: 440, width: 200, height: 60 };
+        this.replayButton = { x: 260, y: 320, width: 200, height: 60 }; // moved up
+        this.homeButton = { x: 260, y: 400, width: 200, height: 60 };
         this.gameOverImage = new Image();
         this.gameOverImage.src = 'IMG/9_intro_outro_screens/game_over/you lost.png';
         this.handleClick = this.handleClick.bind(this);
@@ -23,7 +23,7 @@ class GameOverScreen {
     drawGameOver() {
         const { ctx, canvas, replayButton, homeButton } = this;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(this.gameOverImage, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(this.gameOverImage, 0, -80, canvas.width, canvas.height);
 
         ctx.fillStyle = 'white';
         ctx.font = '66px zabras';

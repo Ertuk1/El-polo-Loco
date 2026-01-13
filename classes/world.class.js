@@ -189,14 +189,15 @@ checkGameOver() {
         // Check collision with enemies (as before)
         this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
-                if (enemy instanceof chicken) {
+                if (enemy instanceof chicken || enemy instanceof SmallChicken) {
                     const characterBottom = this.character.y + this.character.height;
                     const chickenTop = enemy.y;
                     const isAbove = characterBottom < chickenTop + 30;
                     const isFalling = this.character.speedY < 0; // <- important fix!
 
     if (isAbove && isFalling) {
-        if (!GLOBAL_MUTE) {
+        // Only play chicken sound for regular chickens, SmallChickens have their own sound
+        if (enemy instanceof chicken && !GLOBAL_MUTE) {
             this.chickenSound.play();
         }
         console.log('Character jumped on chicken');
