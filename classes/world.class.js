@@ -22,6 +22,7 @@ class World {
     bossHpBar = new BossStatusbar(this.level.enemies[0]);
     bossHpBarVisible = false;
     gameOverShown = false;
+    
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
@@ -56,6 +57,7 @@ class World {
         this.runboss();
     const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
     this.bossHpBar = new BossStatusbar(endboss); // Initialize with the boss
+    endboss.target = this.character; // Set the character as the target for facing direction
 
     this.sounds = [this.walkingSound, this.bottleThrowSound, this.chickenSound].filter(Boolean);
     
@@ -96,26 +98,25 @@ checkGameOver() {
 }
 
     checkEndbossProximity() {
-        
         const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
-        
-        if (endboss) {
 
+        if (endboss) {
             if (!this.bossHpBar.boss) {
                 this.bossHpBar.setBoss(endboss);
             }
 
-            // Trigger Endboss animation if character reaches x position (e.g., 2000)
-            if (this.character.x >= 2000 ) {
-                this.bossHpBarVisible=true;;
+            // Trigger Endboss animation once when character reaches x position (e.g., 2000)
+            if (this.character.x >= 2000 && !this.bossIntroTriggered) {
+                this.bossIntroTriggered = true; // ensure this intro runs only once
+                this.bossHpBarVisible = true;
                 this.bossIntroActive = true; // Lock character movement during intro
-                
+
                 setTimeout(() => {
                     endboss.isWalking = true;
                     this.bossIntroActive = false; // Allow character movement after intro
-                }, 3000);  // Delay by 3 seconds
+                }, 3000); // Delay by 3 seconds
             }
-        } 
+        }
     }
 
     runboss() {

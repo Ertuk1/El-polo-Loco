@@ -58,6 +58,8 @@ class Endboss extends moveableObject {
     bossHurt = false; 
     isFacingLeft = true;   // Boss initially looks left
     target = null;        // Will be the Character
+    isFacingLeft = true;   // Boss initially looks left
+
 
 
     constructor() {
@@ -74,7 +76,21 @@ class Endboss extends moveableObject {
         this.animateWalking();
         this.attackInterval2();
         
+        
     }
+
+    updateFacing() {
+    if (!this.target) return;
+
+    if (this.target.x > this.x) {
+        this.isFacingLeft = false;   // Player is to the right
+        this.otherDirection = true; // engine flip
+    } else {
+        this.isFacingLeft = true;    // Player is to the left
+        this.otherDirection = false;
+    }
+}
+
 
     attackInterval2(){
         setInterval(() => {
@@ -83,9 +99,11 @@ class Endboss extends moveableObject {
     }
 
     animateCharge() {
+        // Determine direction: -1 for left, 1 for right
+        let direction = this.target && this.target.x > this.x ? 1 : -1;
         let chargeInterval = setInterval(() => {
             if (this.charge) {
-                this.x -= this.speed; // Move Endboss during charge
+                this.x += this.speed * direction; // Move Endboss toward the player during charge
             } else {
                 clearInterval(chargeInterval);
             }
@@ -119,30 +137,35 @@ class Endboss extends moveableObject {
     }
 
     jumpAndAttack() {
+        if (!this.target) return;
+
         let jumpHeight = 150; // Maximum height of the jump
         let jumpSpeed = 10; // Speed of upward movement
         let gravity = 5; // Simulated gravity
         let peakReached = false;
-    
+
+        // Determine direction: -1 for left, 1 for right
+        let direction = this.target.x > this.x ? 1 : -1;
+
         let jumpInterval = setInterval(() => {
             if (!peakReached) {
                 // Move upward until peak is reached
                 this.y -= jumpSpeed;
-                this.x -= 5; // Move forward slightly during the jump
+                this.x += 5 * direction; // Move towards the character
                 if (this.y <= 60 - jumpHeight) { // Peak of the jump
                     peakReached = true;
                 }
             } else {
                 // Move downward (simulate gravity)
                 this.y += gravity;
-                this.x -= 5; // Continue moving forward while falling
+                this.x += 5 * direction; // Continue moving towards the character while falling
                 if (this.y >= 60) { // Return to ground level
                     this.y = 60; // Ensure Endboss lands at the correct position
                     clearInterval(jumpInterval);
                 }
             }
         }, 50); // Smooth jumping animation
-    
+
         this.animateAttack(); // Play attack animation during the jump
     }
 
@@ -161,6 +184,7 @@ class Endboss extends moveableObject {
 BossMove() {
     setInterval(() => {
         if (this.isWalking && !this.isDead1 && !this.isAttacking && !this.bossHurt) {
+            this.updateFacing();
             this.animateWalking();
             this.moveLeftBoss();
             
@@ -191,7 +215,11 @@ BossMove() {
 
  
     moveLeftBoss() {
+            if (this.isFacingLeft) {
         this.x -= this.speed;
+    } else {
+        this.x += this.speed;
+    }
     }
  
 
