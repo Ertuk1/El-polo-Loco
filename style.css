@@ -65,3 +65,9 @@ canvas {
     position: relative;
     display: inline-block;
 }
+
+button {
+    font-family: 'zabras';
+    cursor: pointer;
+
+}

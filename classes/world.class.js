@@ -11,6 +11,7 @@ class World {
     isDead = false;
     chickenSound = new Audio('audio/chicken.mp3')
     gameoversound = new Audio('audio/gameover.mp3');
+    backgroundMusic = new Audio('audio/BackgroundMusic.mp3');
     bottles = [];
     bottleCount = 0;
     bottleImage = new Image('')
@@ -60,6 +61,24 @@ class World {
     endboss.target = this.character; // Set the character as the target for facing direction
 
     this.sounds = [this.walkingSound, this.bottleThrowSound, this.chickenSound].filter(Boolean);
+    
+    // Start background music
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.3; // Set to a reasonable volume
+    if (!GLOBAL_MUTE) {
+        this.backgroundMusic.play().catch(e => console.log('Background music play failed:', e));
+    }
+
+    // Listen for mute changes to control background music
+    this.handleMuteChange = (event) => {
+        const { muted } = event.detail;
+        if (muted) {
+            this.backgroundMusic.pause();
+        } else {
+            this.backgroundMusic.play().catch(e => console.log('Background music play failed:', e));
+        }
+    };
+    document.addEventListener('globalMuteChanged', this.handleMuteChange);
     
     this.draw();
     this.run();
@@ -162,6 +181,15 @@ checkGameOver() {
             a.pause();
             a.currentTime = 0;
         });
+        // Explicitly stop background music
+        if (this.backgroundMusic) {
+            this.backgroundMusic.pause();
+            this.backgroundMusic.currentTime = 0;
+        }
+        // Remove mute event listener
+        if (this.handleMuteChange) {
+            document.removeEventListener('globalMuteChanged', this.handleMuteChange);
+        }
         this.mobileControls.remove();
         if (this.character) this.character.stop();
     }

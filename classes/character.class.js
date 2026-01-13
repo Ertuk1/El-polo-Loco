@@ -97,6 +97,17 @@ constructor(){
            this.snore.play();
        }
    });
+
+   // Listen for mute changes to control snore sound
+   this.handleMuteChange = (event) => {
+       const { muted } = event.detail;
+       if (muted) {
+           this.snore.pause();
+       } else if (this.snorePlayed) {
+           this.snore.play().catch(e => console.log('Snore sound play failed:', e));
+       }
+   };
+   document.addEventListener('globalMuteChanged', this.handleMuteChange);
 }
 
 animate() {
@@ -201,6 +212,7 @@ animate() {
         if (this.animationInterval) clearInterval(this.animationInterval);
         this.snore.pause();
         this.snorePlayed = false;
+        document.removeEventListener('globalMuteChanged', this.handleMuteChange);
     }
 
 }

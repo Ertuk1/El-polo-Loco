@@ -92,8 +92,14 @@ class MuteButton {
     this.isMuted = !this.isMuted;
     GLOBAL_MUTE = this.isMuted;
 
-    // Optional: also instantly mute/unmute any currently playing audio
+    // Instantly mute/unmute any DOM audio elements
     document.querySelectorAll('audio').forEach(a => a.muted = this.isMuted);
+
+    // Dispatch custom event for persistent audio instances (background music, snore, etc.)
+    const muteEvent = new CustomEvent('globalMuteChanged', {
+        detail: { muted: this.isMuted }
+    });
+    document.dispatchEvent(muteEvent);
 }
 
     remove() {
