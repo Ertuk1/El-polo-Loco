@@ -13,11 +13,11 @@ isDead = false;
 
 
 
-constructor(){
+constructor(x = null){
     super().loadImage('IMG/3_enemies_chicken/chicken_normal/1_walk//2_w.png');
     this.loadImages(this.IMAGES_WALKING);
     this.imageDead = this.loadImage('IMG/3_enemies_chicken/chicken_normal/2_dead/dead.png');
-    this.x = 250 + Math.random() * 500;
+    this.x = x !== null ? x : 250 + Math.random() * 500;
     this.animate();
     this.isDead = false;
     this.speed = 0.15 + Math.random() * 0.25;
