@@ -21,12 +21,13 @@ class ThrowableObject extends moveableObject {
     breakSound = new Audio('audio/bottlecrack.mp3')
     throwSound = new Audio('audio/throw.mp3')
 
-    constructor(x, y) {
+    constructor(x, y, direction) {
         super().loadImage('IMG/6_salsa_bottle/salsa_bottle.png')
         this.x = x;
         this.y = y -100;
         this.height = 60;
         this.width = 50;
+        this.direction = direction; // Store the throw direction
         this.trow();
 
     }
@@ -40,7 +41,7 @@ class ThrowableObject extends moveableObject {
         }
     
         let intervalId = setInterval(() => {
-            this.x += 10;  
+            this.x += this.direction ? -10 : 10;  // Move left if direction is true, right if false
             console.log(this.y)
            
             this.currentImageIndex++;

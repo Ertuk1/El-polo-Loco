@@ -56,6 +56,9 @@ class Endboss extends moveableObject {
     isWalking = false;
     charge = false;
     bossHurt = false; 
+    isFacingLeft = true;   // Boss initially looks left
+    target = null;        // Will be the Character
+
 
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
