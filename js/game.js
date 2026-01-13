@@ -68,6 +68,11 @@ function initStartScreen() {
 }
 
 function showStartScreen() {
+    // Clean up existing world if it exists
+    if (world) {
+        world.stop();
+        world = null;
+    }
     canvas = recreateCanvas();
     startScreen = new StartScreen(canvas, startGame);
     startScreen.show();

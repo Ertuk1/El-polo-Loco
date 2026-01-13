@@ -19,13 +19,19 @@ class moveableObject extends DrawableObject {
     }
 
     applyGravity() {
-        setInterval(() => {
+        this.gravityInterval = setInterval(() => {
             if(this.isAboveGround() || this.speedY > 0){
             this.y -= this.speedY;
             this.speedY -= this.acceeleration;
             }
         }, 1000 / 25);
     
+    }
+
+    stop() {
+        if (this.gravityInterval) {
+            clearInterval(this.gravityInterval);
+        }
     }
 
     isColliding(mo){

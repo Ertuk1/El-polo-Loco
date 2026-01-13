@@ -302,6 +302,10 @@ BossMove() {
         clearInterval(this.attackInterval);  // Clear attack interval as well
     }
 
+    stop() {
+        this.clearAllIntervals();
+    }
+
     animateDeath() {
         let deathInterval = setInterval(() => {
             this.playAnimation(this.IMAGES_DEAD);

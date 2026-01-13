@@ -21,7 +21,6 @@ constructor(x = null){
     this.animate();
     this.isDead = false;
     this.speed = 0.15 + Math.random() * 0.25;
-
 }
 
 
@@ -42,13 +41,21 @@ removeFromWorld() {
 
 
 animate(){
-    setInterval(() => {
+    this.movementInterval = setInterval(() => {
     this.moveLeft();
     }, 1000 / 60);
     
-    setInterval(() =>{
+    this.animationInterval = setInterval(() =>{
 this.playAnimation(this.IMAGES_WALKING)
     }, 200)
 }
 
+stop() {
+    if (this.movementInterval) {
+        clearInterval(this.movementInterval);
+    }
+    if (this.animationInterval) {
+        clearInterval(this.animationInterval);
+    }
+}
 }

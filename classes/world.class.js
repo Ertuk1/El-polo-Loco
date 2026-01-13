@@ -192,6 +192,42 @@ checkGameOver() {
         }
         this.mobileControls.remove();
         if (this.character) this.character.stop();
+        
+        // Stop all enemies
+        if (this.level && this.level.enemies) {
+            this.level.enemies.forEach(enemy => {
+                if (enemy.stop) {
+                    enemy.stop();
+                }
+            });
+        }
+        
+        // Stop all bottles
+        if (this.bottles) {
+            this.bottles.forEach(bottle => {
+                if (bottle.stop) {
+                    bottle.stop();
+                }
+            });
+        }
+        
+        // Stop all coins
+        if (this.coins) {
+            this.coins.forEach(coin => {
+                if (coin.stop) {
+                    coin.stop();
+                }
+            });
+        }
+        
+        // Stop throwable objects
+        if (this.throwableObjects) {
+            this.throwableObjects.forEach(obj => {
+                if (obj.stop) {
+                    obj.stop();
+                }
+            });
+        }
     }
 
     checkThrowobjects() {

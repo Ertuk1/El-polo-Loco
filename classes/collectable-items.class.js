@@ -16,9 +16,15 @@ class Bottle extends moveableObject {
 
     animate() {
         // Use playAnimation method from parent class
-        setInterval(() => {
+        this.animationInterval = setInterval(() => {
             this.playAnimation(this.Images_Bottles); // Pass this.Images_Bottles
         }, 200); // Adjust animation speed
+    }
+
+    stop() {
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+        }
     }
 
 }
