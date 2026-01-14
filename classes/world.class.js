@@ -64,7 +64,7 @@ class World {
     
     // Start background music
     this.backgroundMusic.loop = true;
-    this.backgroundMusic.volume = 0.3; // Set to a reasonable volume
+    this.backgroundMusic.volume = 0.05; // Set to a reasonable volume
     if (!GLOBAL_MUTE) {
         this.backgroundMusic.play().catch(e => console.log('Background music play failed:', e));
     }
@@ -350,7 +350,7 @@ checkCollisions() {
 
             mo.draw(this.ctx);
 
-            mo.drawFrame(this.ctx);
+            //mo.drawFrame(this.ctx);
             
             if(mo.otherDirection){
                 this.flipImageBack(mo);
