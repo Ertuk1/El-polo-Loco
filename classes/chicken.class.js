@@ -42,10 +42,12 @@ removeFromWorld() {
 
 animate(){
     this.movementInterval = setInterval(() => {
+     if (GLOBAL_PAUSE) return; 
     this.moveLeft();
     }, 1000 / 60);
     
     this.animationInterval = setInterval(() =>{
+     if (GLOBAL_PAUSE) return; 
 this.playAnimation(this.IMAGES_WALKING)
     }, 200)
 }

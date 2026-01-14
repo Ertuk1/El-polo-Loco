@@ -99,7 +99,7 @@ class Endboss extends moveableObject {
     }
 
     animateCharge() {
-        // Determine direction: -1 for left, 1 for right
+        if (GLOBAL_PAUSE) return; 
         let direction = this.target && this.target.x > this.x ? 1 : -1;
         let chargeInterval = setInterval(() => {
             if (this.charge) {
@@ -156,12 +156,14 @@ canAttack() {
 }
 
 startCharge() {
+    if (GLOBAL_PAUSE) return; 
     this.charge = true;
     this.speed += 10;
     this.animateCharge();
 }
 
 startAttack() {
+    if (GLOBAL_PAUSE) return; 
     this.charge = false;
     this.isAttacking = true;
     this.jumpAndAttack();
@@ -174,6 +176,7 @@ endAttack() {
 }
 
 triggerAttack() {
+    if (GLOBAL_PAUSE) return; 
     if (!this.canAttack()) return;
 
     console.log('Charge initiated');
@@ -197,6 +200,7 @@ triggerAttack() {
     animateAttack() {
         clearInterval(this.attackInterval); // Clear any previous attack animations
         this.attackInterval = setInterval(() => {
+            if (GLOBAL_PAUSE) return; 
             if (this.isAttacking) {
                 this.playAnimation(this.IMAGES_ATTACK); // Play attack frames
             } else {
@@ -208,6 +212,7 @@ triggerAttack() {
 
 BossMove() {
     setInterval(() => {
+        if (GLOBAL_PAUSE) return; 
         if (this.isWalking && !this.isDead1 && !this.isAttacking && !this.bossHurt) {
             this.updateFacing();
             this.animateWalking();
@@ -218,7 +223,7 @@ BossMove() {
 }
 
     playAlertAnimation() {
-        // Play alert animation while Endboss is idle
+         if (GLOBAL_PAUSE) return; 
         setInterval(() => {
 
             if (!this.isDead1 && this.isWalking === false) {
@@ -233,6 +238,7 @@ BossMove() {
 
 
     animateWalking() {
+         if (GLOBAL_PAUSE) return; 
         this.playAnimation(this.IMAGES_WALK);
     }
 
@@ -240,6 +246,7 @@ BossMove() {
 
  
     moveLeftBoss() {
+         if (GLOBAL_PAUSE) return; 
             if (this.isFacingLeft) {
         this.x -= this.speed;
     } else {
@@ -321,6 +328,7 @@ BossMove() {
     }
 
     animateDeath() {
+         if (GLOBAL_PAUSE) return; 
         let deathInterval = setInterval(() => {
             this.playAnimation(this.IMAGES_DEAD);
         }, 200);

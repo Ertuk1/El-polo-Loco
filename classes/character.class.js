@@ -92,10 +92,18 @@ constructor(){
    this.collectSound.volume = 0.4;
    this.collectSound.currentTime = 3.5;
    this.jumpSound = new Audio('audio/jump.mp3');
-   this.snore.addEventListener('ended', () => {
-       if (this.snorePlayed && !GLOBAL_MUTE) {
-           this.snore.play();
-       }
+this.snore.addEventListener('ended', () => {
+    if (this.snorePlayed && !GLOBAL_MUTE && !GLOBAL_PAUSE) { // ADD !GLOBAL_PAUSE
+        this.snore.play();
+    }
+
+this.handlePauseChange = (event) => {
+const { paused } = event.detail;
+    if (paused) {
+        this.snore.pause();
+    }
+};
+document.addEventListener('globalPauseChanged', this.handlePauseChange);
    });
 
    // Listen for mute changes to control snore sound
@@ -137,7 +145,7 @@ playJumpState() {
 
 playLongIdleState() {
     this.playAnimation(this.IMAGES_LONG_IDLE);
-    if (!this.snorePlayed && !GLOBAL_MUTE) this.snore.play();
+    if (!this.snorePlayed && !GLOBAL_MUTE && !GLOBAL_PAUSE) this.snore.play();
     this.snorePlayed = true;
     this.hurt.pause();
 }
@@ -206,12 +214,14 @@ handleMovementInput() {
 
 animate() {
     this.movementInterval = setInterval(() => {
+         if (GLOBAL_PAUSE) return; 
         this.walking_sound.pause();
         this.handleMovementInput();
         this.updateCamera();
     }, 1000 / 60);
 
     this.animationInterval = setInterval(() => {
+         if (GLOBAL_PAUSE) return; 
         this.resolveAnimationState();
     }, 1000 / 10);
 }
@@ -235,12 +245,13 @@ animate() {
         }
     }
 
-    stop() {
-        if (this.movementInterval) clearInterval(this.movementInterval);
-        if (this.animationInterval) clearInterval(this.animationInterval);
-        this.snore.pause();
-        this.snorePlayed = false;
-        document.removeEventListener('globalMuteChanged', this.handleMuteChange);
-    }
+ stop() {
+    if (this.movementInterval) clearInterval(this.movementInterval);
+    if (this.animationInterval) clearInterval(this.animationInterval);
+    this.snore.pause();
+    this.snorePlayed = false;
+    document.removeEventListener('globalMuteChanged', this.handleMuteChange);
+    document.removeEventListener('globalPauseChanged', this.handlePauseChange); // ADD THIS
+}
 
 }

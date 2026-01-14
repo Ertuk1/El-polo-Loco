@@ -32,9 +32,7 @@ class World {
         this.muteButton = new MuteButton(this.canvas);
         this.mobileControls = new MobileControls(this.canvas, this.keyboard);
         this.bossIntroActive = false; // Flag to control boss intro sequence
-        this.draw();
-        this.setWorld();
-        this.run();
+        this.setWorld();        
         this.bottleImage.src = 'IMG/6_salsa_bottle/salsa_bottle.png';
         this.bottles = [
             new Bottle(300, 380),  // Bottle at (300, 250)
@@ -80,9 +78,48 @@ class World {
     };
     document.addEventListener('globalMuteChanged', this.handleMuteChange);
     
+
+    }
+
+pause() {
+    if (this.isPaused) return;
+    this.isPaused = true;
+    GLOBAL_PAUSE = true;
+
+    // Pause all audio including background music
+    document.querySelectorAll("audio").forEach(a => a.pause());
+    if (this.backgroundMusic) this.backgroundMusic.pause();
+    if (this.character && this.character.snore) this.character.snore.pause(); // ADD THIS LINE
+    
+    // Show the pause screen
+    this.pauseScreen.show();
+}
+
+resume() {
+    if (!this.isPaused) return;
+    this.isPaused = false;
+    GLOBAL_PAUSE = false;
+
+    // Hide the pause screen
+    this.pauseScreen.hide();
+
+    // Resume background music if not muted
+    if (!GLOBAL_MUTE && this.backgroundMusic) {
+        this.backgroundMusic.play().catch(e => console.log('Resume music failed:', e));
+    }
+
+    // Resume snore if character was snoring
+    if (this.character && this.character.snorePlayed && !GLOBAL_MUTE) {
+        this.character.snore.play().catch(e => console.log('Snore resume failed:', e));
+    }
+}
+
+
+    start() {
     this.draw();
     this.run();
-    }
+}
+
 
 checkGameOver() {
     // Prevent multiple triggers
@@ -137,6 +174,7 @@ checkGameOver() {
 
     runboss() {
         setInterval(() => {
+            if (this.isPaused) return;
             this.checkCollisions();
             this.checkThrowobjects();
             this.checkEndbossProximity();  // Continuously check character position
@@ -164,6 +202,7 @@ checkGameOver() {
 
     run(){
         this.intervalId = setInterval(() => {
+            if (this.isPaused) return;
             this.checkCollisions();
             this.checkThrowobjects();
         }, 50);
@@ -332,6 +371,9 @@ checkCollisions() {
         this.ctx.translate(-this.camera_x, 0)
         
         this.ctx.restore();  
+        if (this.isPaused) {
+        this.pauseScreen.draw();
+}
          this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
 

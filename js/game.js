@@ -33,7 +33,8 @@ function startGame(canvasParam) {
 
     preloadAssets(canvas, () => {
         initlevel1();
-        world = new World(canvas, keyboard);
+        world = new PausableWorld(canvas, keyboard);
+
     });
 }
 
@@ -42,6 +43,7 @@ function startGame(canvasParam) {
 
 // === Global Mute Control ===
 let GLOBAL_MUTE = false;
+let GLOBAL_PAUSE = false;
 const originalPlay = HTMLMediaElement.prototype.play;
 
 HTMLMediaElement.prototype.play = function (...args) {
