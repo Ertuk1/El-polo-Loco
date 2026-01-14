@@ -111,63 +111,88 @@ class Endboss extends moveableObject {
     }
     
  
-    triggerAttack() {
-        if (!this.isAttacking && !this.isDead1 && this.isWalking && !this.bossHurt ) {
-            console.log('Charge initiated');
-            this.charge = true; // Start charging
-            this.speed += 10;
-    
-            this.animateCharge();
-    
-            setTimeout(() => {
-                console.log('Charging completed, starting attack');
-                this.charge = false; // End charging
-                this.isAttacking = true; // Start attacking
-    
-                this.jumpAndAttack(); // Perform jump and attack
-    
-                setTimeout(() => {
-                    console.log('Attack completed');
-                    this.isAttacking = false;
-                    this.isWalking = true; // Resume walking after attack
-                    this.speed -= 10; // Reset speed
-                }, 1500); // Attack duration (1.5 seconds)
-            }, 1000); // Charging duration (1 second)
-        }
+getAttackDirection() {
+    return this.target.x > this.x ? 1 : -1;
+}
+
+applyJumpMotion(direction, jumpSpeed, gravity, jumpHeight, peakReached, interval) {
+    if (!peakReached) {
+        this.y -= jumpSpeed;
+    } else {
+        this.y += gravity;
     }
 
-    jumpAndAttack() {
-        if (!this.target) return;
+    this.x += 5 * direction;
 
-        let jumpHeight = 150; // Maximum height of the jump
-        let jumpSpeed = 10; // Speed of upward movement
-        let gravity = 5; // Simulated gravity
-        let peakReached = false;
-
-        // Determine direction: -1 for left, 1 for right
-        let direction = this.target.x > this.x ? 1 : -1;
-
-        let jumpInterval = setInterval(() => {
-            if (!peakReached) {
-                // Move upward until peak is reached
-                this.y -= jumpSpeed;
-                this.x += 5 * direction; // Move towards the character
-                if (this.y <= 60 - jumpHeight) { // Peak of the jump
-                    peakReached = true;
-                }
-            } else {
-                // Move downward (simulate gravity)
-                this.y += gravity;
-                this.x += 5 * direction; // Continue moving towards the character while falling
-                if (this.y >= 60) { // Return to ground level
-                    this.y = 60; // Ensure Endboss lands at the correct position
-                    clearInterval(jumpInterval);
-                }
-            }
-        }, 50); // Smooth jumping animation
-
-        this.animateAttack(); // Play attack animation during the jump
+    if (this.y >= 60) {
+        this.y = 60;
+        clearInterval(interval);
     }
+}
+
+runJumpArc(direction) {
+    const jumpHeight = 150;
+    const jumpSpeed = 10;
+    const gravity = 5;
+
+    let peakReached = false;
+
+    const jumpInterval = setInterval(() => {
+        this.applyJumpMotion(direction, jumpSpeed, gravity, jumpHeight, peakReached, jumpInterval);
+        if (this.y <= 60 - jumpHeight) peakReached = true;
+    }, 50);
+}
+
+jumpAndAttack() {
+    if (!this.target) return;
+
+    const direction = this.getAttackDirection();
+    this.runJumpArc(direction);
+    this.animateAttack();
+}
+
+canAttack() {
+    return !this.isAttacking && !this.isDead1 && this.isWalking && !this.bossHurt;
+}
+
+startCharge() {
+    this.charge = true;
+    this.speed += 10;
+    this.animateCharge();
+}
+
+startAttack() {
+    this.charge = false;
+    this.isAttacking = true;
+    this.jumpAndAttack();
+}
+
+endAttack() {
+    this.isAttacking = false;
+    this.isWalking = true;
+    this.speed -= 10;
+}
+
+triggerAttack() {
+    if (!this.canAttack()) return;
+
+    console.log('Charge initiated');
+    this.startCharge();
+
+    setTimeout(() => {
+        console.log('Charging completed, starting attack');
+        this.startAttack();
+
+        setTimeout(() => {
+            console.log('Attack completed');
+            this.endAttack();
+        }, 1500);
+
+    }, 1000);
+}
+
+
+
 
     animateAttack() {
         clearInterval(this.attackInterval); // Clear any previous attack animations
@@ -227,8 +252,6 @@ BossMove() {
         if (!this.isDead1) {
             this.bossHurt=true;
             this.hp -= damage;
-            
-            // Play hurt sound
             if (!GLOBAL_MUTE) {
                 const hurtSound = new Audio('audio/fussing-rooster-in-indian-village-natural-ambience-330927.mp3');
                 hurtSound.play();
@@ -237,10 +260,8 @@ BossMove() {
                     hurtSound.currentTime = 0;
                 }, 1000);
             }
-            
             this.hurtanimation()
             console.log(`Bottle hit the Endboss! HP: ${this.hp}`);
-
             if (this.hp <= 0) {
                 this.die();  // Trigger death if HP drops to 0 or below
             }
@@ -251,22 +272,17 @@ BossMove() {
 
     hurtanimation() {
         if (this.bossHurt) {
-            // Clear any previous hurt animation to prevent multiple intervals
             if (this.hurtAnimationInterval) {
                 clearInterval(this.hurtAnimationInterval);
             }
-    
-            // Start the hurt animation
             this.hurtAnimationInterval = setInterval(() => {
                 this.playAnimation(this.IMAGES_HURT);
             }, 200);
-    
-            // Stop the hurt animation after 1 second
             setTimeout(() => {
-                clearInterval(this.hurtAnimationInterval); // Clear the interval
-                this.hurtAnimationInterval = null; // Reset the property
-                this.bossHurt = false; // Allow other animations to resume
-            }, 1000); // Duration of the hurt animation
+                clearInterval(this.hurtAnimationInterval); 
+                this.hurtAnimationInterval = null; 
+                this.bossHurt = false; 
+            }, 1000); 
         }
     }
 
@@ -281,13 +297,11 @@ BossMove() {
         if (!this.isDead1 && !this.victoryTriggered) {
             this.isDead1 = true;
              this.victoryTriggered = true;
-            
-            // Play death sound
+  
             if (!GLOBAL_MUTE) {
                 const deathSound = new Audio('audio/clucking-chicken-440624.mp3');
                 deathSound.play();
             }
-            
             this.triggerVictory();
             this.clearAllIntervals();
             this.animateDeath();

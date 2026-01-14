@@ -37,62 +37,73 @@ class VictoryScreen {
         this.canvas.removeEventListener("touchstart", this.handleClick);
     }
 
-    draw() {
-        // Background overlay
-        this.ctx.fillStyle = "rgba(0,0,0,0.8)";
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    getCanvasCoords(event) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
 
-        this.ctx.drawImage(
-            this.victoryImg,
-            this.canvas.width / 2 - 200,
-            40,
-            400,
-            220
-        );
+    const clientX = event.clientX || event.touches?.[0].clientX;
+    const clientY = event.clientY || event.touches?.[0].clientY;
 
-        // Replay button
-        this.ctx.fillStyle = "black";
-        this.ctx.fillRect(this.replayButton.x, this.replayButton.y, this.replayButton.w, this.replayButton.h);
+    return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+    };
+}
 
-        this.ctx.fillStyle = "white";
-        this.ctx.textAlign = 'center';
-        this.ctx.font = "66px zabras";
-        this.ctx.fillText("Replay", this.canvas.width / 2, this.replayButton.y + 40);
+isInside(x, y, btn) {
+    return (
+        x >= btn.x &&
+        x <= btn.x + btn.w &&
+        y >= btn.y &&
+        y <= btn.y + btn.h
+    );
+}
 
-        // Home button
-        this.ctx.fillStyle = "black";
-        this.ctx.fillRect(this.homeButton.x, this.homeButton.y, this.homeButton.w, this.homeButton.h);
+handleClick(event) {
+    event.preventDefault();
+    const { x, y } = this.getCanvasCoords(event);
 
-        this.ctx.fillStyle = "white";
-        this.ctx.fillText("Home", this.canvas.width / 2, this.homeButton.y + 40);
+    if (this.isInside(x, y, this.replayButton)) {
+        this.hide();
+        this.onReplay();
+    } 
+    else if (this.isInside(x, y, this.homeButton)) {
+        this.hide();
+        this.onHome();
     }
+}
 
-    handleClick(event) {
-        event.preventDefault();
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
-        const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
-        const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
-        const canvasX = x * scaleX;
-        const canvasY = y * scaleY;
+drawOverlay() {
+    this.ctx.fillStyle = "rgba(0,0,0,0.8)";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+}
 
-        if (
-            canvasX >= this.replayButton.x &&
-            canvasX <= this.replayButton.x + this.replayButton.w &&
-            canvasY >= this.replayButton.y &&
-            canvasY <= this.replayButton.y + this.replayButton.h
-        ) {
-            this.hide();
-            this.onReplay();
-        } else if (
-            canvasX >= this.homeButton.x &&
-            canvasX <= this.homeButton.x + this.homeButton.w &&
-            canvasY >= this.homeButton.y &&
-            canvasY <= this.homeButton.y + this.homeButton.h
-        ) {
-            this.hide();
-            this.onHome();
-        }
-    }
+drawVictoryImage() {
+    this.ctx.drawImage(
+        this.victoryImg,
+        this.canvas.width / 2 - 200,
+        40,
+        400,
+        220
+    );
+}
+
+drawButton(btn, text) {
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(btn.x, btn.y, btn.w, btn.h);
+
+    this.ctx.fillStyle = "white";
+    this.ctx.textAlign = "center";
+    this.ctx.font = "66px zabras";
+    this.ctx.fillText(text, this.canvas.width / 2, btn.y + 40);
+}
+
+draw() {
+    this.drawOverlay();
+    this.drawVictoryImage();
+    this.drawButton(this.replayButton, "Replay");
+    this.drawButton(this.homeButton, "Home");
+}
+
 }

@@ -120,49 +120,51 @@ class StartScreen {
         this.canvas.style.cursor = isHoveringButton ? 'pointer' : 'default';
     }
 
-    handleClick(event) {
-        event.preventDefault(); // Prevent default touch behavior
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
-        const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
-        const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
-        const canvasX = x * scaleX;
-        const canvasY = y * scaleY;
+getCanvasCoords(event) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
 
-        if (this.showingInstructions) {
-            // Check back button
-            if (
-                canvasX >= this.backButton.x &&
-                canvasX <= this.backButton.x + this.backButton.width &&
-                canvasY >= this.backButton.y &&
-                canvasY <= this.backButton.y + this.backButton.height
-            ) {
-                this.showingInstructions = false;
-                this.draw();
-            }
-        } else {
-            // Check play button
-            if (
-                canvasX >= this.playButton.x &&
-                canvasX <= this.playButton.x + this.playButton.width &&
-                canvasY >= this.playButton.y &&
-                canvasY <= this.playButton.y + this.playButton.height
-            ) {
-                this.startPlay();
-            }
-            // Check instructions button
-            else if (
-                canvasX >= this.instructionsButton.x &&
-                canvasX <= this.instructionsButton.x + this.instructionsButton.width &&
-                canvasY >= this.instructionsButton.y &&
-                canvasY <= this.instructionsButton.y + this.instructionsButton.height
-            ) {
-                this.showingInstructions = true;
-                this.draw();
-            }
+    const clientX = event.clientX || event.touches?.[0].clientX;
+    const clientY = event.clientY || event.touches?.[0].clientY;
+
+    return {
+        canvasX: (clientX - rect.left) * scaleX,
+        canvasY: (clientY - rect.top) * scaleY
+    };
+}
+
+isInside(x, y, btn) {
+    return (
+        x >= btn.x &&
+        x <= btn.x + btn.width &&
+        y >= btn.y &&
+        y <= btn.y + btn.height
+    );
+}
+
+handleClick(event) {
+    event.preventDefault();
+
+    const { canvasX, canvasY } = this.getCanvasCoords(event);
+
+    if (this.showingInstructions) {
+        if (this.isInside(canvasX, canvasY, this.backButton)) {
+            this.showingInstructions = false;
+            this.draw();
         }
+        return;
     }
+
+    if (this.isInside(canvasX, canvasY, this.playButton)) {
+        this.startPlay();
+    } 
+    else if (this.isInside(canvasX, canvasY, this.instructionsButton)) {
+        this.showingInstructions = true;
+        this.draw();
+    }
+}
+
 
     startPlay() {
         const newCanvas = recreateCanvas();
