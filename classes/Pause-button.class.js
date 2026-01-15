@@ -1,14 +1,22 @@
+/**
+ * PauseButton class providing a pause button for the game.
+ * Uses percentage-based positioning to match mute button styling.
+ */
 class PauseButton {
+    /**
+     * Initializes the pause button with event listeners.
+     * @param {HTMLCanvasElement} canvas - The game canvas element.
+     * @param {Function} onClick - Callback function when button is clicked.
+     */
     constructor(canvas, onClick) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.onClick = onClick;
         
-        // Match mute button styling
         this.buttonConfig = {
-x: 0.88,   // Left of mute button (mute is at 0.944)
-    y: 0.175,  // Same y as mute button
-    size: 0.04 // Your preferred size
+            x: 0.88,
+            y: 0.175,
+            size: 0.04
         };
         
         this.handleClick = this.handleClick.bind(this);
@@ -17,6 +25,10 @@ x: 0.88,   // Left of mute button (mute is at 0.944)
         canvas.addEventListener('touchstart', this.handleTouch);
     }
     
+    /**
+     * Converts button percentage coordinates to pixel coordinates.
+     * @returns {Object} Button dimensions in pixels.
+     */
     getButtonPx() {
         return {
             x: this.buttonConfig.x * 720,
@@ -25,26 +37,29 @@ x: 0.88,   // Left of mute button (mute is at 0.944)
         };
     }
     
+    /**
+     * Draws the pause button with two vertical bars symbol.
+     */
     draw() {
         const btn = this.getButtonPx();
         
-        // Draw background
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         this.ctx.fillRect(btn.x, btn.y, btn.size, btn.size);
         
-        // Draw pause symbol (two vertical bars)
         this.ctx.fillStyle = 'white';
         const barWidth = btn.size * 0.25;
         const barHeight = btn.size * 0.6;
         const barY = btn.y + btn.size * 0.2;
         const spacing = btn.size * 0.15;
         
-        // Left bar
         this.ctx.fillRect(btn.x + spacing, barY, barWidth, barHeight);
-        // Right bar
         this.ctx.fillRect(btn.x + btn.size - spacing - barWidth, barY, barWidth, barHeight);
     }
     
+    /**
+     * Handles mouse click events on the pause button.
+     * @param {MouseEvent} event - The mouse click event.
+     */
     handleClick(event) {
         const rect = this.canvas.getBoundingClientRect();
         const scaleX = this.canvas.width / rect.width;
@@ -52,7 +67,7 @@ x: 0.88,   // Left of mute button (mute is at 0.944)
         const canvasX = (event.clientX - rect.left) * scaleX;
         const canvasY = (event.clientY - rect.top) * scaleY;
         const btn = this.getButtonPx();
-        const hitSize = btn.size * 1.5; // 50% larger hit area like mute button
+        const hitSize = btn.size * 1.5;
         const offset = (hitSize - btn.size) / 2;
         
         if (
@@ -65,6 +80,10 @@ x: 0.88,   // Left of mute button (mute is at 0.944)
         }
     }
     
+    /**
+     * Handles touch events on the pause button for mobile devices.
+     * @param {TouchEvent} event - The touch event.
+     */
     handleTouch(event) {
         event.preventDefault();
         const rect = this.canvas.getBoundingClientRect();
@@ -74,7 +93,7 @@ x: 0.88,   // Left of mute button (mute is at 0.944)
         const canvasX = (touch.clientX - rect.left) * scaleX;
         const canvasY = (touch.clientY - rect.top) * scaleY;
         const btn = this.getButtonPx();
-        const hitSize = btn.size * 1.5; // 50% larger hit area
+        const hitSize = btn.size * 1.5;
         const offset = (hitSize - btn.size) / 2;
         
         if (
@@ -87,6 +106,9 @@ x: 0.88,   // Left of mute button (mute is at 0.944)
         }
     }
     
+    /**
+     * Removes event listeners for cleanup.
+     */
     remove() {
         this.canvas.removeEventListener('click', this.handleClick);
         this.canvas.removeEventListener('touchstart', this.handleTouch);

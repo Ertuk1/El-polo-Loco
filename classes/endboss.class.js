@@ -1,3 +1,8 @@
+/**
+ * Endboss class representing the final boss enemy with complex attack patterns.
+ * Features alert, walking, attacking, hurt, and death animations.
+ * @extends moveableObject
+ */
 class Endboss extends moveableObject {
     IMAGES_WALKING = [
         'IMG/4_enemie_boss_chicken/2_alert/G5.png',
@@ -35,7 +40,6 @@ class Endboss extends moveableObject {
     ];
 
     IMAGES_HURT = [
-
         'IMG/4_enemie_boss_chicken/4_hurt/G21.png',
         'IMG/4_enemie_boss_chicken/4_hurt/G22.png',
         'IMG/4_enemie_boss_chicken/4_hurt/G23.png',
@@ -56,12 +60,13 @@ class Endboss extends moveableObject {
     isWalking = false;
     charge = false;
     bossHurt = false; 
-    isFacingLeft = true;   // Boss initially looks left
-    target = null;        // Will be the Character
-    isFacingLeft = true;   // Boss initially looks left
+    isFacingLeft = true;
+    target = null;
+    isFacingLeft = true;
 
-
-
+    /**
+     * Initializes the Endboss with all animations and behavior patterns.
+     */
     constructor() {
         super().loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
@@ -70,191 +75,233 @@ class Endboss extends moveableObject {
         this.loadImages(this.IMAGES_ATTACK)
         this.loadImages(this.IMAGES_HURT)
         this.x = 2500;
-        this.speed = 10;  // Endboss speed when walking starts
+        this.speed = 10;
         this.BossMove();
-        this.playAlertAnimation();  // Start with alert animation
+        this.playAlertAnimation();
         this.animateWalking();
         this.attackInterval2();
-        
-        
     }
 
+    /**
+     * Updates the boss's facing direction based on target (player) position.
+     */
     updateFacing() {
-    if (!this.target) return;
+        if (!this.target) return;
 
-    if (this.target.x > this.x) {
-        this.isFacingLeft = false;   // Player is to the right
-        this.otherDirection = true; // engine flip
-    } else {
-        this.isFacingLeft = true;    // Player is to the left
-        this.otherDirection = false;
+        if (this.target.x > this.x) {
+            this.isFacingLeft = false;
+            this.otherDirection = true;
+        } else {
+            this.isFacingLeft = true;
+            this.otherDirection = false;
+        }
     }
-}
 
-
+    /**
+     * Triggers attack sequence at regular intervals.
+     */
     attackInterval2(){
         setInterval(() => {
             this.triggerAttack();
         }, 4000);
     }
 
+    /**
+     * Animates the boss charging toward the player.
+     */
     animateCharge() {
         if (GLOBAL_PAUSE) return; 
         let direction = this.target && this.target.x > this.x ? 1 : -1;
         let chargeInterval = setInterval(() => {
             if (this.charge) {
-                this.x += this.speed * direction; // Move Endboss toward the player during charge
+                this.x += this.speed * direction;
             } else {
                 clearInterval(chargeInterval);
             }
-        }, 50); // Smooth movement during charging
-    }
-    
- 
-getAttackDirection() {
-    return this.target.x > this.x ? 1 : -1;
-}
-
-applyJumpMotion(direction, jumpSpeed, gravity, jumpHeight, peakReached, interval) {
-    if (!peakReached) {
-        this.y -= jumpSpeed;
-    } else {
-        this.y += gravity;
+        }, 50);
     }
 
-    this.x += 5 * direction;
-
-    if (this.y >= 60) {
-        this.y = 60;
-        clearInterval(interval);
+    /**
+     * Determines the direction to attack based on target position.
+     * @returns {number} 1 for right, -1 for left.
+     */
+    getAttackDirection() {
+        return this.target.x > this.x ? 1 : -1;
     }
-}
 
-runJumpArc(direction) {
-    const jumpHeight = 150;
-    const jumpSpeed = 10;
-    const gravity = 5;
+    /**
+     * Applies jump motion physics during attack sequence.
+     * @param {number} direction - Direction of movement (1 or -1).
+     * @param {number} jumpSpeed - Vertical speed of jump.
+     * @param {number} gravity - Downward acceleration.
+     * @param {number} jumpHeight - Maximum jump height.
+     * @param {boolean} peakReached - Whether jump has reached peak.
+     * @param {number} interval - Interval ID to clear when landing.
+     */
+    applyJumpMotion(direction, jumpSpeed, gravity, jumpHeight, peakReached, interval) {
+        if (!peakReached) {
+            this.y -= jumpSpeed;
+        } else {
+            this.y += gravity;
+        }
 
-    let peakReached = false;
+        this.x += 5 * direction;
 
-    const jumpInterval = setInterval(() => {
-        this.applyJumpMotion(direction, jumpSpeed, gravity, jumpHeight, peakReached, jumpInterval);
-        if (this.y <= 60 - jumpHeight) peakReached = true;
-    }, 50);
-}
+        if (this.y >= 60) {
+            this.y = 60;
+            clearInterval(interval);
+        }
+    }
 
-jumpAndAttack() {
-    if (!this.target) return;
+    /**
+     * Executes a jumping attack arc toward the player.
+     * @param {number} direction - Direction of the jump (1 or -1).
+     */
+    runJumpArc(direction) {
+        const jumpHeight = 150;
+        const jumpSpeed = 10;
+        const gravity = 5;
 
-    const direction = this.getAttackDirection();
-    this.runJumpArc(direction);
-    this.animateAttack();
-}
+        let peakReached = false;
 
-canAttack() {
-    return !this.isAttacking && !this.isDead1 && this.isWalking && !this.bossHurt;
-}
+        const jumpInterval = setInterval(() => {
+            this.applyJumpMotion(direction, jumpSpeed, gravity, jumpHeight, peakReached, jumpInterval);
+            if (this.y <= 60 - jumpHeight) peakReached = true;
+        }, 50);
+    }
 
-startCharge() {
-    if (GLOBAL_PAUSE) return; 
-    this.charge = true;
-    this.speed += 10;
-    this.animateCharge();
-}
+    /**
+     * Combines jump movement with attack animation.
+     */
+    jumpAndAttack() {
+        if (!this.target) return;
 
-startAttack() {
-    if (GLOBAL_PAUSE) return; 
-    this.charge = false;
-    this.isAttacking = true;
-    this.jumpAndAttack();
-}
+        const direction = this.getAttackDirection();
+        this.runJumpArc(direction);
+        this.animateAttack();
+    }
 
-endAttack() {
-    this.isAttacking = false;
-    this.isWalking = true;
-    this.speed -= 10;
-}
+    /**
+     * Checks if the boss is able to perform an attack.
+     * @returns {boolean} True if boss can attack.
+     */
+    canAttack() {
+        return !this.isAttacking && !this.isDead1 && this.isWalking && !this.bossHurt;
+    }
 
-triggerAttack() {
-    if (GLOBAL_PAUSE) return; 
-    if (!this.canAttack()) return;
+    /**
+     * Initiates the charging phase before an attack.
+     */
+    startCharge() {
+        if (GLOBAL_PAUSE) return; 
+        this.charge = true;
+        this.speed += 10;
+        this.animateCharge();
+    }
 
-    console.log('Charge initiated');
-    this.startCharge();
+    /**
+     * Starts the attack phase after charging.
+     */
+    startAttack() {
+        if (GLOBAL_PAUSE) return; 
+        this.charge = false;
+        this.isAttacking = true;
+        this.jumpAndAttack();
+    }
 
-    setTimeout(() => {
-        console.log('Charging completed, starting attack');
-        this.startAttack();
+    /**
+     * Ends the attack sequence and returns to normal movement.
+     */
+    endAttack() {
+        this.isAttacking = false;
+        this.isWalking = true;
+        this.speed -= 10;
+    }
+
+    /**
+     * Triggers the full attack sequence: charge, attack, and reset.
+     */
+    triggerAttack() {
+        if (GLOBAL_PAUSE) return; 
+        if (!this.canAttack()) return;
+
+        this.startCharge();
 
         setTimeout(() => {
-            console.log('Attack completed');
-            this.endAttack();
-        }, 1500);
+            this.startAttack();
 
-    }, 1000);
-}
+            setTimeout(() => {
+                this.endAttack();
+            }, 1500);
 
+        }, 1000);
+    }
 
-
-
+    /**
+     * Plays the attack animation during attacking state.
+     */
     animateAttack() {
-        clearInterval(this.attackInterval); // Clear any previous attack animations
+        clearInterval(this.attackInterval);
         this.attackInterval = setInterval(() => {
             if (GLOBAL_PAUSE) return; 
             if (this.isAttacking) {
-                this.playAnimation(this.IMAGES_ATTACK); // Play attack frames
+                this.playAnimation(this.IMAGES_ATTACK);
             } else {
                 clearInterval(this.attackInterval);
             }
-        }, 200); // Smooth attack animation
-    }
-
-
-BossMove() {
-    setInterval(() => {
-        if (GLOBAL_PAUSE) return; 
-        if (this.isWalking && !this.isDead1 && !this.isAttacking && !this.bossHurt) {
-            this.updateFacing();
-            this.animateWalking();
-            this.moveLeftBoss();
-            
-        }
-    }, 200);
-}
-
-    playAlertAnimation() {
-         if (GLOBAL_PAUSE) return; 
-        setInterval(() => {
-
-            if (!this.isDead1 && this.isWalking === false) {
-                this.playAnimation(this.IMAGES_WALKING);
-            }
-
         }, 200);
     }
 
+    /**
+     * Controls the boss movement behavior and facing direction.
+     */
+    BossMove() {
+        setInterval(() => {
+            if (GLOBAL_PAUSE) return; 
+            if (this.isWalking && !this.isDead1 && !this.isAttacking && !this.bossHurt) {
+                this.updateFacing();
+                this.animateWalking();
+                this.moveLeftBoss();
+            }
+        }, 200);
+    }
 
+    /**
+     * Plays the alert animation when boss is not actively walking.
+     */
+    playAlertAnimation() {
+        if (GLOBAL_PAUSE) return; 
+        setInterval(() => {
+            if (!this.isDead1 && this.isWalking === false) {
+                this.playAnimation(this.IMAGES_WALKING);
+            }
+        }, 200);
+    }
 
-
-
+    /**
+     * Plays the walking animation.
+     */
     animateWalking() {
-         if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return; 
         this.playAnimation(this.IMAGES_WALK);
     }
 
-
-
- 
+    /**
+     * Moves the boss left or right based on facing direction.
+     */
     moveLeftBoss() {
-         if (GLOBAL_PAUSE) return; 
-            if (this.isFacingLeft) {
-        this.x -= this.speed;
-    } else {
-        this.x += this.speed;
+        if (GLOBAL_PAUSE) return; 
+        if (this.isFacingLeft) {
+            this.x -= this.speed;
+        } else {
+            this.x += this.speed;
+        }
     }
-    }
- 
 
+    /**
+     * Applies damage to the boss and triggers hurt animation.
+     * @param {number} damage - Amount of damage to apply.
+     */
     hit(damage) {
         if (!this.isDead1) {
             this.bossHurt=true;
@@ -268,15 +315,15 @@ BossMove() {
                 }, 1000);
             }
             this.hurtanimation()
-            console.log(`Bottle hit the Endboss! HP: ${this.hp}`);
             if (this.hp <= 0) {
-                this.die();  // Trigger death if HP drops to 0 or below
+                this.die();
             }
-
-          
         }
     }
 
+    /**
+     * Plays the hurt animation for a short duration.
+     */
     hurtanimation() {
         if (this.bossHurt) {
             if (this.hurtAnimationInterval) {
@@ -293,17 +340,22 @@ BossMove() {
         }
     }
 
+    /**
+     * Triggers the victory screen after boss death animation.
+     */
     triggerVictory() {
-    setTimeout(() => {
-        world.showVictoryScreen(); 
-    }, 1500); // time for death animation
-}
-    
+        setTimeout(() => {
+            world.showVictoryScreen(); 
+        }, 1500);
+    }
 
+    /**
+     * Handles the boss death sequence: sound, animation, and victory trigger.
+     */
     die() {
         if (!this.isDead1 && !this.victoryTriggered) {
             this.isDead1 = true;
-             this.victoryTriggered = true;
+            this.victoryTriggered = true;
   
             if (!GLOBAL_MUTE) {
                 const deathSound = new Audio('audio/clucking-chicken-440624.mp3');
@@ -318,23 +370,35 @@ BossMove() {
         }
     }
 
+    /**
+     * Clears all active intervals for cleanup.
+     */
     clearAllIntervals() {
         clearInterval(this.walkingInterval);
-        clearInterval(this.attackInterval);  // Clear attack interval as well
+        clearInterval(this.attackInterval);
     }
 
+    /**
+     * Stops all boss behaviors and animations.
+     */
     stop() {
         this.clearAllIntervals();
     }
 
+    /**
+     * Plays the death animation sequence.
+     */
     animateDeath() {
-         if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return; 
         let deathInterval = setInterval(() => {
             this.playAnimation(this.IMAGES_DEAD);
         }, 200);
     }
 
+    /**
+     * Removes the boss from the visible game world.
+     */
     removeFromWorld() {
-        this.x = -1000;  // Move off-screen or remove from game world
+        this.x = -1000;
     }
 }

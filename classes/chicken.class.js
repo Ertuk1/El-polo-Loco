@@ -1,3 +1,8 @@
+/**
+ * Chicken class representing a basic enemy that walks left across the screen.
+ * Extends moveableObject to inherit movement and collision functionality.
+ * @extends moveableObject
+ */
 class chicken extends moveableObject {
 height = 70;
 y = 365;
@@ -7,12 +12,13 @@ IMAGES_WALKING = [
     'IMG/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
     'IMG/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
 ] 
-
 IMAGES_DEAD = ['IMG/3_enemies_chicken/chicken_normal/2_dead/dead.png']
 isDead = false;
 
-
-
+/**
+ * Initializes a chicken enemy at a random or specified position.
+ * @param {number|null} x - The x-coordinate for the chicken, or null for random placement.
+ */
 constructor(x = null){
     super().loadImage('IMG/3_enemies_chicken/chicken_normal/1_walk//2_w.png');
     this.loadImages(this.IMAGES_WALKING);
@@ -23,23 +29,29 @@ constructor(x = null){
     this.speed = 0.15 + Math.random() * 0.25;
 }
 
-
+/**
+ * Marks the chicken as dead, stops movement, and schedules removal from the world.
+ */
 die() {
-    this.isDead = true;  // Set chicken as dead
-    this.speed = 0;  // Stop any movement
+    this.isDead = true;
+    this.speed = 0;
     this.loadImage(this.IMAGES_DEAD[0]);
     setTimeout(() => {
-        this.removeFromWorld();  // Remove chicken from world after some time
+        this.removeFromWorld();
     }, 1000);
-
 }
 
+/**
+ * Removes the chicken from the visible game world by moving it off-screen.
+ */
 removeFromWorld() {
-    // You can either remove the object from the game world entirely or hide it
-    this.x = -1000;  // Move it off-screen for simplicity
+    this.x = -1000;
 }
 
-
+/**
+ * Starts the animation loops for movement and sprite animation.
+ * Respects GLOBAL_PAUSE state to prevent updates when paused.
+ */
 animate(){
     this.movementInterval = setInterval(() => {
      if (GLOBAL_PAUSE) return; 
@@ -52,6 +64,9 @@ this.playAnimation(this.IMAGES_WALKING)
     }, 200)
 }
 
+/**
+ * Stops all animation intervals for cleanup.
+ */
 stop() {
     if (this.movementInterval) {
         clearInterval(this.movementInterval);

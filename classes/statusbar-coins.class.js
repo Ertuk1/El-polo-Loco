@@ -1,5 +1,9 @@
+/**
+ * CoinStatusBar class displaying the collected coins count.
+ * Shows percentage of coins collected with visual bar.
+ * @extends DrawableObject
+ */
 class CoinStatusBar extends DrawableObject {
-
     IMAGES = [
         'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png',
         'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/20.png',
@@ -8,25 +12,35 @@ class CoinStatusBar extends DrawableObject {
         'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/80.png',
         'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png',
     ];
-
-    percentage = 0;  // Initial percentage for coins collected
-
+    percentage = 0;
+    
+    /**
+     * Initializes the coin status bar at starting position.
+     */
     constructor() {
         super();
         this.loadImages(this.IMAGES);
         this.x = 40;
-        this.y = 40;  // Different y position to distinguish it from the health bar
+        this.y = 40;
         this.width = 200;
         this.height = 60;
-        this.setPercentage(0);  // Start with 0 coins
+        this.setPercentage(0);
     }
-
+    
+    /**
+     * Sets the coin collection percentage and updates the displayed image.
+     * @param {number} percentage - The collection percentage (0-100).
+     */
     setPercentage(percentage) {
         this.percentage = percentage;
         let path = this.IMAGES[this.resolveImageIndex()];
         this.img = this.imageChache[path];
     }
-
+    
+    /**
+     * Determines which image index to use based on current collection percentage.
+     * @returns {number} Image index (0-5) corresponding to collection level.
+     */
     resolveImageIndex() {
         if (this.percentage == 100) {
             return 5;

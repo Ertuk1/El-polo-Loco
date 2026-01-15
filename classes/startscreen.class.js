@@ -1,16 +1,29 @@
+/**
+ * StartScreen class displaying the game's main menu and instructions.
+ * Provides play button and how-to-play interface.
+ */
 class StartScreen {
+    /**
+     * Initializes the start screen with canvas and start callback.
+     * @param {HTMLCanvasElement} canvas - The game canvas element.
+     * @param {Function} startCallback - Function to call when play button is clicked.
+     */
     constructor(canvas, startCallback) {
         this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
-        this.startCallback = startCallback; // function to call when "Play" is clicked
+        this.startCallback = startCallback;
         this.playButton = { x: 260, y: 320, width: 200, height: 60 };
         this.instructionsButton = { x: 260, y: 400, width: 200, height: 60 };
         this.backButton = { x: 260, y: 420, width: 200, height: 60 };
         this.showingInstructions = false;
         this.startImage = new Image();
         this.startImage.src = 'IMG/9_intro_outro_screens/start/startscreen_2.png';
-        this.handleClick = this.handleClick.bind(this); // keep 'this' context
+        this.handleClick = this.handleClick.bind(this);
     }
+    
+    /**
+     * Displays the start screen and attaches event listeners.
+     */
     show() {
         this.startImage.onload = () => this.draw();
         this.draw();
@@ -19,12 +32,14 @@ class StartScreen {
         this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
     }
 
+    /**
+     * Draws the start screen or instructions screen based on current state.
+     */
     draw() {
         const { ctx, canvas, playButton, instructionsButton, backButton } = this;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         if (this.showingInstructions) {
-            // Draw instructions screen
             ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -37,9 +52,9 @@ class StartScreen {
             ctx.textAlign = 'left';
             const instructions = [
                 'CONTROLS:',
-                '• W / UP ARROW / SPACE: Jump',
-                '• A / LEFT ARROW: Move Left',
-                '• D / RIGHT ARROW: Move Right',
+                '•  UP ARROW / SPACE: Jump',
+                '•  LEFT ARROW: Move Left',
+                '•  RIGHT ARROW: Move Right',
                 '',
                 'GAMEPLAY:',
                 '• Jump on chickens to defeat them',
@@ -57,7 +72,6 @@ class StartScreen {
                 yPos += 30;
             });
 
-            // Back button
             ctx.fillStyle = 'black';
             ctx.fillRect(backButton.x, backButton.y, backButton.width, backButton.height);
             ctx.fillStyle = 'white';
@@ -65,7 +79,6 @@ class StartScreen {
             ctx.font = '36px zabras';
             ctx.fillText('BACK', backButton.x + backButton.width / 2, backButton.y + 35);
         } else {
-            // Draw main menu
             ctx.drawImage(this.startImage, 0, 0, canvas.width, canvas.height);
 
             ctx.fillStyle = 'black';
@@ -73,13 +86,16 @@ class StartScreen {
             ctx.textAlign = 'center';
             ctx.fillText('PLAY', playButton.x + playButton.width / 2, playButton.y + 38);
 
-            // Instructions button
             ctx.fillStyle = 'black';
             ctx.font = '36px zabras';
             ctx.fillText('HOW TO PLAY', instructionsButton.x + instructionsButton.width / 2, instructionsButton.y + 35);
         }
     }
 
+    /**
+     * Handles mouse hover to change cursor when over buttons.
+     * @param {MouseEvent} event - The mouse move event.
+     */
     handleHover(event) {
         const rect = this.canvas.getBoundingClientRect();
         const scaleX = this.canvas.width / rect.width;
@@ -92,7 +108,6 @@ class StartScreen {
         let isHoveringButton = false;
 
         if (this.showingInstructions) {
-            // Check back button
             if (
                 canvasX >= this.backButton.x &&
                 canvasX <= this.backButton.x + this.backButton.width &&
@@ -102,7 +117,6 @@ class StartScreen {
                 isHoveringButton = true;
             }
         } else {
-            // Check play and instructions buttons
             if (
                 (canvasX >= this.playButton.x &&
                 canvasX <= this.playButton.x + this.playButton.width &&
@@ -120,52 +134,70 @@ class StartScreen {
         this.canvas.style.cursor = isHoveringButton ? 'pointer' : 'default';
     }
 
-getCanvasCoords(event) {
-    const rect = this.canvas.getBoundingClientRect();
-    const scaleX = this.canvas.width / rect.width;
-    const scaleY = this.canvas.height / rect.height;
+    /**
+     * Converts event coordinates to canvas coordinates accounting for scaling.
+     * @param {Event} event - The mouse or touch event.
+     * @returns {Object} Object with canvasX and canvasY properties.
+     */
+    getCanvasCoords(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
 
-    const clientX = event.clientX || event.touches?.[0].clientX;
-    const clientY = event.clientY || event.touches?.[0].clientY;
+        const clientX = event.clientX || event.touches?.[0].clientX;
+        const clientY = event.clientY || event.touches?.[0].clientY;
 
-    return {
-        canvasX: (clientX - rect.left) * scaleX,
-        canvasY: (clientY - rect.top) * scaleY
-    };
-}
+        return {
+            canvasX: (clientX - rect.left) * scaleX,
+            canvasY: (clientY - rect.top) * scaleY
+        };
+    }
 
-isInside(x, y, btn) {
-    return (
-        x >= btn.x &&
-        x <= btn.x + btn.width &&
-        y >= btn.y &&
-        y <= btn.y + btn.height
-    );
-}
+    /**
+     * Checks if coordinates are inside a button area.
+     * @param {number} x - X-coordinate to check.
+     * @param {number} y - Y-coordinate to check.
+     * @param {Object} btn - Button object with position and dimensions.
+     * @returns {boolean} True if coordinates are inside button.
+     */
+    isInside(x, y, btn) {
+        return (
+            x >= btn.x &&
+            x <= btn.x + btn.width &&
+            y >= btn.y &&
+            y <= btn.y + btn.height
+        );
+    }
 
-handleClick(event) {
-    event.preventDefault();
+    /**
+     * Handles click and touch events on buttons.
+     * @param {Event} event - The click or touch event.
+     */
+    handleClick(event) {
+        event.preventDefault();
 
-    const { canvasX, canvasY } = this.getCanvasCoords(event);
+        const { canvasX, canvasY } = this.getCanvasCoords(event);
 
-    if (this.showingInstructions) {
-        if (this.isInside(canvasX, canvasY, this.backButton)) {
-            this.showingInstructions = false;
+        if (this.showingInstructions) {
+            if (this.isInside(canvasX, canvasY, this.backButton)) {
+                this.showingInstructions = false;
+                this.draw();
+            }
+            return;
+        }
+
+        if (this.isInside(canvasX, canvasY, this.playButton)) {
+            this.startPlay();
+        } 
+        else if (this.isInside(canvasX, canvasY, this.instructionsButton)) {
+            this.showingInstructions = true;
             this.draw();
         }
-        return;
     }
 
-    if (this.isInside(canvasX, canvasY, this.playButton)) {
-        this.startPlay();
-    } 
-    else if (this.isInside(canvasX, canvasY, this.instructionsButton)) {
-        this.showingInstructions = true;
-        this.draw();
-    }
-}
-
-
+    /**
+     * Starts the game by recreating the canvas and calling the start callback.
+     */
     startPlay() {
         const newCanvas = recreateCanvas();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

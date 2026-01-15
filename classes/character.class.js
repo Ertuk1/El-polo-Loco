@@ -1,3 +1,8 @@
+/**
+ * Character class representing the player-controlled character in the game.
+ * Extends moveableObject to inherit movement and collision functionality.
+ * @extends moveableObject
+ */
 class Character extends moveableObject {
 
 height=280;
@@ -47,7 +52,6 @@ IMAGES_WALKING = [
     'IMG/2_character_pepe/2_walk/W-26.png'
 ]
 
-
 IMAGES_JUMPING = [
     'IMG/2_character_pepe/3_jump/J-31.png',
     'IMG/2_character_pepe/3_jump/J-32.png',
@@ -67,7 +71,6 @@ IMAGES_DEAD = [
     'IMG/2_character_pepe/5_dead/D-54.png',
     'IMG/2_character_pepe/5_dead/D-55.png',
     'IMG/2_character_pepe/5_dead/D-56.png',
-    //'IMG/2_character_pepe/5_dead/D-57.png'
 ]
 
 IMAGES_HURT = [
@@ -76,6 +79,10 @@ IMAGES_HURT = [
     'IMG/2_character_pepe/4_hurt/H-43.png'
 ]
 
+/**
+ * Initializes the character with images, sounds, and event listeners.
+ * Sets up animation loops and gravity physics.
+ */
 constructor(){
    super().loadImage('IMG/2_character_pepe/2_walk/W-21.png') 
    this.loadImages(this.IMAGES_WALKING)
@@ -93,7 +100,7 @@ constructor(){
    this.collectSound.currentTime = 3.5;
    this.jumpSound = new Audio('audio/jump.mp3');
 this.snore.addEventListener('ended', () => {
-    if (this.snorePlayed && !GLOBAL_MUTE && !GLOBAL_PAUSE) { // ADD !GLOBAL_PAUSE
+    if (this.snorePlayed && !GLOBAL_MUTE && !GLOBAL_PAUSE) {
         this.snore.play();
     }
 
@@ -106,19 +113,20 @@ const { paused } = event.detail;
 document.addEventListener('globalPauseChanged', this.handlePauseChange);
    });
 
-   // Listen for mute changes to control snore sound
    this.handleMuteChange = (event) => {
        const { muted } = event.detail;
        if (muted) {
            this.snore.pause();
        } else if (this.snorePlayed) {
-           this.snore.play().catch(e => console.log('Snore sound play failed:', e));
+           this.snore.play().catch(e => {});
        }
    };
    document.addEventListener('globalMuteChanged', this.handleMuteChange);
 }
 
-
+/**
+ * Plays the death animation and sets physics properties for death state.
+ */
 playDeadState() {
     this.playAnimation(this.IMAGES_DEAD);
     this.snore.pause();
@@ -126,6 +134,9 @@ playDeadState() {
     this.speedY = 15;
 }
 
+/**
+ * Plays the hurt animation and hurt sound with cooldown timing.
+ */
 playHurtState() {
     this.playAnimation(this.IMAGES_HURT);
     this.snore.pause();
@@ -137,12 +148,18 @@ playHurtState() {
     }
 }
 
+/**
+ * Plays the jumping animation and stops other sounds.
+ */
 playJumpState() {
     this.playAnimation(this.IMAGES_JUMPING);
     this.snore.pause();
     this.hurt.pause();
 }
 
+/**
+ * Plays the long idle/sleeping animation and starts snoring sound.
+ */
 playLongIdleState() {
     this.playAnimation(this.IMAGES_LONG_IDLE);
     if (!this.snorePlayed && !GLOBAL_MUTE && !GLOBAL_PAUSE) this.snore.play();
@@ -150,12 +167,18 @@ playLongIdleState() {
     this.hurt.pause();
 }
 
+/**
+ * Plays the standard idle animation.
+ */
 playIdleState() {
     this.playAnimation(this.IMAGES_IDLE);
     this.snore.pause();
     this.hurt.pause();
 }
 
+/**
+ * Plays the walking animation and resets snoring state.
+ */
 playWalkState() {
     this.playAnimation(this.IMAGES_WALKING);
     this.snore.pause();
@@ -163,6 +186,10 @@ playWalkState() {
     this.hurt.pause();
 }
 
+/**
+ * Determines which animation state to play based on character status.
+ * Priority: dead > hurt > jumping > long idle > idle > walking.
+ */
 resolveAnimationState() {
     if (this.isDead()) return this.playDeadState();
     if (this.isHurt()) return this.playHurtState();
@@ -173,6 +200,10 @@ resolveAnimationState() {
     this.playWalkState();
 }
 
+/**
+ * Checks if the player is currently pressing any movement keys.
+ * @returns {boolean} True if any movement key is pressed.
+ */
 isPlayerMoving() {
     return this.world.keyboard.RIGHT || 
            this.world.keyboard.LEFT || 
@@ -180,14 +211,23 @@ isPlayerMoving() {
            this.world.keyboard.SPACE;
 }
 
+/**
+ * Plays the walking sound if not globally muted.
+ */
 playWalkingSound() {
     if (!GLOBAL_MUTE) this.walking_sound.play();
 }
 
+/**
+ * Updates the camera position to follow the character.
+ */
 updateCamera() {
     this.world.camera_x = -this.x + 100;
 }
 
+/**
+ * Handles keyboard input for character movement and updates idle timer.
+ */
 handleMovementInput() {
     const isMoving = this.isPlayerMoving();
     if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.world.bossIntroActive) {
@@ -212,6 +252,10 @@ handleMovementInput() {
     }
 }
 
+/**
+ * Starts the animation loops for movement and state animations.
+ * Respects GLOBAL_PAUSE state to prevent updates when paused.
+ */
 animate() {
     this.movementInterval = setInterval(() => {
          if (GLOBAL_PAUSE) return; 
@@ -226,32 +270,41 @@ animate() {
     }, 1000 / 10);
 }
 
+/**
+ * Makes the character jump by setting vertical speed.
+ */
+jump(){
+    this.speedY = 30;
+}
 
+/**
+ * Resets the idle timer to track player inactivity.
+ */
+resetIdleTimer() {
+    this.idleTime = 0;
+    this.lastActionTime = Date.now();
+}
 
-    jump(){
-        this.speedY = 30;
-      }
-
-
-
-    resetIdleTimer() {
-        this.idleTime = 0;
-        this.lastActionTime = Date.now();
+/**
+ * Updates the idle time based on player inactivity.
+ */
+updateIdleTime() {
+    if ( !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) {
+        this.idleTime = Date.now() - this.lastActionTime;
     }
+}
 
-    updateIdleTime() {
-        if ( !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) {
-            this.idleTime = Date.now() - this.lastActionTime;
-        }
-    }
-
- stop() {
+/**
+ * Stops all intervals, pauses sounds, and removes event listeners.
+ * Used for cleanup when the character is destroyed.
+ */
+stop() {
     if (this.movementInterval) clearInterval(this.movementInterval);
     if (this.animationInterval) clearInterval(this.animationInterval);
     this.snore.pause();
     this.snorePlayed = false;
     document.removeEventListener('globalMuteChanged', this.handleMuteChange);
-    document.removeEventListener('globalPauseChanged', this.handlePauseChange); // ADD THIS
+    document.removeEventListener('globalPauseChanged', this.handlePauseChange);
 }
 
 }
