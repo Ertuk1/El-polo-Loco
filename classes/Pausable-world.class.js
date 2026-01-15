@@ -58,11 +58,18 @@ class PausableWorld extends World {
     /**
      * Draws the game world, pause button, and pause screen overlay if paused.
      */
-    draw() {
-        super.draw();
+draw() {
+    if (this.isPaused) {
+        // Only draw pause screen + pause button
+        this.pauseScreen.draw();
         this.pauseButton.draw();
-        if (this.isPaused) {
-            this.pauseScreen.draw();
-        }
+        this.animationFrameId = requestAnimationFrame(() => this.draw());
+        return;
     }
+
+    // Otherwise draw the normal game
+    super.draw();
+    this.pauseButton.draw();
+}
+
 }

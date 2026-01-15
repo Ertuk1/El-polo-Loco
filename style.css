@@ -10,6 +10,7 @@ body{
     justify-content: center;
     min-height: 100vh;
     background-image: url('IMG/5_background/first_half_background.png');
+    background-size: cover;
     font-family: 'zabras';
     margin: 0;
     overflow: hidden;
