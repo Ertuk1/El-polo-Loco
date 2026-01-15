@@ -3,7 +3,21 @@ let world;
 let keyboard = new Keyboard();
 let startScreen;
 
+// Global image cache
+const IMAGE_CACHE = {};
 
+function getOrCreateImage(src) {
+    // Return cached image if it exists
+    if (IMAGE_CACHE[src]) {
+        return IMAGE_CACHE[src];
+    }
+    
+    // Create new image and cache it
+    const img = new Image();
+    img.src = src;
+    IMAGE_CACHE[src] = img;
+    return img;
+}
 
 function recreateCanvas() {
     const container = document.getElementById('gameContainer'); // ← must match HTML
@@ -98,10 +112,19 @@ function preloadAssets(canvas, callback) {
         'IMG/6_salsa_bottle/salsa_bottle.png',
         'IMG/8_coin/coin_1.png'
     ];
+    
     let loaded = 0;
     const total = images.length;
+    const alreadyLoaded = images.filter(src => IMAGE_CACHE[src]?.complete).length;
+    
+    // If all images are already loaded, skip loading
+    if (alreadyLoaded === total) {
+        drawProgress(loaded, total, ctx, canvas);
+        setTimeout(() => callback(), 100); // Small delay for smoothness
+        return;
+    }
 
-    const drawProgress = () => {
+    const drawProgress = (loaded, total, ctx, canvas) => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'white';
         ctx.font = '30px Arial';
@@ -109,18 +132,30 @@ function preloadAssets(canvas, callback) {
         ctx.fillText(`Loading... ${loaded}/${total}`, canvas.width / 2, canvas.height / 2);
     };
 
-    drawProgress();
+    drawProgress(loaded, total, ctx, canvas);
 
     images.forEach(src => {
-        const img = new Image();
-        img.onload = () => {
+        // Skip if already loaded and cached
+        if (IMAGE_CACHE[src]?.complete) {
             loaded++;
-            drawProgress();
-            if (loaded === total) {
-                callback();
-            }
-        };
-        img.src = src;
+            drawProgress(loaded, total, ctx, canvas);
+            if (loaded === total) callback();
+            return;
+        }
+        
+        const img = getOrCreateImage(src);
+        
+        if (img.complete) {
+            loaded++;
+            drawProgress(loaded, total, ctx, canvas);
+            if (loaded === total) callback();
+        } else {
+            img.onload = () => {
+                loaded++;
+                drawProgress(loaded, total, ctx, canvas);
+                if (loaded === total) callback();
+            };
+        }
     });
 }
 
