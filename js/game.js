@@ -5,6 +5,15 @@ let startScreen;
 // Global image cache
 const IMAGE_CACHE = {};
 
+window.onload = function () {
+    canvas = document.getElementById('canvas');
+
+    preloadAssets(canvas, () => {
+        initStartScreen();
+    });
+};
+
+
 function getOrCreateImage(src) {
     // Return cached image if it exists
     if (IMAGE_CACHE[src]) {
@@ -40,16 +49,13 @@ function recreateCanvas() {
     return newCanvas;
 }
 
-
 function startGame(canvasParam) {
     canvas = canvasParam;
 
-    preloadAssets(canvas, () => {
-        initlevel1();
-        world = new PausableWorld(canvas, keyboard);
-
-    });
+    initlevel1();
+    world = new PausableWorld(canvas, keyboard);
 }
+
 
 
 
@@ -72,9 +78,6 @@ HTMLMediaElement.prototype.play = function (...args) {
 };
 
 
-window.onload = function () {
-    initStartScreen();
-};
 
 function initStartScreen() {
     canvas = document.getElementById('canvas');
@@ -117,7 +120,60 @@ function preloadAssets(canvas, callback) {
         'IMG/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
         'IMG/4_enemie_boss_chicken/1_walk/G1.png',
         'IMG/6_salsa_bottle/salsa_bottle.png',
-        'IMG/8_coin/coin_1.png'
+        'IMG/8_coin/coin_1.png',
+        'IMG/5_background/layers/air.png',
+        'IMG/5_background/layers/3_third_layer/2.png',
+        'IMG/5_background/layers/3_third_layer/1.png',
+        'IMG/5_background/layers/2_second_layer/1.png',
+        'IMG/5_background/layers/2_second_layer/2.png',
+        'IMG/5_background/layers/1_first_layer/1.png',
+        'IMG/5_background/layers/1_first_layer/2.png',
+        'IMG/2_character_pepe/1_idle/idle/I-2.png',
+        'IMG/2_character_pepe/1_idle/idle/I-3.png',
+        'IMG/2_character_pepe/1_idle/idle/I-4.png',
+        'IMG/2_character_pepe/1_idle/idle/I-5.png',
+        'IMG/2_character_pepe/1_idle/idle/I-6.png',
+        'IMG/2_character_pepe/1_idle/idle/I-7.png',
+        'IMG/2_character_pepe/1_idle/idle/I-8.png',
+        'IMG/2_character_pepe/1_idle/idle/I-9.png',
+        'IMG/2_character_pepe/1_idle/idle/I-10.png',
+
+        'IMG/2_character_pepe/1_idle/long_idle/I-11.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-12.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-13.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-14.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-15.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-16.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-17.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-18.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-19.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-20.png',
+
+        'IMG/2_character_pepe/2_walk/W-22.png',
+        'IMG/2_character_pepe/2_walk/W-23.png',
+        'IMG/2_character_pepe/2_walk/W-24.png',
+        'IMG/2_character_pepe/2_walk/W-25.png',
+        'IMG/2_character_pepe/2_walk/W-26.png',
+
+        'IMG/2_character_pepe/3_jump/J-32.png',
+        'IMG/2_character_pepe/3_jump/J-33.png',
+        'IMG/2_character_pepe/3_jump/J-34.png',
+        'IMG/2_character_pepe/3_jump/J-35.png',
+        'IMG/2_character_pepe/3_jump/J-36.png',
+        'IMG/2_character_pepe/3_jump/J-37.png',
+        'IMG/2_character_pepe/3_jump/J-38.png',
+        'IMG/2_character_pepe/3_jump/J-39.png',
+
+        'IMG/2_character_pepe/5_dead/D-52.png',
+        'IMG/2_character_pepe/5_dead/D-53.png',
+        'IMG/2_character_pepe/5_dead/D-54.png',
+        'IMG/2_character_pepe/5_dead/D-55.png',
+        'IMG/2_character_pepe/5_dead/D-56.png',
+
+        
+        'IMG/2_character_pepe/4_hurt/H-42.png',
+        'IMG/2_character_pepe/4_hurt/H-43.png'
+  
     ];
     
     let loaded = 0;
@@ -146,6 +202,7 @@ function preloadAssets(canvas, callback) {
         const img = getOrCreateImage(src);
         
         if (img.complete) {
+            
             loaded++;
             drawProgress(loaded, total, ctx, canvas);
             if (loaded === total) callback();
@@ -156,6 +213,7 @@ function preloadAssets(canvas, callback) {
                 if (loaded === total) callback();
             };
         }
+        
     });
 }
 

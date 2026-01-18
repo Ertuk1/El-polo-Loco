@@ -378,7 +378,9 @@ class World {
      */
     draw() {
         if (this.victoryShown || this.gameOverShown) return;
-        
+          if ('ontouchstart' in window) {
+            this.mobileControls.draw(this.ctx);
+        }
         const scaleX = this.canvas.width / 720;
         const scaleY = this.canvas.height / 480;
         
@@ -403,9 +405,7 @@ class World {
 
         this.muteButton.draw();
 
-        if ('ontouchstart' in window) {
-            this.mobileControls.draw(this.ctx);
-        }
+      
     
         this.ctx.translate(this.camera_x, 0)
         this.addToMap(this.character)
@@ -418,7 +418,7 @@ class World {
         if (this.isPaused) {
         this.pauseScreen.draw();
         }
-        this.animationFrameId = requestAnimationFrame(() => this.draw());
+        
     }
 
     /**

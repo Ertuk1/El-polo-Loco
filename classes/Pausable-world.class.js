@@ -63,13 +63,16 @@ draw() {
         // Only draw pause screen + pause button
         this.pauseScreen.draw();
         this.pauseButton.draw();
+        // KEEP this loop - it's for pause screen
         this.animationFrameId = requestAnimationFrame(() => this.draw());
         return;
     }
 
-    // Otherwise draw the normal game
-    super.draw();
+    // Call parent draw WITHOUT its own loop
+    super.draw();  // This now doesn't have its own loop
     this.pauseButton.draw();
+    
+    // Add the loop HERE instead
+    this.animationFrameId = requestAnimationFrame(() => this.draw());
 }
-
 }
