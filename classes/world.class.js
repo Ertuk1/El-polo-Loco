@@ -312,6 +312,7 @@ class World {
     checkBottleBossHits() {
         this.throwableObjects.forEach((bottle, index) => {
             if (this.level.enemies[0].isColliding(bottle)) {
+                bottle.triggerBreakingAnimation();
                 this.bossHpBar.update();
                 this.level.enemies[0].hit(20);
                 this.throwableObjects.splice(index, 1);
