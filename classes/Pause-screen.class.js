@@ -14,18 +14,11 @@ class PauseScreen  {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.actions = actions;
+
         this.resumeButton = { x: 260, y: 200, w: 200, h: 60 };
-        this.homeButton = { x: 260, y: 280, w: 200, h: 60 };
+        this.homeButton   = { x: 260, y: 280, w: 200, h: 60 };
+
         this.handleClick = this.handleClick.bind(this);
-        const rect = this.canvas.getBoundingClientRect();
-const scaleX = this.canvas.width / rect.width;
-const scaleY = this.canvas.height / rect.height;
-
-const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
-const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
-
-const canvasX = x * scaleX;
-const canvasY = y * scaleY;
 
     }
     
@@ -37,7 +30,7 @@ const canvasY = y * scaleY;
         this.canvas.addEventListener('click', this.handleClick);
         this.canvas.addEventListener('touchstart', this.handleClick);
     }
-    
+
     /**
      * Hides the pause screen and removes event listeners.
      */
@@ -76,13 +69,25 @@ const canvasY = y * scaleY;
      */
     handleClick(e) {
         e.preventDefault();
+
         const rect = this.canvas.getBoundingClientRect();
-        const x = (e.clientX || e.touches?.[0].clientX) - rect.left;
-        const y = (e.clientY || e.touches?.[0].clientY) - rect.top;
+
+        const clientX = e.clientX ?? e.touches?.[0]?.clientX;
+        const clientY = e.clientY ?? e.touches?.[0]?.clientY;
+
+        if (clientX == null || clientY == null) return;
+
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        const x = (clientX - rect.left) * scaleX;
+        const y = (clientY - rect.top) * scaleY;
+
         const hit = (b) =>
             x >= b.x && x <= b.x + b.w &&
             y >= b.y && y <= b.y + b.h;
+
         if (hit(this.resumeButton)) this.actions.resume();
-        if (hit(this.homeButton)) this.actions.home();
+        if (hit(this.homeButton))  this.actions.home();
     }
 }

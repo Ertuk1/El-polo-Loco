@@ -95,6 +95,14 @@ function showStartScreen() {
 
 function preloadAssets(canvas, callback) {
     const ctx = canvas.getContext('2d');
+        const drawProgress = (loaded, total, ctx, canvas) => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        ctx.font = '30px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Loading... ${loaded}/${total}`, canvas.width / 2, canvas.height / 2);
+    };
+
     const images = [
         'IMG/9_intro_outro_screens/start/startscreen_2.png',
         'IMG/9_intro_outro_screens/game_over/you lost.png',
@@ -123,13 +131,6 @@ function preloadAssets(canvas, callback) {
         return;
     }
 
-    const drawProgress = (loaded, total, ctx, canvas) => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'white';
-        ctx.font = '30px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(`Loading... ${loaded}/${total}`, canvas.width / 2, canvas.height / 2);
-    };
 
     drawProgress(loaded, total, ctx, canvas);
 
