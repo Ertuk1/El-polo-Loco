@@ -5,6 +5,7 @@
  */
 class SmallChicken extends moveableObject {
     height = 50;
+    deathSound = new Audio('audio/squeaky-toy-1-6059.mp3');
     y = 400;
     width = 60;
     IMAGES_WALKING = [

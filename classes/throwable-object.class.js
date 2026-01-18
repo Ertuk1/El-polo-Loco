@@ -30,13 +30,41 @@ class ThrowableObject extends moveableObject {
      * @param {boolean} direction - Throw direction (true for left, false for right).
      */
     constructor(x, y, direction) {
-        super().loadImage('IMG/6_salsa_bottle/salsa_bottle.png')
+        super()
         this.x = x;
         this.y = y -100;
         this.height = 60;
         this.width = 50;
         this.direction = direction;
+        
+        this.loadImage('IMG/6_salsa_bottle/salsa_bottle.png') 
+        this.loadImages(this.IMAGES_ROTATION);
+        this.loadImages(this.IMAGES_BREAK);
+
         this.trow();
+    }
+
+        /**
+     * Plays the bottle breaking animation and sound when hitting the ground.
+     */
+        triggerBreakingAnimation() {
+        this.isBroken = true;
+        this.currentImageIndex = 0;
+        
+        if (!GLOBAL_MUTE) {
+            this.breakSound.play();
+        }  
+        
+        let breakIntervalId = setInterval(() => {
+            // Get break image from cache
+            const imagePath = this.IMAGES_BREAK[this.currentImageIndex];
+            this.img = this.imageChache[imagePath];
+            
+            this.currentImageIndex++;
+            if (this.currentImageIndex >= this.IMAGES_BREAK.length) {
+                clearInterval(breakIntervalId);  
+            }
+        }, 100);  
     }
     
     /**
@@ -45,6 +73,7 @@ class ThrowableObject extends moveableObject {
     trow() {
         this.speedY = 30;
         this.applyGravity();
+        
         if (!GLOBAL_MUTE) {
             this.throwSound.play();
         }
@@ -56,31 +85,17 @@ class ThrowableObject extends moveableObject {
             if (this.currentImageIndex >= this.IMAGES_ROTATION.length) {
                 this.currentImageIndex = 0;  
             }
-            this.loadImage(this.IMAGES_ROTATION[this.currentImageIndex]);  
+            
+            // Get image from cache instead of loading it
+            const imagePath = this.IMAGES_ROTATION[this.currentImageIndex];
+            this.img = this.imageChache[imagePath];
     
             if (this.y > 236) {  
                 this.triggerBreakingAnimation();
                 clearInterval(intervalId);  
             }
-    
         }, 30);  
     }
     
-    /**
-     * Plays the bottle breaking animation and sound when hitting the ground.
-     */
-    triggerBreakingAnimation() {
-        this.isBroken = true;
-        this.currentImageIndex = 0;
-        if (!GLOBAL_MUTE) {
-            this.breakSound.play();
-        }  
-        let breakIntervalId = setInterval(() => {
-            this.loadImage(this.IMAGES_BREAK[this.currentImageIndex]);
-            this.currentImageIndex++;
-            if (this.currentImageIndex >= this.IMAGES_BREAK.length) {
-                clearInterval(breakIntervalId);  
-            }
-        }, 100);  
-    }
+
 }

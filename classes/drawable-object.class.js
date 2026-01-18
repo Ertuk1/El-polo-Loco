@@ -13,13 +13,21 @@ class DrawableObject {
     
     /**
      * Loads a single image from the specified path.
+     * Uses cache if available, otherwise creates new image and caches it.
      * @param {string} path - The file path to the image.
      * @returns {Image} The loaded image object.
      */
     loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
-        return this.img
+        // Check if image is already in cache
+        if (this.imageChache[path]) {
+            this.img = this.imageChache[path];
+        } else {
+            // Not in cache, create and cache it
+            this.img = new Image();
+            this.img.src = path;
+            this.imageChache[path] = this.img;  // Store in cache for next time
+        }
+        return this.img;
     }
     
     /**
