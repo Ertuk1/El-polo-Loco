@@ -28,7 +28,7 @@ class StartScreen {
         this.startImage.onload = () => this.draw();
         this.draw();
         this.canvas.addEventListener('click', this.handleClick);
-        this.canvas.addEventListener('touchstart', this.handleClick);
+        this.canvas.addEventListener('touchstart', this.handleClick,{ passive: true });
         this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
     }
 
@@ -174,7 +174,7 @@ class StartScreen {
      * @param {Event} event - The click or touch event.
      */
     handleClick(event) {
-        event.preventDefault();
+        
 
         const { canvasX, canvasY } = this.getCanvasCoords(event);
 
