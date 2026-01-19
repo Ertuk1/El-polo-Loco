@@ -27,6 +27,7 @@ class World {
     bossHpBar = new BossStatusbar(this.level.enemies[0]);
     bossHpBarVisible = false;
     gameOverShown = false;
+    keyboard = new Keyboard();
     
     /**
      * Initializes the game world with all entities, UI elements, and game logic.
@@ -378,9 +379,6 @@ class World {
      */
     draw() {
         if (this.victoryShown || this.gameOverShown) return;
-          if ('ontouchstart' in window) {
-            this.mobileControls.draw(this.ctx);
-        }
         const scaleX = this.canvas.width / 720;
         const scaleY = this.canvas.height / 480;
         
@@ -405,7 +403,7 @@ class World {
 
         this.muteButton.draw();
 
-      
+    
     
         this.ctx.translate(this.camera_x, 0)
         this.addToMap(this.character)
@@ -413,6 +411,10 @@ class World {
         this.addObjectsToMap(this.throwableObjects)
 
         this.ctx.translate(-this.camera_x, 0)
+
+                    if ('ontouchstart' in window) {
+            this.mobileControls.draw(this.ctx);
+        }
         
         this.ctx.restore();  
         if (this.isPaused) {
