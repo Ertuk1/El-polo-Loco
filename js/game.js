@@ -1,6 +1,9 @@
 let canvas;
 let world;
 let startScreen;
+const savedMuteState = localStorage.getItem('gameMuted');
+if (savedMuteState !== null) {
+    GLOBAL_MUTE = savedMuteState === 'true';}
 const IMAGE_PATHS = [
     // --- Start / Win / Lose Screens ---
     'IMG/9_intro_outro_screens/start/startscreen_2.png',
