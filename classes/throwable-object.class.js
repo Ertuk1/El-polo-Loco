@@ -1,8 +1,3 @@
-/**
- * ThrowableObject class representing bottles that can be thrown as projectiles.
- * Features rotation animation during flight and breaking animation on impact.
- * @extends moveableObject
- */
 class ThrowableObject extends moveableObject {
     IMAGES_ROTATION = [
         'IMG/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png',
@@ -17,85 +12,86 @@ class ThrowableObject extends moveableObject {
         'IMG/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png',
         'IMG/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png',
         'IMG/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png'
-    ]
+    ];
     currentImageIndex = 0;
     isBroken = false;
-    breakSound = new Audio('audio/bottlecrack.mp3')
-    throwSound = new Audio('audio/throw.mp3')
+    rotationIntervalId = null;
+    breakSound = new Audio('audio/bottlecrack.mp3');
+    throwSound = new Audio('audio/throw.mp3');
     
-    /**
-     * Initializes a throwable bottle at specified position with direction.
-     * @param {number} x - The x-coordinate for the bottle.
-     * @param {number} y - The y-coordinate for the bottle.
-     * @param {boolean} direction - Throw direction (true for left, false for right).
-     */
     constructor(x, y, direction) {
-        super()
+        super();
         this.x = x;
-        this.y = y -100;
+        this.y = y - 100;
         this.height = 60;
         this.width = 50;
         this.direction = direction;
-        
-        this.loadImage('IMG/6_salsa_bottle/salsa_bottle.png') 
+        this.hasFlown = false; 
+        this.loadImage('IMG/6_salsa_bottle/salsa_bottle.png');
         this.loadImages(this.IMAGES_ROTATION);
         this.loadImages(this.IMAGES_BREAK);
-
-        this.trow();
+        this.throw();
     }
-
-        /**
-     * Plays the bottle breaking animation and sound when hitting the ground.
-     */
-        triggerBreakingAnimation() {
+    
+    stopRotation() {
+        if (this.rotationIntervalId) {
+            clearInterval(this.rotationIntervalId);
+            this.rotationIntervalId = null;
+        }
+    }
+    
+    triggerBreakingAnimation() {
+        if (this.isBroken) return; // Prevent multiple triggers
+        
         this.isBroken = true;
         this.currentImageIndex = 0;
+        this.speedY = 0; // Stop falling
         
         if (!GLOBAL_MUTE) {
             this.breakSound.play();
-        }  
+        }
         
         let breakIntervalId = setInterval(() => {
-            // Get break image from cache
             const imagePath = this.IMAGES_BREAK[this.currentImageIndex];
             this.img = this.imageChache[imagePath];
             
             this.currentImageIndex++;
             if (this.currentImageIndex >= this.IMAGES_BREAK.length) {
-                clearInterval(breakIntervalId);  
+                clearInterval(breakIntervalId);
             }
-        }, 100);  
+        }, 100);
     }
     
-    /**
-     * Initiates the throwing motion with gravity and rotation animation.
-     */
-    trow() {
-        this.speedY = 30;
-        this.applyGravity();
+throw() {
+    this.speedY = 30;
+    this.applyGravity();
+    
+    if (!GLOBAL_MUTE) {
+        this.throwSound.play();
+    }
+    
+    // Mark as "has flown" after 100ms to avoid instant collision
+    setTimeout(() => {
+        this.hasFlown = true;
+    }, 100);
+    
+    this.rotationIntervalId = setInterval(() => {
+        if (this.isBroken) return;
         
-        if (!GLOBAL_MUTE) {
-            this.throwSound.play();
+        this.x += this.direction ? -10 : 10;
+        
+        this.currentImageIndex++;
+        if (this.currentImageIndex >= this.IMAGES_ROTATION.length) {
+            this.currentImageIndex = 0;
         }
-    
-        let intervalId = setInterval(() => {
-            this.x += this.direction ? -10 : 10;
-           
-            this.currentImageIndex++;
-            if (this.currentImageIndex >= this.IMAGES_ROTATION.length) {
-                this.currentImageIndex = 0;  
-            }
-            
-            // Get image from cache instead of loading it
-            const imagePath = this.IMAGES_ROTATION[this.currentImageIndex];
-            this.img = this.imageChache[imagePath];
-    
-            if (this.y > 236) {  
-                this.triggerBreakingAnimation();
-                clearInterval(intervalId);  
-            }
-        }, 30);  
-    }
-    
-
+        
+        const imagePath = this.IMAGES_ROTATION[this.currentImageIndex];
+        this.img = this.imageChache[imagePath];
+        
+        if (this.y > 236) {
+            this.stopRotation();
+            this.triggerBreakingAnimation();
+        }
+    }, 30);
+}
 }

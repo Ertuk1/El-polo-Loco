@@ -251,21 +251,23 @@ class World {
     /**
      * Checks for bottle throw input and creates throwable object.
      */
-    checkThrowobjects() {
-        if (this.keyboard.D && !this.throwCooldown && !this.bossIntroActive) {
-            if (this.bottleCount < 1) {
-                return null;
-            }
-            this.throwBottleUpdate()
-            let bottleX = this.character.otherDirection ? this.character.x - 50 : this.character.x + 100;
-            let bottle = new ThrowableObject(bottleX, this.character.y + 150, this.character.otherDirection);
-            this.throwableObjects.push(bottle);
-            this.throwCooldown = true;
-            setTimeout(() => {
-                this.throwCooldown = false;
-            }, 1500);  
+checkThrowobjects() {
+    if (this.keyboard.D && !this.throwCooldown && !this.bossIntroActive) {
+        if (this.bottleCount < 1) {
+            return;
         }
+        this.throwBottleUpdate();
+        let bottleX = this.character.otherDirection ? this.character.x - 50 : this.character.x + 100;
+        let bottle = new ThrowableObject(bottleX, this.character.y + 150, this.character.otherDirection);
+        this.throwableObjects.push(bottle);
+        
+        // Set cooldown
+        this.throwCooldown = true;
+        setTimeout(() => {
+            this.throwCooldown = false;
+        }, 1500);
     }
+}
 
     /**
      * Checks if character is touching the endboss and applies damage.
@@ -310,16 +312,22 @@ checkCoinPickups() {
     /**
      * Checks if thrown bottles hit the boss and applies damage.
      */
-    checkBottleBossHits() {
-        this.throwableObjects.forEach((bottle, index) => {
-            if (this.level.enemies[0].isColliding(bottle)) {
-                bottle.triggerBreakingAnimation();
-                this.bossHpBar.update();
-                this.level.enemies[0].hit(20);
-                this.throwableObjects.splice(index, 1);
-            }
-        });
-    }
+checkBottleBossHits() {
+    this.throwableObjects.forEach((bottle, index) => {
+        if (this.level.enemies[0].isColliding(bottle) && !bottle.isBroken) {
+            bottle.stopRotation(); // Stop rotation animation
+            bottle.triggerBreakingAnimation(); // Start break animation
+            this.bossHpBar.update();
+            this.level.enemies[0].hit(20);
+            
+            // Remove bottle after break animation completes
+            setTimeout(() => {
+                const idx = this.throwableObjects.indexOf(bottle);
+                if (idx > -1) this.throwableObjects.splice(idx, 1);
+            }, 600); // 6 frames * 100ms
+        }
+    });
+}
 
     isJumpKill(enemy) {
     const characterBottom = this.character.y + this.character.height;
