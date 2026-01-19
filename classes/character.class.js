@@ -12,6 +12,8 @@ idleTime = 0;
 lastActionTime = 0; 
 lastHurtSoundTime = 0;
 snorePlayed = false;
+isJumping = false;
+jumpAnimationTime = 0;
 
 world;
 walking_sound = new Audio('audio/running.mp3');
@@ -194,6 +196,13 @@ playWalkState() {
 resolveAnimationState() {
     if (this.isDead()) return this.playDeadState();
     if (this.isHurt()) return this.playHurtState();
+    if (this.isJumping) {
+        if (Date.now() - this.jumpAnimationTime < 300) {
+            return this.playJumpState();
+        } else {
+            this.isJumping = false;
+        }
+    }
     if (this.isAboveGround()) return this.playJumpState();
     if (this.idleTime >= 5000) return this.playLongIdleState();
     if (this.idleTime > 0) return this.playIdleState();
@@ -274,8 +283,10 @@ animate() {
 /**
  * Makes the character jump by setting vertical speed.
  */
-jump(){
+jump() {
     this.speedY = 30;
+    this.isJumping = true;
+    this.jumpAnimationTime = Date.now();
 }
 
 /**
