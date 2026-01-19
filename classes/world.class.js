@@ -206,6 +206,7 @@ class World {
         this.bottleCount--;
         let percentage = (this.bottleCount / this.totalBottles) * 100;
         this.bottleStatusBar.setPercentage(percentage);
+        this.character.resetIdleTimer();
     }
 
     /**
@@ -313,21 +314,25 @@ checkCoinPickups() {
      * Checks if thrown bottles hit the boss and applies damage.
      */
 checkBottleBossHits() {
+    const endboss = this.level.enemies.find(e => e instanceof Endboss);
+    if (!endboss) return;
+    
     this.throwableObjects.forEach((bottle, index) => {
-        if (this.level.enemies[0].isColliding(bottle) && !bottle.isBroken) {
-            bottle.stopRotation(); // Stop rotation animation
-            bottle.triggerBreakingAnimation(); // Start break animation
+        // Only check collision if bottle has traveled some distance
+        if (endboss.isColliding(bottle) && !bottle.isBroken && bottle.hasFlown) {
+            bottle.stopRotation();
+            bottle.triggerBreakingAnimation();
             this.bossHpBar.update();
-            this.level.enemies[0].hit(20);
+            endboss.hit(20);
             
-            // Remove bottle after break animation completes
             setTimeout(() => {
                 const idx = this.throwableObjects.indexOf(bottle);
                 if (idx > -1) this.throwableObjects.splice(idx, 1);
-            }, 600); // 6 frames * 100ms
+            }, 600);
         }
     });
 }
+
 
     isJumpKill(enemy) {
     const characterBottom = this.character.y + this.character.height;
