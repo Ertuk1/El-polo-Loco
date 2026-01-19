@@ -85,6 +85,7 @@ IMAGES_HURT = [
  */
 constructor(){
    super().loadImage('IMG/2_character_pepe/2_walk/W-21.png') 
+   this.canBounce = true;
    this.loadImages(this.IMAGES_WALKING)
    this.loadImages(this.IMAGES_JUMPING)
    this.loadImages(this.IMAGES_DEAD)
@@ -306,5 +307,17 @@ stop() {
     document.removeEventListener('globalMuteChanged', this.handleMuteChange);
     document.removeEventListener('globalPauseChanged', this.handlePauseChange);
 }
+
+bounce() {
+    if (!this.canBounce) return;
+
+    this.speedY = 25; // bounce height
+    this.canBounce = false;
+
+    setTimeout(() => {
+        this.canBounce = true;
+    }, 150); // 150ms cooldown works great
+}
+
 
 }

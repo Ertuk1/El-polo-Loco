@@ -281,31 +281,31 @@ class World {
     /**
      * Checks for coin pickups and handles collection.
      */
-    checkCoinPickups() {
-        this.coins.forEach((coin, index) => {
-            if (this.character.isColliding(coin)) {
-                this.collectCoin();
-
-                const s = this.character.collectSound.cloneNode();
-                s.volume = this.character.collectSound.volume;
-                if (!GLOBAL_MUTE) s.play();
-
-                this.coins.splice(index, 1);
-            }
-        });
-    }
+checkCoinPickups() {
+    this.coins.forEach((coin, index) => {
+        // Tighter hitbox: 30px offset on all sides
+        if (this.character.isColliding(coin, 30, 30, 30, 30)) {
+            this.collectCoin();
+            const s = this.character.collectSound.cloneNode();
+            s.volume = this.character.collectSound.volume;
+            if (!GLOBAL_MUTE) s.play();
+            this.coins.splice(index, 1);
+        }
+    });
+}
 
     /**
      * Checks for bottle pickups and handles collection.
      */
-    checkBottlePickups() {
-        this.bottles.forEach((bottle, index) => {
-            if (this.character.isColliding(bottle)) {
-                this.bottles.splice(index, 1);
-                this.collectBottle();
-            }
-        });
-    }
+  checkBottlePickups() {
+    this.bottles.forEach((bottle, index) => {
+        // Tighter hitbox: 20px offset
+        if (this.character.isColliding(bottle, 20, 20, 20, 20)) {
+            this.bottles.splice(index, 1);
+            this.collectBottle();
+        }
+    });
+}
 
     /**
      * Checks if thrown bottles hit the boss and applies damage.
@@ -321,40 +321,48 @@ class World {
         });
     }
 
-    /**
-     * Handles collision logic for chicken enemies (jump kill or damage).
-     * @param {moveableObject} enemy - The enemy colliding with character.
-     */
-    handleChickenCollision(enemy) {
-        const characterBottom = this.character.y + this.character.height;
-        const isAbove = characterBottom < enemy.y + 30;
-        const isFalling = this.character.speedY < 0;
+    isJumpKill(enemy) {
+    const characterBottom = this.character.y + this.character.height;
+    const isAbove = characterBottom < enemy.y + 30;
+    const isFalling = this.character.speedY < 0;
+    return isAbove && isFalling;
+}
 
-        if (isAbove && isFalling) {
-            if (enemy instanceof chicken && !GLOBAL_MUTE) {
-                this.chickenSound.play();
-            }
-            enemy.die();
-        } else {
-            this.character.hit(enemy);
-            this.statusbar.setPercentage(this.character.energy);
-        }
+playChickenSound(enemy) {
+    if (enemy instanceof chicken && !GLOBAL_MUTE) {
+        this.chickenSound.play();
+    }
+}
+
+damageCharacter(enemy) {
+    this.character.hit(enemy);
+    this.statusbar.setPercentage(this.character.energy);
+}
+
+handleChickenCollision(enemy) {
+    if (this.isJumpKill(enemy)) {
+             if (!(enemy instanceof Endboss)) { this.character.bounce(); } 
+        this.playChickenSound(enemy);
+        enemy.die();
+    } else {
+        this.damageCharacter(enemy);
+    }
+}
+
+checkEnemyCollision(enemy) {
+    // Loose hitbox for jump kill
+    if (this.character.isColliding(enemy, 5, 0, 5, 0) && this.isJumpKill(enemy)) {
+             if (!(enemy instanceof Endboss)) { this.character.bounce(); }
+        this.playChickenSound(enemy);
+        enemy.die();
+        return;
     }
 
-    /**
-     * Routes enemy collision to appropriate handler.
-     * @param {moveableObject} enemy - The enemy to check collision with.
-     */
-    checkEnemyCollision(enemy) {
-        if (!this.character.isColliding(enemy)) return;
-
-        if (enemy instanceof chicken || enemy instanceof SmallChicken) {
-            this.handleChickenCollision(enemy);
-        } else {
-            this.character.hit(enemy);
-            this.statusbar.setPercentage(this.character.energy);
-        }
+    // Tight hitbox for side damage
+    if (this.character.isColliding(enemy, 15, 15, 15, 15)) {
+        this.damageCharacter(enemy);
     }
+}
 
     /**
      * Checks all collision types in the game world.

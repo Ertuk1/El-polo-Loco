@@ -2,7 +2,6 @@ let canvas;
 let world;
 let startScreen;
 const IMAGE_PATHS = [
-
     // --- Start / Win / Lose Screens ---
     'IMG/9_intro_outro_screens/start/startscreen_2.png',
     'IMG/9_intro_outro_screens/game_over/you lost.png',
@@ -184,7 +183,6 @@ const IMAGE_PATHS = [
     'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png'
 ];
 
-
  const AUDIO_PATHS = [
     'audio/squeaky-toy-1-6059.mp3',
     'audio/bottlecrack.mp3',
@@ -201,7 +199,6 @@ const IMAGE_PATHS = [
 
  ];
   
-
 // Global image cache
 const IMAGE_CACHE = {};
 const AUDIO_CACHE = {};
@@ -265,9 +262,6 @@ function preloadAudios(paths, onProgress, onDone) {
     });
 }
 
-
-
-
 function getOrCreateImage(src) {
     // Return cached image if it exists
     if (IMAGE_CACHE[src]) {
@@ -311,9 +305,6 @@ function startGame(canvasParam) {
 }
 
 
-
-
-
 // === Global Mute Control ===
 let GLOBAL_MUTE = false;
 let GLOBAL_PAUSE = false;
@@ -330,8 +321,6 @@ HTMLMediaElement.prototype.play = function (...args) {
         return originalPlay.apply(this, args);
     }
 };
-
-
 
 function initStartScreen() {
     canvas = document.getElementById('canvas');
@@ -370,11 +359,6 @@ function preloadAssets(canvas, callback) {
     preloadImages(IMAGE_PATHS, updateProgress, () => {});
     preloadAudios(AUDIO_PATHS, updateProgress, () => {});
 }
-
-
-
-
-
 
 function isMobile() {
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
