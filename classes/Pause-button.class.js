@@ -21,8 +21,8 @@ class PauseButton {
         
         this.handleClick = this.handleClick.bind(this);
         this.handleTouch = this.handleTouch.bind(this);
-        canvas.addEventListener('click', this.handleClick );
-        canvas.addEventListener('touchstart', this.handleTouch);
+        canvas.addEventListener('click', this.handleClick, { passive: false } );
+        canvas.addEventListener('touchstart', this.handleTouch, { passive: false });
     }
     
     /**

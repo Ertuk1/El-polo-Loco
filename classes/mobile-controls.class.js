@@ -56,6 +56,18 @@ getButtonPx(btn) {
         );
     }
 
+    getTouchPos(touch) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
+
+    return {
+        x: (touch.clientX - rect.left) * scaleX,
+        y: (touch.clientY - rect.top) * scaleY
+    };
+}
+
+
     /**
      * Handles touch start events and activates corresponding keyboard keys.
      * @param {TouchEvent} e - The touch event.
@@ -63,27 +75,24 @@ getButtonPx(btn) {
 handleTouchStart(e) {
     e.preventDefault();
 
-    const rect = this.canvas.getBoundingClientRect();
-    const scaleX = this.canvas.width / rect.width;
-    const scaleY = this.canvas.height / rect.height;
+    for (let touch of e.touches) {
+        const pos = this.getTouchPos(touch);
+        const x = pos.x;
+        const y = pos.y;
 
-    for (let i = 0; i < e.touches.length; i++) {
-        const touch = e.touches[i];
-        const canvasX = (touch.clientX - rect.left) * scaleX;
-        const canvasY = (touch.clientY - rect.top) * scaleY;
-
-        if (this.isInButton(canvasX, canvasY, this.mobileControls.left)) {
+        if (this.isInButton(x, y, this.mobileControls.left)) {
             this.keyboard.LEFT = true;
-        } else if (this.isInButton(canvasX, canvasY, this.mobileControls.right)) {
+        } else if (this.isInButton(x, y, this.mobileControls.right)) {
             this.keyboard.RIGHT = true;
-        } else if (this.isInButton(canvasX, canvasY, this.mobileControls.jump)) {
+        } else if (this.isInButton(x, y, this.mobileControls.jump)) {
             this.keyboard.UP = true;
             this.keyboard.SPACE = true;
-        } else if (this.isInButton(canvasX, canvasY, this.mobileControls.throw)) {
+        } else if (this.isInButton(x, y, this.mobileControls.throw)) {
             this.keyboard.D = true;
         }
     }
 }
+
 
 
   /**
@@ -100,28 +109,26 @@ handleTouchEnd(e) {
     this.keyboard.SPACE = false;
     this.keyboard.D = false;
 
-    const rect = this.canvas.getBoundingClientRect();
-    const scaleX = this.canvas.width / rect.width;
-    const scaleY = this.canvas.height / rect.height;
+    // Re-check remaining touches
+    for (let touch of e.touches) {
+        const pos = this.getTouchPos(touch);
+        const x = pos.x;
+        const y = pos.y;
 
-    // Re-enable keys for any remaining touches
-    for (let i = 0; i < e.touches.length; i++) {
-        const touch = e.touches[i];
-        const canvasX = (touch.clientX - rect.left) * scaleX;
-        const canvasY = (touch.clientY - rect.top) * scaleY;
-
-        if (this.isInButton(canvasX, canvasY, this.mobileControls.left)) {
+        if (this.isInButton(x, y, this.mobileControls.left)) {
             this.keyboard.LEFT = true;
-        } else if (this.isInButton(canvasX, canvasY, this.mobileControls.right)) {
+        } else if (this.isInButton(x, y, this.mobileControls.right)) {
             this.keyboard.RIGHT = true;
-        } else if (this.isInButton(canvasX, canvasY, this.mobileControls.jump)) {
+        } else if (this.isInButton(x, y, this.mobileControls.jump)) {
             this.keyboard.UP = true;
             this.keyboard.SPACE = true;
-        } else if (this.isInButton(canvasX, canvasY, this.mobileControls.throw)) {
+        } else if (this.isInButton(x, y, this.mobileControls.throw)) {
             this.keyboard.D = true;
         }
     }
 }
+
+
 
 
     /**

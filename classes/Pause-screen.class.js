@@ -35,8 +35,8 @@ class PauseScreen  {
      * Hides the pause screen and removes event listeners.
      */
     hide() {
-        this.canvas.removeEventListener('click', this.handleClick);
-        this.canvas.removeEventListener('touchstart', this.handleClick);
+        this.canvas.removeEventListener('click', this.handleClick, { passive: false });
+        this.canvas.removeEventListener('touchstart', this.handleClick, { passive: false });
     }
     
     /**
