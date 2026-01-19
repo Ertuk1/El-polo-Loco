@@ -72,7 +72,7 @@ class World {
     this.backgroundMusic.loop = true;
     this.backgroundMusic.volume = 0.05;
     if (!GLOBAL_MUTE) {
-        this.backgroundMusic.play().catch(e => {});
+        this.backgroundMusic.play();
     }
 
     this.handleMuteChange = (event) => {
@@ -80,7 +80,7 @@ class World {
         if (muted) {
             this.backgroundMusic.pause();
         } else {
-            this.backgroundMusic.play().catch(e => {});
+            this.backgroundMusic.play();
         }
     };
     document.addEventListener('globalMuteChanged', this.handleMuteChange);
@@ -112,11 +112,11 @@ class World {
         this.pauseScreen.hide();
 
         if (!GLOBAL_MUTE && this.backgroundMusic) {
-            this.backgroundMusic.play().catch(e => {});
+            this.backgroundMusic.play();
         }
 
         if (this.character && this.character.snorePlayed && !GLOBAL_MUTE) {
-            this.character.snore.play().catch(e => {});
+            this.character.snore.play();
         }
     }
 

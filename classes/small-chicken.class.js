@@ -43,7 +43,7 @@ class SmallChicken extends moveableObject {
                 this.deathSoundPlayed = true;
                 const deathSound = new Audio('audio/squeaky-toy-1-6059.mp3');
                 deathSound.volume = 0.5;
-                deathSound.play().catch(e => {});
+                deathSound.play();
             }
             
             this.loadImage(this.IMAGES_DEAD[0]);
