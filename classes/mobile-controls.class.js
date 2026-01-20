@@ -35,7 +35,7 @@
             checkMode() {
                 const tabletElement = document.getElementById('tablet-controls');
                 // Logic: 1000px height or higher = HTML buttons
-                if (window.innerHeight >= 800 && this.isMobile()) {
+                if (window.innerHeight >= 800) {
                     this.useHtmlControls = true;
                     tabletElement.style.display = 'flex';
                 } else {
@@ -52,34 +52,35 @@
                 this.canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
             }
 
-            initHtmlListeners() {
-                const bindBtn = (id, keyProperty, extraKey = null) => {
-                    const el = document.getElementById(id);
-                    if (!el) return;
+        initHtmlListeners() {
+            const bindBtn = (id, keyProperty, extraKey = null) => {
+            const el = document.getElementById(id);
+            if (!el) return;
 
-                    const start = (e) => {
-                        e.preventDefault();
-                        this.keyboard[keyProperty] = true;
-                        if (extraKey) this.keyboard[extraKey] = true;
-                    };
+            const start = (e) => {
+                e.preventDefault();
+                this.keyboard[keyProperty] = true;
+                if (extraKey) this.keyboard[extraKey] = true;
+            };
 
-                    const end = (e) => {
-                        e.preventDefault();
-                        this.keyboard[keyProperty] = false;
-                        if (extraKey) this.keyboard[extraKey] = false;
-                    };
+            const end = (e) => {
+                e.preventDefault();
+                this.keyboard[keyProperty] = false;
+                if (extraKey) this.keyboard[extraKey] = false;
+            };
 
-                    el.addEventListener('touchstart', start, { passive: false });
-                    el.addEventListener('touchend', end, { passive: false });
-                    el.addEventListener('mousedown', start);
-                    el.addEventListener('mouseup', end);
-                };
+            el.addEventListener('touchstart', start, { passive: false });
+            el.addEventListener('touchend', end, { passive: false });
+            el.addEventListener('mousedown', start);
+            el.addEventListener('mouseup', end);
+        };
 
-                bindBtn('btn-left', 'LEFT');
-                bindBtn('btn-right', 'RIGHT');
-                bindBtn('btn-jump', 'UP', 'SPACE');
-                bindBtn('btn-throw', 'D');
-            }
+        bindBtn('btn-left', 'LEFT');
+        bindBtn('btn-right', 'RIGHT');
+        bindBtn('btn-jump', 'UP', 'SPACE');
+        bindBtn('btn-throw', 'D');
+    }
+
 
             getButtonPx(btn) {
                 return {

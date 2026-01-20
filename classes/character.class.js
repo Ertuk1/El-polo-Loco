@@ -144,6 +144,7 @@ playDeadState() {
 playHurtState() {
     this.playAnimation(this.IMAGES_HURT);
     this.snore.pause();
+    this.resetIdleTimer();
 
     const now = Date.now();
     if (now - this.lastHurtSoundTime > 1000) {
@@ -241,27 +242,45 @@ updateCamera() {
  */
 handleMovementInput() {
     const isMoving = this.isPlayerMoving();
-    if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.world.bossIntroActive) {
+
+    this.handleRightMovement();
+    this.handleLeftMovement();
+    this.handleJumpInput();
+
+    if (!isMoving) this.updateIdleTime();
+}
+/** * Handles right movement input and updates character state. */
+handleRightMovement() {
+    const k = this.world.keyboard;
+    if (k.RIGHT && this.x < this.world.level.level_end_x && !this.world.bossIntroActive) {
         this.moveRight();
         this.otherDirection = false;
         this.playWalkingSound();
         this.resetIdleTimer();
     }
-    if (this.world.keyboard.LEFT && this.x > 0 && !this.world.bossIntroActive) {
+}
+/** * Handles left movement input and updates character state. */
+handleLeftMovement() {
+    const k = this.world.keyboard;
+    if (k.LEFT && this.x > 0 && !this.world.bossIntroActive) {
         this.moveLeft();
         this.otherDirection = true;
         this.playWalkingSound();
         this.resetIdleTimer();
     }
-    if ((this.world.keyboard.UP || this.world.keyboard.SPACE) && !this.isAboveGround() && !this.world.bossIntroActive) {
+}
+/** * Handles jump input and triggers jump animation and sound. */
+handleJumpInput() {
+    const k = this.world.keyboard;
+    if ((k.UP || k.SPACE) && !this.isAboveGround() && !this.world.bossIntroActive) {
         this.jump();
         if (!GLOBAL_MUTE) this.jumpSound.play();
         this.resetIdleTimer();
     }
-    if (!isMoving) {
-        this.updateIdleTime();
-    }
 }
+
+
+
 
 /**
  * Starts the animation loops for movement and state animations.

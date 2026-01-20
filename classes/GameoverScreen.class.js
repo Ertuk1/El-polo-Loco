@@ -46,65 +46,72 @@ class GameOverScreen {
         ctx.fillText('REPLAY', replayButton.x + replayButton.width / 2, replayButton.y + 38);
         ctx.fillText('HOME', homeButton.x + homeButton.width / 2, homeButton.y + 38);
     }
+/**
+ * Checks whether a point lies inside a button rectangle.
+ * @param {number} x - X coordinate.
+ * @param {number} y - Y coordinate.
+ * @param {Object} btn - Button rectangle.
+ * @returns {boolean}
+ */
+isInsideButton(x, y, btn) {
+    return (
+        x >= btn.x &&
+        x <= btn.x + btn.width &&
+        y >= btn.y &&
+        y <= btn.y + btn.height
+    );
+}
+
     
-    /**
-     * Handles mouse hover to change cursor when over buttons.
-     * @param {MouseEvent} event - The mouse move event.
-     */
-    handleHover(event) {
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
-        const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
-        const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
-        const canvasX = x * scaleX;
-        const canvasY = y * scaleY;
-        if (
-            (canvasX >= this.replayButton.x &&
-            canvasX <= this.replayButton.x + this.replayButton.width &&
-            canvasY >= this.replayButton.y &&
-            canvasY <= this.replayButton.y + this.replayButton.height) ||
-            (canvasX >= this.homeButton.x &&
-            canvasX <= this.homeButton.x + this.homeButton.width &&
-            canvasY >= this.homeButton.y &&
-            canvasY <= this.homeButton.y + this.homeButton.height)
-        ) {
-            this.canvas.style.cursor = 'pointer';
-        } else {
-            this.canvas.style.cursor = 'default';
-        }
+/**
+ * Converts mouse/touch coordinates to canvas coordinates.
+ * @param {Event} event - Input event.
+ * @returns {{canvasX:number, canvasY:number}}
+ */
+getCanvasCoords(event) {
+    const rect = this.canvas.getBoundingClientRect();
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
+
+    const clientX = event.clientX || event.touches?.[0].clientX;
+    const clientY = event.clientY || event.touches?.[0].clientY;
+
+    return {
+        canvasX: (clientX - rect.left) * scaleX,
+        canvasY: (clientY - rect.top) * scaleY
+    };
+}
+ 
+    
+/**
+ * Handles click and touch events on buttons.
+ * @param {Event} event - The click or touch event.
+ */
+handleClick(event) {
+    event.preventDefault();
+    const { canvasX, canvasY } = this.getCanvasCoords(event);
+
+    if (this.isInsideButton(canvasX, canvasY, this.replayButton)) {
+        this.startReplay();
+    } else if (this.isInsideButton(canvasX, canvasY, this.homeButton)) {
+        this.goHome();
     }
+}
+ 
     
-    /**
-     * Handles click and touch events on buttons.
-     * @param {Event} event - The click or touch event.
-     */
-    handleClick(event) {
-        event.preventDefault();
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
-        const x = (event.clientX || event.touches?.[0].clientX) - rect.left;
-        const y = (event.clientY || event.touches?.[0].clientY) - rect.top;
-        const canvasX = x * scaleX;
-        const canvasY = y * scaleY;
-        if (
-            canvasX >= this.replayButton.x &&
-            canvasX <= this.replayButton.x + this.replayButton.width &&
-            canvasY >= this.replayButton.y &&
-            canvasY <= this.replayButton.y + this.replayButton.height
-        ) {
-            this.startReplay();
-        } else if (
-            canvasX >= this.homeButton.x &&
-            canvasX <= this.homeButton.x + this.homeButton.width &&
-            canvasY >= this.homeButton.y &&
-            canvasY <= this.homeButton.y + this.homeButton.height
-        ) {
-            this.goHome();
-        }
-    }
-    
+ /**
+ * Handles mouse hover to change cursor when over buttons.
+ * @param {MouseEvent} event - The mouse move event.
+ */
+handleHover(event) {
+    const { canvasX, canvasY } = this.getCanvasCoords(event);
+    const hovering =
+        this.isInsideButton(canvasX, canvasY, this.replayButton) ||
+        this.isInsideButton(canvasX, canvasY, this.homeButton);
+
+    this.canvas.style.cursor = hovering ? 'pointer' : 'default';
+}
+
     /**
      * Starts a new game by recreating the canvas and calling the replay callback.
      */

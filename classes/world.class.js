@@ -36,6 +36,8 @@ class World {
      */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
+        this.renderer = new RenderingManager(this);
+        this.collisionManager = new CollisionManager(this);
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.muteButton = new MuteButton(this.canvas);
@@ -93,11 +95,9 @@ class World {
         if (this.isPaused) return;
         this.isPaused = true;
         GLOBAL_PAUSE = true;
-
         document.querySelectorAll("audio").forEach(a => a.pause());
         if (this.backgroundMusic) this.backgroundMusic.pause();
         if (this.character && this.character.snore) this.character.snore.pause();
-        
         this.pauseScreen.show();
     }
 
@@ -294,113 +294,13 @@ checkThrowobjects() {
         }
     }
 
-    /**
-     * Checks for coin pickups and handles collection.
-     */
-checkCoinPickups() {
-    this.coins.forEach((coin, index) => {
-        // Tighter hitbox: 30px offset on all sides
-        if (this.character.isColliding(coin, 30, 30, 30, 30)) {
-            this.collectCoin();
-            const s = this.character.collectSound.cloneNode();
-            s.volume = this.character.collectSound.volume;
-            if (!GLOBAL_MUTE) s.play();
-            this.coins.splice(index, 1);
-        }
-    });
-}
-
-    /**
-     * Checks for bottle pickups and handles collection.
-     */
-  checkBottlePickups() {
-    this.bottles.forEach((bottle, index) => {
-        // Tighter hitbox: 20px offset
-        if (this.character.isColliding(bottle, 20, 20, 20, 20)) {
-            this.bottles.splice(index, 1);
-            this.collectBottle();
-        }
-    });
-}
-
-    /**
-     * Checks if thrown bottles hit the boss and applies damage.
-     */
-checkBottleBossHits() {
-    const endboss = this.level.enemies.find(e => e instanceof Endboss);
-    if (!endboss) return;
-    
-    this.throwableObjects.forEach((bottle, index) => {
-        // Only check collision if bottle has traveled some distance
-        if (endboss.isColliding(bottle) && !bottle.isBroken && bottle.hasFlown) {
-            bottle.stopRotation();
-            bottle.triggerBreakingAnimation();
-            this.bossHpBar.update();
-            endboss.hit(20);
-            
-            setTimeout(() => {
-                const idx = this.throwableObjects.indexOf(bottle);
-                if (idx > -1) this.throwableObjects.splice(idx, 1);
-            }, 600);
-        }
-    });
-}
-
-
-    isJumpKill(enemy) {
-    const characterBottom = this.character.y + this.character.height;
-    const isAbove = characterBottom < enemy.y + 30;
-    const isFalling = this.character.speedY < 0;
-    return isAbove && isFalling;
-}
-
-playChickenSound(enemy) {
-    if (enemy instanceof chicken && !GLOBAL_MUTE) {
-        this.chickenSound.play();
-    }
-}
-
-damageCharacter() {
-    this.character.hit(25);
-    this.statusbar.setPercentage(this.character.energy);
-}
-
-handleChickenCollision(enemy) {
-    if (this.isJumpKill(enemy)) {
-             if (!(enemy instanceof Endboss)) { this.character.bounce(); } 
-        this.playChickenSound(enemy);
-        enemy.die();
-    } else {
-        this.damageCharacter(25);
-    }
-}
-
-checkEnemyCollision(enemy) {
-    // Loose hitbox for jump kill
-    if (this.character.isColliding(enemy, 5, 0, 5, 0) && this.isJumpKill(enemy)) {
-             if (!(enemy instanceof Endboss)) { this.character.bounce(); }
-        this.playChickenSound(enemy);
-        enemy.die();
-        return;
-    }
-
-    // Tight hitbox for side damage
-    if (this.character.isColliding(enemy, 15, 15, 15, 15)) {
-        this.damageCharacter(25);
-    }
-}
 
     /**
      * Checks all collision types in the game world.
      */
-    checkCollisions() {
-        if (this.character.isDead() || this.gameOverShown) return;
-        this.level.enemies.forEach(e => this.checkEnemyCollision(e));
-        this.checkBottleBossHits();
-        this.checkBottlePickups();
-        this.checkCoinPickups();
-        this.checkEndbossTouch();
-    }
+checkCollisions() {
+    this.collisionManager.checkAll();
+}
 
     /**
      * Sets the world reference in the character object.
@@ -412,99 +312,9 @@ checkEnemyCollision(enemy) {
     /**
      * Main rendering loop that draws all game elements to canvas.
      */
-    draw() {
-        if (this.victoryShown || this.gameOverShown) return;
-        const scaleX = this.canvas.width / 720;
-        const scaleY = this.canvas.height / 480;
-        
-        this.ctx.save();
-        this.ctx.scale(scaleX, scaleY);
-
-        this.ctx.clearRect(0,0, 720, 480)
-
-        this.ctx.translate(this.camera_x, 0)
-        this.addObjectsToMap(this.level.backgroundObjects)
-        this.addObjectsToMap(this.level.clouds)
-        this.addObjectsToMap(this.bottles)
-        this.addObjectsToMap(this.coins)
-
-        this.ctx.translate(-this.camera_x, 0)
-        
-        this.addToMap(this.bottleStatusBar);
-        this.addToMap(this.coinStatusBar);
-        this.addToMap(this.statusbar);
-        if(this.bossHpBarVisible == true){
-        this.addToMap(this.bossHpBar);}
-
-        this.muteButton.draw();
-
-    
-    
-        this.ctx.translate(this.camera_x, 0)
-        this.addToMap(this.character)
-        this.addObjectsToMap(this.level.enemies)
-        this.addObjectsToMap(this.throwableObjects)
-
-        this.ctx.translate(-this.camera_x, 0)
-
-                    if ('ontouchstart' in window) {
-            this.mobileControls.draw(this.ctx);
-        }
-        
-        this.ctx.restore();  
-        if (this.isPaused) {
-        this.pauseScreen.draw();
-        }
-        
-    }
-
-    /**
-     * Adds an array of objects to the rendering map.
-     * @param {Array} objects - Array of drawable objects.
-     */
-    addObjectsToMap(objects) {
-        objects.forEach(o => {
-            if (!o.isDead || o.isDead) {
-                this.addToMap(o);
-            }
-        });
-    }
-
-    /**
-     * Adds a single moveable object to the rendering map with flipping support.
-     * @param {moveableObject} mo - The moveable object to render.
-     */
-    addToMap(mo){
-            if(mo.otherDirection){
-               this.flipImage(mo); 
-            }
-
-            mo.draw(this.ctx);
-            
-            if(mo.otherDirection){
-                this.flipImageBack(mo);
-            }
-    }
-
-    /**
-     * Flips the canvas context horizontally for mirrored rendering.
-     * @param {moveableObject} mo - The object to flip.
-     */
-    flipImage(mo){
-        this.ctx.save()
-        this.ctx.translate(mo.width,0)
-        this.ctx.scale(-1, 1)
-        mo.x = mo.x * -1;
-    }
-
-    /**
-     * Restores canvas context after flipping.
-     * @param {moveableObject} mo - The object to restore.
-     */
-    flipImageBack(mo){
-        mo.x = mo.x * -1;
-        this.ctx.restore();
-    }
+draw() {
+    this.renderer.draw();
+}
 
     /**
      * Displays the victory screen when player defeats the boss.

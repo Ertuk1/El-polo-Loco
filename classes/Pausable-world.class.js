@@ -11,6 +11,7 @@ class PausableWorld extends World {
      */
     constructor(canvas, keyboard) {
         super(canvas, keyboard);
+        this.renderer = new RenderingManager(this);
         this.isPaused = false;
         this.pauseButton = new PauseButton(
             this.canvas,

@@ -18,14 +18,14 @@ class DrawableObject {
      * @returns {Image} The loaded image object.
      */
     loadImage(path) {
-        // Check if image is already in cache
+        
         if (this.imageChache[path]) {
             this.img = this.imageChache[path];
         } else {
-            // Not in cache, create and cache it
+           
             this.img = new Image();
             this.img.src = path;
-            this.imageChache[path] = this.img;  // Store in cache for next time
+            this.imageChache[path] = this.img;  
         }
         return this.img;
     }
