@@ -181,6 +181,7 @@ class World {
      * Runs boss-related game logic at high frequency.
      */
     runboss() {
+         if (this.character.isDead() || this.gameOverShown) return;
         setInterval(() => {
             if (this.isPaused) return;
             this.checkCollisions();
@@ -195,33 +196,34 @@ class World {
      */
     collectBottle() {
         this.bottleCount += 1;
-        let percentage = (this.bottleCount / this.totalBottles) * 100;
-        this.bottleStatusBar.setPercentage(percentage);
+let percentage = Math.round((this.bottleCount / this.totalBottles) * 5) * 20;
+this.bottleStatusBar.setPercentage(percentage);
+
     }
 
     /**
      * Decrements bottle count when thrown and updates bottle status bar.
      */
-    throwBottleUpdate() {
-        this.bottleCount--;
-        let percentage = (this.bottleCount / this.totalBottles) * 100;
-        this.bottleStatusBar.setPercentage(percentage);
-        this.character.resetIdleTimer();
-    }
-
+throwBottleUpdate() {
+    this.bottleCount--;
+    let percentage = (this.bottleCount / this.totalBottles) * 100;
+    this.bottleStatusBar.setPercentage(percentage);
+    this.character.resetIdleTimer();
+}
     /**
      * Increments coin count and updates coin status bar.
      */
-    collectCoin() {
-        this.coinsCount += 1;
-        let percentage = (this.coinsCount / this.totalCoins) * 100;
-        this.coinStatusBar.setPercentage(percentage);
-    }
+collectCoin() {
+    this.coinsCount += 1;
+    let percentage = (this.coinsCount / this.totalCoins) * 100;
+    this.coinStatusBar.setPercentage(percentage);
+}
 
     /**
      * Runs main game logic loop for collisions and throwing.
      */
     run(){
+        if (this.character.isDead() || this.gameOverShown) return;
         this.intervalId = setInterval(() => {
             if (this.isPaused) return;
             this.checkCollisions();
@@ -232,22 +234,32 @@ class World {
     /**
      * Stops all game loops, audio, and cleans up resources.
      */
-    stop() {
-        if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
-        if (this.intervalId) clearInterval(this.intervalId);
-        const pauseResetAudio = a => { a.pause(); a.currentTime = 0; };
-        document.querySelectorAll("audio").forEach(pauseResetAudio);
-        if (this.backgroundMusic) pauseResetAudio(this.backgroundMusic);
-        if (this.handleMuteChange) document.removeEventListener('globalMuteChanged', this.handleMuteChange);
-        if (this.mobileControls && this.mobileControls.remove) this.mobileControls.remove();
-        if (this.character && this.character.stop) this.character.stop();
-        const stopIf = obj => { if (obj && typeof obj.stop === 'function') obj.stop(); };
-        const stopCollection = coll => { if (coll) coll.forEach(item => stopIf(item)); };
-        stopCollection(this.level && this.level.enemies);
-        stopCollection(this.bottles);
-        stopCollection(this.coins);
-        stopCollection(this.throwableObjects);
+stop() {
+    // Cancel animation frame first
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+    if (this.intervalId) clearInterval(this.intervalId);
+    if (this.bossInterval) clearInterval(this.bossInterval);
+    
+    const pauseResetAudio = a => { a.pause(); a.currentTime = 0; };
+    document.querySelectorAll("audio").forEach(pauseResetAudio);
+    if (this.backgroundMusic) pauseResetAudio(this.backgroundMusic);
+    if (this.handleMuteChange) document.removeEventListener('globalMuteChanged', this.handleMuteChange);
+    if (this.mobileControls && this.mobileControls.remove) this.mobileControls.remove();
+    if (this.character && this.character.stop) this.character.stop();
+    
+    const stopIf = obj => { if (obj && typeof obj.stop === 'function') obj.stop(); };
+    const stopCollection = coll => { if (coll) coll.forEach(item => stopIf(item)); };
+    stopCollection(this.level && this.level.enemies);
+    stopCollection(this.bottles);
+    stopCollection(this.coins);
+    stopCollection(this.throwableObjects);
+    
+    // IMPORTANT: Stop endboss specifically
+    const endboss = this.level.enemies.find(e => e instanceof Endboss);
+    if (endboss && endboss.stop) {
+        endboss.stop();
     }
+}
 
     /**
      * Checks for bottle throw input and creates throwable object.
@@ -274,9 +286,10 @@ checkThrowobjects() {
      * Checks if character is touching the endboss and applies damage.
      */
     checkEndbossTouch() {
+         if (this.character.isDead() || this.gameOverShown) return;
         const endboss = this.level.enemies.find(e => e instanceof Endboss);
         if (endboss && this.character.isColliding(endboss)) {
-            this.character.hit(15);
+            this.character.hit(25);
             this.statusbar.setPercentage(this.character.energy);
         }
     }
@@ -347,8 +360,8 @@ playChickenSound(enemy) {
     }
 }
 
-damageCharacter(enemy) {
-    this.character.hit(enemy);
+damageCharacter() {
+    this.character.hit(25);
     this.statusbar.setPercentage(this.character.energy);
 }
 
@@ -358,7 +371,7 @@ handleChickenCollision(enemy) {
         this.playChickenSound(enemy);
         enemy.die();
     } else {
-        this.damageCharacter(enemy);
+        this.damageCharacter(25);
     }
 }
 
@@ -373,7 +386,7 @@ checkEnemyCollision(enemy) {
 
     // Tight hitbox for side damage
     if (this.character.isColliding(enemy, 15, 15, 15, 15)) {
-        this.damageCharacter(enemy);
+        this.damageCharacter(25);
     }
 }
 
@@ -381,6 +394,7 @@ checkEnemyCollision(enemy) {
      * Checks all collision types in the game world.
      */
     checkCollisions() {
+        if (this.character.isDead() || this.gameOverShown) return;
         this.level.enemies.forEach(e => this.checkEnemyCollision(e));
         this.checkBottleBossHits();
         this.checkBottlePickups();

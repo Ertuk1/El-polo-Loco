@@ -79,7 +79,9 @@ class Endboss extends moveableObject {
         this.BossMove();
         this.playAlertAnimation();
         this.animateWalking();
-        this.attackInterval2();
+        this.attackInterval2 = setInterval(() => {  // Store the interval ID
+        this.triggerAttack();
+    }, 4000);
     }
 
     /**
@@ -373,17 +375,23 @@ class Endboss extends moveableObject {
     /**
      * Clears all active intervals for cleanup.
      */
-    clearAllIntervals() {
-        clearInterval(this.walkingInterval);
-        clearInterval(this.attackInterval);
-    }
+clearAllIntervals() {
+    if (this.walkingInterval) clearInterval(this.walkingInterval);
+    if (this.attackInterval) clearInterval(this.attackInterval);
+    if (this.attackInterval2) clearInterval(this.attackInterval2);
+    if (this.distanceCheckInterval) clearInterval(this.distanceCheckInterval);
+    if (this.hurtAnimationInterval) clearInterval(this.hurtAnimationInterval);
+}
 
     /**
      * Stops all boss behaviors and animations.
      */
     stop() {
-        this.clearAllIntervals();
-    }
+    this.clearAllIntervals();
+    this.isWalking = false;
+    this.isAttacking = false;
+    this.charge = false;
+}
 
     /**
      * Plays the death animation sequence.

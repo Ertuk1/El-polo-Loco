@@ -86,22 +86,20 @@ isColliding(mo, offsetX = 0, offsetY = 0, offsetWidth = 0, offsetHeight = 0) {
      * Applies damage to the object with a cooldown to prevent rapid consecutive hits.
      * @param {Object} enemy - The enemy object causing the damage.
      */
-    hit(enemy) {
-        const now = new Date().getTime();
-        const timeSinceLastHit = now - (this.lastHit || 0);
-    
-        if (timeSinceLastHit < 1000) {
-            return;
-        }
-    
-        if (!enemy.isDead) {
-            this.energy -= 10;
-            if (this.energy < 0) {
-                this.energy = 0;
-            }
-            this.lastHit = now;
-        }
+hit(damage = 10) {
+    const now = new Date().getTime();
+    const timeSinceLastHit = now - (this.lastHit || 0);
+
+    if (timeSinceLastHit < 1500) {
+        return;
     }
+
+    this.energy -= damage;
+    if (this.energy < 0) {
+        this.energy = 0;
+    }
+    this.lastHit = now;
+}
     
     /**
      * Checks if the object is currently in a hurt state.

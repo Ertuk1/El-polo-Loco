@@ -13,7 +13,7 @@ class StatusBar extends DrawableObject {
         'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/100.png',
     ]
     percentage = 100;
-    energy = this.percentage
+    
     
     /**
      * Initializes the health status bar at starting position with full health.
@@ -36,6 +36,7 @@ class StatusBar extends DrawableObject {
         this.percentage = percentage
         let path = this.IMAGES[this.resolveImageIndex()]
         this.img = this.imageChache[path];
+        console.log('Health percentage set to:', percentage);
     }
     
     /**

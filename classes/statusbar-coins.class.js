@@ -50,7 +50,7 @@ class CoinStatusBar extends DrawableObject {
             return 3;
         } else if (this.percentage > 40) {
             return 2;
-        } else if (this.percentage > 20) {
+        } else if (this.percentage > 16.6) {
             return 1;
         } else {
             return 0;

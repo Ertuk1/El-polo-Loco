@@ -14,6 +14,7 @@ lastHurtSoundTime = 0;
 snorePlayed = false;
 isJumping = false;
 jumpAnimationTime = 0;
+energy = 100;
 
 world;
 walking_sound = new Audio('audio/running.mp3');

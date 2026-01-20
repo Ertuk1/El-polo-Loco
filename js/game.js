@@ -1,6 +1,7 @@
 let canvas;
 let world;
 let startScreen;
+let GLOBAL_MUTE = false;
 const savedMuteState = localStorage.getItem('gameMuted');
 if (savedMuteState !== null) {
     GLOBAL_MUTE = savedMuteState === 'true';}
@@ -309,7 +310,6 @@ function startGame(canvasParam) {
 
 
 // === Global Mute Control ===
-let GLOBAL_MUTE = false;
 let GLOBAL_PAUSE = false;
 const originalPlay = HTMLMediaElement.prototype.play;
 

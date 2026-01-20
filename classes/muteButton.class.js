@@ -20,7 +20,9 @@ class MuteButton {
             size: 0.07
         };
         
-        this.isMuted = GLOBAL_MUTE;
+        const savedMuteState = localStorage.getItem('gameMuted');
+        this.isMuted = savedMuteState === 'true'; // Convert string to boolean
+        GLOBAL_MUTE = this.isMuted;
         this.soundOnImg = new Image();
         this.soundOnImg.src = 'IMG/muteButtons/icons8-ton-67.png';
         this.soundOffImg = new Image();
@@ -112,6 +114,8 @@ class MuteButton {
     toggleMute() {
         this.isMuted = !this.isMuted;
         GLOBAL_MUTE = this.isMuted;
+
+        localStorage.setItem('gameMuted', this.isMuted);
         document.querySelectorAll('audio').forEach(a => a.muted = this.isMuted);
         const muteEvent = new CustomEvent('globalMuteChanged', {
             detail: { muted: this.isMuted }

@@ -33,10 +33,10 @@ class BottleStatusBar extends DrawableObject {
      */
     setPercentage(percentage) {
         this.percentage = percentage;
-        let path = this.IMAGES[this.resolveImageIndex()];
+        const path = this.IMAGES[this.resolveImageIndex()];
         this.img = this.imageChache[path];
     }
-    
+
     /**
      * Determines which image index to use based on current collection percentage.
      * @returns {number} Image index (0-5) corresponding to collection level.
@@ -44,16 +44,16 @@ class BottleStatusBar extends DrawableObject {
     resolveImageIndex() {
         if (this.percentage == 100) {
             return 5;
-        } else if (this.percentage > 80) {
+        } else if (this.percentage > 83) {
             return 4;
-        } else if (this.percentage > 60) {
+        } else if (this.percentage > 66) {
             return 3;
-        } else if (this.percentage > 40) {
+        } else if (this.percentage > 50) {
             return 2;
-        } else if (this.percentage > 20) {
+        } else if (this.percentage > 16.6) {
             return 1;
-        } else {
+        } 
             return 0;
-        }
+        
     }
 }

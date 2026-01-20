@@ -27,8 +27,8 @@ class PauseScreen  {
      */
     show() {
         this.draw();
-        this.canvas.addEventListener('click', this.handleClick);
-        this.canvas.addEventListener('touchstart', this.handleClick);
+        this.canvas.addEventListener('click', this.handleClick, { passive: false });
+        this.canvas.addEventListener('touchstart', this.handleClick, { passive: false });
     }
 
     /**
