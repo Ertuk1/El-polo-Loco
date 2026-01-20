@@ -1,162 +1,163 @@
-/**
- * MobileControls class providing on-screen touch controls for mobile devices.
- * Displays virtual buttons for movement, jumping, and throwing actions.
- */
-class MobileControls {
     /**
      * Initializes mobile controls with touch event handlers.
+     * MobileControls class providing on-screen touch controls for mobile devices.
+     * Displays virtual buttons for movement, jumping, and throwing actions.
      * @param {HTMLCanvasElement} canvas - The game canvas element.
      * @param {Keyboard} keyboard - The keyboard object to update with touch input.
      */
-    constructor(canvas, keyboard) {
-        this.canvas = canvas;
-        this.keyboard = keyboard;
-        this.mobileControls = {
-            left:  { x: 0.05, y: 0.80, w: 0.12, h: 0.12 },
-            right: { x: 0.20, y: 0.80, w: 0.12, h: 0.12 },
-            throw: { x: 0.70, y: 0.80, w: 0.12, h: 0.12 },
-            jump:  { x: 0.85, y: 0.80, w: 0.12, h: 0.12 }
-        };
-        this.handleTouchStartBound = this.handleTouchStart.bind(this);
-        this.handleTouchEndBound = this.handleTouchEnd.bind(this);
-        this.canvas.addEventListener('touchstart', this.handleTouchStartBound, { passive: false });
-        this.canvas.addEventListener('touchend', this.handleTouchEndBound, { passive: false });
+    
+        class MobileControls {
+            constructor(canvas, keyboard) {
+                this.canvas = canvas;
+                this.keyboard = keyboard;
+                this.useHtmlControls = false;
+                
+                this.mobileControls = {
+                    left:  { x: 0.05, y: 0.80, w: 0.12, h: 0.12 },
+                    right: { x: 0.20, y: 0.80, w: 0.12, h: 0.12 },
+                    throw: { x: 0.70, y: 0.80, w: 0.12, h: 0.12 },
+                    jump:  { x: 0.85, y: 0.80, w: 0.12, h: 0.12 }
+                };
 
-    }
+                this.initCanvasListeners();
+                this.initHtmlListeners();
+                this.checkMode();
+            }
 
-    /**
-     * Converts button percentage coordinates to pixel coordinates.
-     * @param {Object} btn - Button object with percentage-based dimensions.
-     * @returns {Object} Button dimensions in pixels.
-     */
-getButtonPx(btn) {
-    return {
-        x: btn.x * this.canvas.width,
-        y: btn.y * this.canvas.height,
-        w: btn.w * this.canvas.width,
-        h: btn.h * this.canvas.height
-    };
+            
+ isMobile() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
+            /**
+             * Decides whether to use HTML buttons or Canvas buttons
+             */
+            checkMode() {
+                const tabletElement = document.getElementById('tablet-controls');
+                // Logic: 1000px height or higher = HTML buttons
+                if (window.innerHeight >= 800 && this.isMobile()) {
+                    this.useHtmlControls = true;
+                    tabletElement.style.display = 'flex';
+                } else {
+                    this.useHtmlControls = false;
+                    tabletElement.style.display = 'none';
+                }
+            }
 
-    /**
-     * Checks if touch coordinates are within a button area.
-     * @param {number} x - Touch x-coordinate in canvas space.
-     * @param {number} y - Touch y-coordinate in canvas space.
-     * @param {Object} button - Button object to check against.
-     * @returns {boolean} True if touch is within button bounds.
-     */
-    isInButton(x, y, button) {
-        const b = this.getButtonPx(button);
-        return (
-            x >= b.x &&
-            x <= b.x + b.w &&
-            y >= b.y &&
-            y <= b.y + b.h
-        );
-    }
+            initCanvasListeners() {
+                this.handleTouchStartBound = this.handleTouchStart.bind(this);
+                this.handleTouchEndBound = this.handleTouchEnd.bind(this);
+                this.canvas.addEventListener('touchstart', this.handleTouchStartBound, { passive: false });
+                this.canvas.addEventListener('touchend', this.handleTouchEndBound, { passive: false });
+                this.canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+            }
 
-    getTouchPos(touch) {
-    const rect = this.canvas.getBoundingClientRect();
-    const scaleX = this.canvas.width / rect.width;
-    const scaleY = this.canvas.height / rect.height;
+            initHtmlListeners() {
+                const bindBtn = (id, keyProperty, extraKey = null) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
 
-    return {
-        x: (touch.clientX - rect.left) * scaleX,
-        y: (touch.clientY - rect.top) * scaleY
-    };
-}
+                    const start = (e) => {
+                        e.preventDefault();
+                        this.keyboard[keyProperty] = true;
+                        if (extraKey) this.keyboard[extraKey] = true;
+                    };
 
+                    const end = (e) => {
+                        e.preventDefault();
+                        this.keyboard[keyProperty] = false;
+                        if (extraKey) this.keyboard[extraKey] = false;
+                    };
 
-    /**
-     * Handles touch start events and activates corresponding keyboard keys.
-     * @param {TouchEvent} e - The touch event.
-     */
-handleTouchStart(e) {
-    e.preventDefault();
+                    el.addEventListener('touchstart', start, { passive: false });
+                    el.addEventListener('touchend', end, { passive: false });
+                    el.addEventListener('mousedown', start);
+                    el.addEventListener('mouseup', end);
+                };
 
-    for (let touch of e.touches) {
-        const pos = this.getTouchPos(touch);
-        const x = pos.x;
-        const y = pos.y;
+                bindBtn('btn-left', 'LEFT');
+                bindBtn('btn-right', 'RIGHT');
+                bindBtn('btn-jump', 'UP', 'SPACE');
+                bindBtn('btn-throw', 'D');
+            }
 
-        if (this.isInButton(x, y, this.mobileControls.left)) {
-            this.keyboard.LEFT = true;
-        } else if (this.isInButton(x, y, this.mobileControls.right)) {
-            this.keyboard.RIGHT = true;
-        } else if (this.isInButton(x, y, this.mobileControls.jump)) {
-            this.keyboard.UP = true;
-            this.keyboard.SPACE = true;
-        } else if (this.isInButton(x, y, this.mobileControls.throw)) {
-            this.keyboard.D = true;
-        }
-    }
-}
+            getButtonPx(btn) {
+                return {
+                    x: btn.x * this.canvas.width,
+                    y: btn.y * this.canvas.height,
+                    w: btn.w * this.canvas.width,
+                    h: btn.h * this.canvas.height
+                };
+            }
 
+            isInButton(x, y, button) {
+                const b = this.getButtonPx(button);
+                return (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h);
+            }
 
+            getTouchPos(touch) {
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                return {
+                    x: (touch.clientX - rect.left) * scaleX,
+                    y: (touch.clientY - rect.top) * scaleY
+                };
+            }
 
-  /**
-     * Handles touch end events and updates keyboard state based on remaining touches.
-     * @param {TouchEvent} e - The touch event.
-     */
-handleTouchEnd(e) {
-    e.preventDefault();
+            handleTouchStart(e) {
+                if (this.useHtmlControls) return; // Ignore canvas touches if using HTML
+                e.preventDefault();
+                this.updateKeyboardState(e.touches);
+            }
 
-    // Reset all keys first
-    this.keyboard.LEFT = false;
-    this.keyboard.RIGHT = false;
-    this.keyboard.UP = false;
-    this.keyboard.SPACE = false;
-    this.keyboard.D = false;
+            handleTouchEnd(e) {
+                if (this.useHtmlControls) return;
+                e.preventDefault();
+                this.updateKeyboardState(e.touches);
+            }
 
-    // Re-check remaining touches
-    for (let touch of e.touches) {
-        const pos = this.getTouchPos(touch);
-        const x = pos.x;
-        const y = pos.y;
+            updateKeyboardState(touches) {
+                this.keyboard.LEFT = false;
+                this.keyboard.RIGHT = false;
+                this.keyboard.UP = false;
+                this.keyboard.SPACE = false;
+                this.keyboard.D = false;
 
-        if (this.isInButton(x, y, this.mobileControls.left)) {
-            this.keyboard.LEFT = true;
-        } else if (this.isInButton(x, y, this.mobileControls.right)) {
-            this.keyboard.RIGHT = true;
-        } else if (this.isInButton(x, y, this.mobileControls.jump)) {
-            this.keyboard.UP = true;
-            this.keyboard.SPACE = true;
-        } else if (this.isInButton(x, y, this.mobileControls.throw)) {
-            this.keyboard.D = true;
-        }
-    }
-}
+                for (let touch of touches) {
+                    const pos = this.getTouchPos(touch);
+                    if (this.isInButton(pos.x, pos.y, this.mobileControls.left)) this.keyboard.LEFT = true;
+                    if (this.isInButton(pos.x, pos.y, this.mobileControls.right)) this.keyboard.RIGHT = true;
+                    if (this.isInButton(pos.x, pos.y, this.mobileControls.jump)) {
+                        this.keyboard.UP = true;
+                        this.keyboard.SPACE = true;
+                    }
+                    if (this.isInButton(pos.x, pos.y, this.mobileControls.throw)) this.keyboard.D = true;
+                }
+            }
 
+            draw(ctx) {
+                // Only draw buttons on canvas if NOT using HTML controls
+                if (this.useHtmlControls) return;
 
+                const btns = [
+                    { b: this.mobileControls.left, t: '←' },
+                    { b: this.mobileControls.right, t: '→' },
+                    { b: this.mobileControls.jump, t: '↑' },
+                    { b: this.mobileControls.throw, t: 'D' }
+                ];
 
-
-    /**
-     * Draws the mobile control buttons on the canvas.
-     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
-     */
-    draw(ctx) {
-        const l = this.getButtonPx(this.mobileControls.left);
-        const r = this.getButtonPx(this.mobileControls.right);
-        const j = this.getButtonPx(this.mobileControls.jump);
-        const t = this.getButtonPx(this.mobileControls.throw);
-
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.fillRect(l.x, l.y, l.w, l.h);
-        ctx.fillRect(r.x, r.y, r.w, r.h);
-        ctx.fillRect(j.x, j.y, j.w, j.h);
-        ctx.fillRect(t.x, t.y, t.w, t.h);
-
-        ctx.fillStyle = 'white';
-        ctx.font = '30px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('←', l.x + l.w / 2, l.y + l.h / 2);
-        ctx.fillText('→', r.x + r.w / 2, r.y + r.h / 2);
-        ctx.fillText('↑', j.x + j.w / 2, j.y + j.h / 2);
-        ctx.fillText('D', t.x + t.w / 2, t.y + t.h / 2);
-    }
-
+                btns.forEach(item => {
+                    const p = this.getButtonPx(item.b);
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                    ctx.fillRect(p.x, p.y, p.w, p.h);
+                    ctx.fillStyle = 'white';
+                    ctx.font = '30px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(item.t, p.x + p.w / 2, p.y + p.h / 2);
+                });
+            }
     /**
      * Removes touch event listeners for cleanup.
      */
