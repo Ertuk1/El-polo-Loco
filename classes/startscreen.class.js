@@ -178,7 +178,7 @@ class StartScreen {
     const now = Date.now();
 
     // If a touch happened recently, ignore the click
-    if (event.type === 'click' && now - this.lastTouchTime < 300) {
+    if (event.type === 'click' && now - this.lastTouchTime < 200) {
         return;
     }
 

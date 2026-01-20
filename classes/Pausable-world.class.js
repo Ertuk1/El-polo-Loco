@@ -10,7 +10,13 @@ class PausableWorld extends World {
      * @param {Keyboard} keyboard - The keyboard input handler.
      */
     constructor(canvas, keyboard) {
-        super(canvas, keyboard);
+        super(canvas, keyboard);   
+        this.startBackgroundMusic();
+
+          this.backgroundMusic = new Audio('audio/BackgroundMusic.mp3');
+          this.backgroundMusic.loop = true; 
+          this.backgroundMusic.volume = 0.05;
+
         this.renderer = new RenderingManager(this);
         this.isPaused = false;
         this.pauseButton = new PauseButton(
@@ -23,7 +29,20 @@ class PausableWorld extends World {
             home: () => this.goHome()
         });
         this.start();
+        
+
     }
+
+    async startBackgroundMusic() {
+    try {
+        await soundIsReady();
+        AUDIO_UNLOCKED = true;
+        this.backgroundMusic.play().catch(() => {});
+    } catch (e) {
+        console.info('Error playing sound');
+    }
+ 
+}
 
     /**
      * Restarts the game by destroying current instance and creating a new one.

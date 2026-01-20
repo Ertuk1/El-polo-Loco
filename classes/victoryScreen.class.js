@@ -39,7 +39,7 @@ class VictoryScreen {
         this.victoryImg.onload = () => this.draw();
         this.draw();
         this.canvas.addEventListener("click", this.handleClick);
-        this.canvas.addEventListener("touchstart", this.handleClick);
+        this.canvas.addEventListener("touchstart", this.handleClick, { passive: false });
     }
     
     /**
@@ -47,7 +47,7 @@ class VictoryScreen {
      */
     hide() {
         this.canvas.removeEventListener("click", this.handleClick);
-        this.canvas.removeEventListener("touchstart", this.handleClick);
+        this.canvas.removeEventListener("touchstart", this.handleClick, { passive: false });
     }
     
     /**

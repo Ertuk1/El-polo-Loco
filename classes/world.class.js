@@ -15,7 +15,6 @@ class World {
     isDead = false;
     chickenSound = new Audio('audio/chicken.mp3')
     gameoversound = new Audio('audio/gameover.mp3');
-    backgroundMusic = new Audio('audio/BackgroundMusic.mp3');
     bottles = [];
     bottleCount = 0;
     bottleImage = new Image('')
@@ -71,20 +70,23 @@ class World {
 
     this.sounds = [this.walkingSound, this.bottleThrowSound, this.chickenSound].filter(Boolean);
     
-    this.backgroundMusic.loop = true;
-    this.backgroundMusic.volume = 0.05;
-    if (!GLOBAL_MUTE) {
-        this.backgroundMusic.play();
+
+    
+this.handleMuteChange = (event) => {
+    const { muted } = event.detail;
+
+    if (muted) {
+        this.backgroundMusic.pause();
+        return;
     }
 
-    this.handleMuteChange = (event) => {
-        const { muted } = event.detail;
-        if (muted) {
-            this.backgroundMusic.pause();
-        } else {
-            this.backgroundMusic.play();
-        }
-    };
+    if (AUDIO_UNLOCKED) {
+        this.backgroundMusic.play().catch(() => {});
+    }
+};
+
+
+
     document.addEventListener('globalMuteChanged', this.handleMuteChange);
     }
 

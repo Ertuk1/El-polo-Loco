@@ -2,6 +2,7 @@ let canvas;
 let world;
 let startScreen;
 let GLOBAL_MUTE = false;
+let AUDIO_UNLOCKED = false;
 const savedMuteState = localStorage.getItem('gameMuted');
 if (savedMuteState !== null) {
     GLOBAL_MUTE = savedMuteState === 'true';}
@@ -202,6 +203,20 @@ const IMAGE_PATHS = [
     'audio/collectcoin.mp3'
 
  ];
+
+ function soundIsReady() {
+    return new Promise((resolve, reject) => {
+        const to = setTimeout(() => {
+            reject('User didnt interact. Sound cannot be played.');
+        }, 1000 * 100);
+
+        document.addEventListener('click', () => {
+            clearTimeout(to);
+            setTimeout(resolve, 10);
+        }, { once: true });
+    });
+}
+
   
 // Global image cache
 const IMAGE_CACHE = {};
@@ -306,6 +321,7 @@ function startGame(canvasParam) {
 
     initlevel1();
     world = new PausableWorld(canvas, keyboard);
+   if (!AUDIO_UNLOCKED) {world.startBackgroundMusic(); }
 }
 
 
@@ -317,13 +333,19 @@ HTMLMediaElement.prototype.play = function (...args) {
     if (GLOBAL_MUTE) {
         this.muted = true;
         this.pause();
-        this.currentTime = 0; // optional: reset
+        this.currentTime = 0;
         return Promise.resolve();
     } else {
         this.muted = false;
-        return originalPlay.apply(this, args);
+
+        if (AUDIO_UNLOCKED) {
+            return originalPlay.apply(this, args);
+        } else {
+            return Promise.resolve();
+        }
     }
 };
+
 
 function initStartScreen() {
     canvas = document.getElementById('canvas');
