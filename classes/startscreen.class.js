@@ -19,6 +19,7 @@ class StartScreen {
         this.startImage = new Image();
         this.startImage.src = 'IMG/9_intro_outro_screens/start/startscreen_2.png';
         this.handleClick = this.handleClick.bind(this);
+        this.lastTouchTime = 0;
     }
     
     /**
@@ -173,27 +174,37 @@ class StartScreen {
      * Handles click and touch events on buttons.
      * @param {Event} event - The click or touch event.
      */
-    handleClick(event) {
-        
+ handleClick(event) {
+    const now = Date.now();
 
-        const { canvasX, canvasY } = this.getCanvasCoords(event);
+    // If a touch happened recently, ignore the click
+    if (event.type === 'click' && now - this.lastTouchTime < 300) {
+        return;
+    }
 
-        if (this.showingInstructions) {
-            if (this.isInside(canvasX, canvasY, this.backButton)) {
-                this.showingInstructions = false;
-                this.draw();
-            }
-            return;
-        }
+    if (event.type === 'touchstart') {
+        this.lastTouchTime = now;
+    }
 
-        if (this.isInside(canvasX, canvasY, this.playButton)) {
-            this.startPlay();
-        } 
-        else if (this.isInside(canvasX, canvasY, this.instructionsButton)) {
-            this.showingInstructions = true;
+    const { canvasX, canvasY } = this.getCanvasCoords(event);
+
+    if (this.showingInstructions) {
+        if (this.isInside(canvasX, canvasY, this.backButton)) {
+            this.showingInstructions = false;
             this.draw();
         }
+        return;
     }
+
+    if (this.isInside(canvasX, canvasY, this.playButton)) {
+        this.startPlay();
+    } 
+    else if (this.isInside(canvasX, canvasY, this.instructionsButton)) {
+        this.showingInstructions = true;
+        this.draw();
+    }
+}
+
 
     /**
      * Starts the game by recreating the canvas and calling the start callback.
