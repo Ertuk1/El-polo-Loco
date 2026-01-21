@@ -79,6 +79,8 @@ checkBottleBossHits() {
 
         // Bottle must be flying and not broken
         if (bottle.isBroken || !bottle.hasFlown) return;
+        
+        const minTravelDistance = 80; const traveledEnough = Math.abs(bottle.x - w.character.x) > minTravelDistance; if (!traveledEnough) return;
 
         // Bottle must be in front of the boss (not behind)
         const bottleInFront = bottle.x + bottle.width > endboss.x + 20;

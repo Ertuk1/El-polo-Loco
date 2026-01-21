@@ -116,15 +116,19 @@ handleHover(event) {
      * Starts a new game by recreating the canvas and calling the replay callback.
      */
     startReplay() {
+        MUSIC.stop();
         const newCanvas = recreateCanvas();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.onReplay(newCanvas);
+        MUSIC.play();
     }
     
     /**
      * Returns to the home screen by recreating the canvas and calling the home callback.
      */
     goHome() {
+        MUSIC.music.currentTime = 0;
+        MUSIC.stop();
         const newCanvas = recreateCanvas();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.onHome(newCanvas);

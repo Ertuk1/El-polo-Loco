@@ -27,6 +27,7 @@ class ThrowableObject extends moveableObject {
         this.width = 50;
         this.direction = direction;
         this.hasFlown = false; 
+        this.spawnProtection = true; setTimeout(() => { this.spawnProtection = false; }, 150);
         this.loadImage('IMG/6_salsa_bottle/salsa_bottle.png');
         this.loadImages(this.IMAGES_ROTATION);
         this.loadImages(this.IMAGES_BREAK);
@@ -88,7 +89,7 @@ throw() {
         const imagePath = this.IMAGES_ROTATION[this.currentImageIndex];
         this.img = this.imageChache[imagePath];
         
-        if (this.y > 236) {
+        if (this.y > 350) {
             this.stopRotation();
             this.triggerBreakingAnimation();
         }

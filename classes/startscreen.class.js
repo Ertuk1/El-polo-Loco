@@ -56,6 +56,7 @@ class StartScreen {
                 '•  UP ARROW / SPACE: Jump',
                 '•  LEFT ARROW: Move Left',
                 '•  RIGHT ARROW: Move Right',
+                '•  D: Throw Bottle',
                 '',
                 'GAMEPLAY:',
                 '• Jump on chickens to defeat them',

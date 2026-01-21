@@ -117,6 +117,13 @@ class MuteButton {
 
         localStorage.setItem('gameMuted', this.isMuted);
         document.querySelectorAll('audio').forEach(a => a.muted = this.isMuted);
+
+       if (this.isMuted){
+        MUSIC.pause();
+       } else{
+        MUSIC.resume();
+       }
+
         const muteEvent = new CustomEvent('globalMuteChanged', {
             detail: { muted: this.isMuted }
         });

@@ -72,55 +72,50 @@ class World {
     
 
     
-this.handleMuteChange = (event) => {
-    const { muted } = event.detail;
-
-    if (muted) {
-        this.backgroundMusic.pause();
-        return;
-    }
-
-    if (AUDIO_UNLOCKED) {
-        this.backgroundMusic.play().catch(() => {});
-    }
+ 
 };
-
-
-
-    document.addEventListener('globalMuteChanged', this.handleMuteChange);
-    }
 
     /**
      * Pauses the game by stopping game logic and showing pause screen.
      */
-    pause() {
-        if (this.isPaused) return;
-        this.isPaused = true;
-        GLOBAL_PAUSE = true;
-        document.querySelectorAll("audio").forEach(a => a.pause());
-        if (this.backgroundMusic) this.backgroundMusic.pause();
-        if (this.character && this.character.snore) this.character.snore.pause();
-        this.pauseScreen.show();
+pause() {
+    if (this.isPaused) return;
+
+    this.isPaused = true;
+    GLOBAL_PAUSE = true;
+
+    // Pause background music ONLY
+    MUSIC.pause();
+
+    // Pause character-specific looping sounds
+    if (this.character?.snore) {
+        this.character.snore.pause();
     }
+
+    this.pauseScreen.show();
+}
+
 
     /**
      * Resumes the game by restarting game logic and hiding pause screen.
      */
-    resume() {
-        if (!this.isPaused) return;
-        this.isPaused = false;
-        GLOBAL_PAUSE = false;
+resume() {
+    if (!this.isPaused) return;
 
-        this.pauseScreen.hide();
+    this.isPaused = false;
+    GLOBAL_PAUSE = false;
 
-        if (!GLOBAL_MUTE && this.backgroundMusic) {
-            this.backgroundMusic.play();
-        }
+    this.pauseScreen.hide();
 
-        if (this.character && this.character.snorePlayed && !GLOBAL_MUTE) {
-            this.character.snore.play();
-        }
+    // Resume background music if allowed
+    MUSIC.resume();
+
+    // Resume character snore only if it was active
+    if (this.character?.snorePlayed && !GLOBAL_MUTE) {
+        this.character.snore.play().catch(() => {});
     }
+}
+
 
     /**
      * Starts the game by initiating draw and run loops.
@@ -133,27 +128,25 @@ this.handleMuteChange = (event) => {
     /**
      * Checks if character is dead and triggers game over sequence.
      */
-    checkGameOver() {
-        if (this.gameOverShown || !this.character.isDead()) return;
+checkGameOver() {
+    if (this.gameOverShown || !this.character.isDead()) return;
 
-        setTimeout(() => {
-            this.stop();
-            
-            this.gameoversound.currentTime = 0;
-            if (!GLOBAL_MUTE) {
-                this.gameoversound.play();
-            }
-            this.gameOverShown = true;
+    setTimeout(() => {
+        this.stop();
+        MUSIC.stop(); // intentional stop
 
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            
-            const gameOverScreen = new GameOverScreen(this.canvas, {
-                replay: (newCanvas) => startGame(newCanvas),
-                home: (newCanvas) => showStartScreen()
-            });
-            gameOverScreen.show();
-        }, 1000);
-    }
+        if (!GLOBAL_MUTE) {
+            this.gameoversound.play();
+        }
+
+        this.gameOverShown = true;
+        new GameOverScreen(this.canvas, {
+            replay: startGame,
+            home: showStartScreen
+        }).show();
+    }, 1000);
+}
+
 
     /**
      * Checks character proximity to endboss and triggers boss intro sequence.
@@ -244,7 +237,6 @@ stop() {
     
     const pauseResetAudio = a => { a.pause(); a.currentTime = 0; };
     document.querySelectorAll("audio").forEach(pauseResetAudio);
-    if (this.backgroundMusic) pauseResetAudio(this.backgroundMusic);
     if (this.handleMuteChange) document.removeEventListener('globalMuteChanged', this.handleMuteChange);
     if (this.mobileControls && this.mobileControls.remove) this.mobileControls.remove();
     if (this.character && this.character.stop) this.character.stop();
@@ -321,26 +313,16 @@ draw() {
     /**
      * Displays the victory screen when player defeats the boss.
      */
-    showVictoryScreen() {
-        this.victoryShown = true;
-        
-        document.querySelectorAll("audio").forEach(a => a.muted = true);
+showVictoryScreen() {
+    this.victoryShown = true;
+    this.stop();
+    MUSIC.stop();
 
-        this.stop();
+    new VictoryScreen(this.canvas, {
+        replay: () => { startGame(recreateCanvas()); MUSIC.play(); }, // <-- works here },
+        home: () => showStartScreen(recreateCanvas())
+    }).show();
+}
 
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.victoryScreen = new VictoryScreen(this.canvas, {
-            replay: () => {
-                const newCanvas = recreateCanvas();
-                startGame(newCanvas);
-            },
-            home: () => {
-                const newCanvas = recreateCanvas();
-                showStartScreen();
-            }
-        });
-
-        this.victoryScreen.show();
-    }
 }

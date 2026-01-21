@@ -316,13 +316,18 @@ function recreateCanvas() {
     return newCanvas;
 }
 
-function startGame(canvasParam) {
+async function startGame(canvasParam) {
     canvas = canvasParam;
 
     initlevel1();
     world = new PausableWorld(canvas, keyboard);
-   if (!AUDIO_UNLOCKED) {world.startBackgroundMusic(); }
+
+    await soundIsReady();   // wait for user interaction
+    AUDIO_UNLOCKED = true;
+    MUSIC.stop();
+    MUSIC.play();           // now guaranteed to work
 }
+
 
 
 // === Global Mute Control ===
@@ -335,16 +340,13 @@ HTMLMediaElement.prototype.play = function (...args) {
         this.pause();
         this.currentTime = 0;
         return Promise.resolve();
-    } else {
-        this.muted = false;
-
-        if (AUDIO_UNLOCKED) {
-            return originalPlay.apply(this, args);
-        } else {
-            return Promise.resolve();
-        }
     }
+    this.muted = false;
+    return AUDIO_UNLOCKED
+        ? originalPlay.apply(this, args)
+        : Promise.resolve();
 };
+
 
 
 function initStartScreen() {

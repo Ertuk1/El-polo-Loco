@@ -11,11 +11,7 @@ class PausableWorld extends World {
      */
     constructor(canvas, keyboard) {
         super(canvas, keyboard);   
-        this.startBackgroundMusic();
-
-          this.backgroundMusic = new Audio('audio/BackgroundMusic.mp3');
-          this.backgroundMusic.loop = true; 
-          this.backgroundMusic.volume = 0.05;
+        
 
         this.renderer = new RenderingManager(this);
         this.isPaused = false;
@@ -34,12 +30,13 @@ class PausableWorld extends World {
     }
 
     async startBackgroundMusic() {
+    if (AUDIO_UNLOCKED) return;
+
     try {
         await soundIsReady();
         AUDIO_UNLOCKED = true;
-        this.backgroundMusic.play().catch(() => {});
-    } catch (e) {
-        console.info('Error playing sound');
+    } catch {
+        console.info('Audio unlock failed');
     }
  
 }
@@ -50,6 +47,7 @@ class PausableWorld extends World {
     restartGame() {
         GLOBAL_PAUSE = false;
         this.stop();
+        MUSIC.stop();
         const newCanvas = recreateCanvas();
         startGame(newCanvas);
     }
@@ -60,6 +58,7 @@ class PausableWorld extends World {
     goHome() {
         GLOBAL_PAUSE = false;
         this.stop();
+        MUSIC.stop();
         const newCanvas = recreateCanvas();
         showStartScreen(newCanvas);
     }
