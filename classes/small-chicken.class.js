@@ -15,6 +15,7 @@ class SmallChicken extends moveableObject {
     ]
     IMAGES_DEAD = ['IMG/3_enemies_chicken/chicken_small/2_dead/dead.png']
     isDead = false;
+    iscollidable = true;
     
     /**
      * Initializes a small chicken enemy at a random or specified position.
@@ -38,7 +39,7 @@ class SmallChicken extends moveableObject {
         if (!this.isDead) {
             this.isDead = true;
             this.speed = 0;
-            
+            this.iscollidable = false;
             if (!this.deathSoundPlayed && !GLOBAL_MUTE) {
                 this.deathSoundPlayed = true;
                 const deathSound = new Audio('audio/squeaky-toy-1-6059.mp3');

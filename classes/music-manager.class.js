@@ -14,7 +14,7 @@ class MusicManager {
 
         this.music = new Audio('audio/BackgroundMusic.mp3');
         this.music.loop = true;
-        this.music.volume = 0.5;
+        this.music.volume = 0.15;
         this.startOffset = 4;
         this.wasStopped = true;
         MusicManager.instance = this;

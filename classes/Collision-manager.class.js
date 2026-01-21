@@ -63,6 +63,7 @@
 
         checkEnemyCollision(enemy) {
             const w = this.world;
+            if (enemy.isDead || enemy.collidable === false) return;
 
             if (w.character.isColliding(enemy, 5, 0, 5, 0) && this.isJumpKill(enemy)) {
                 if (!(enemy instanceof Endboss)) w.character.bounce();

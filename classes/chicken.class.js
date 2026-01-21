@@ -26,6 +26,7 @@ constructor(x = null){
     this.x = x !== null ? x : 250 + Math.random() * 500;
     this.animate();
     this.isDead = false;
+    this.collidable = true;
     this.speed = 0.15 + Math.random() * 0.25;
 }
 
@@ -35,7 +36,7 @@ constructor(x = null){
 die() {
     this.isDead = true;
     this.speed = 0;
-    this.loadImage(this.IMAGES_DEAD[0]);
+    this.loadImage(this.IMAGES_DEAD[0]);    
     setTimeout(() => {
         this.removeFromWorld();
     }, 1000);

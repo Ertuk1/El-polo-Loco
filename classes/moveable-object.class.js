@@ -20,21 +20,34 @@ class moveableObject extends DrawableObject {
         return    true
         }
         else {
-        return this.y < 180;
+        return this.y < 175;
         }
     }
     
     /**
      * Applies gravity physics to the object, pulling it down over time.
      */
-    applyGravity() {
-        this.gravityInterval = setInterval(() => {
-            if(this.isAboveGround() || this.speedY > 0){
+applyGravity() {
+    this.gravityInterval = setInterval(() => {
+
+        // 1. Apply gravity when rising OR falling
+        if (this.isAboveGround() || this.speedY !== 0) {
             this.y -= this.speedY;
             this.speedY -= this.acceeleration;
-            }
-        }, 1000 / 25);
-    }
+        }
+
+        // 2. Clamp to ground ONLY when falling and crossing ground
+        if (this.speedY < 0 && this.y >= 175) {
+            this.y = 175;
+            this.speedY = 0;
+            this.isJumping = false;
+        }
+
+        console.log(this.speedY, this.y);
+
+    }, 1000 / 25);
+}
+
     
     /**
      * Stops the gravity interval for cleanup.

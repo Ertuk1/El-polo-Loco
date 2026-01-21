@@ -6,7 +6,7 @@
 class Character extends moveableObject {
 
 height=280;
-y=155;
+y=175;
 speed = 3.5;
 idleTime = 0; 
 lastActionTime = 0; 
@@ -307,6 +307,7 @@ jump() {
     this.speedY = 30;
     this.isJumping = true;
     this.jumpAnimationTime = Date.now();
+    this.currentImage = 0
 }
 
 /**
@@ -339,18 +340,15 @@ stop() {
     document.removeEventListener('globalPauseChanged', this.handlePauseChange);
 }
 /**
- * Character bounce mechanic for bounce after landing on enemies 
+ * Character bounce mechanic for bounce after landing on enemies
  */
 bounce() {
-    if (!this.canBounce) return;
+    
 
     this.speedY = 25; // bounce height
-    this.canBounce = false;
-
-    setTimeout(() => {
-        this.canBounce = true;
-    }, 150); // 150ms cooldown works great
+    this.isJumping = true;  // Add this line
+    this.jumpAnimationTime = Date.now();  // Add this line
+    this.currentImage = 0
 }
-
 
 }
