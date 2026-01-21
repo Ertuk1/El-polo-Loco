@@ -10,29 +10,39 @@ class MusicManager {
         this.music = new Audio('audio/BackgroundMusic.mp3');
         this.music.loop = true;
         this.music.volume = 0.5;
-
+        this.startOffset = 4; 
+        this.wasStopped = true;
         MusicManager.instance = this;
     }
+play() {
+    if (GLOBAL_MUTE || !AUDIO_UNLOCKED) return;
 
-    play() {
-        if (GLOBAL_MUTE || !AUDIO_UNLOCKED) return;
-        this.music.play().catch(() => {});
+    if (this.wasStopped) {
+        this.music.currentTime = this.startOffset;   // ⬅️ jump to 4 seconds
     }
 
-    stop() {
-        this.music.pause();
-        this.music.currentTime = 0;
-    }
+    this.music.play().catch(() => {});
+    this.wasStopped = false;
+}
+
+stop() {
+    this.music.pause();
+    this.music.currentTime = 0;
+    this.wasStopped = true;   // ⬅️ next play() will jump to 4 seconds
+}
+
 
     pause() {
         this.music.pause();
     }
 
-    resume() {
-        if (!GLOBAL_MUTE && AUDIO_UNLOCKED) {
-            this.music.play().catch(() => {});
-        }
+resume() {
+    if (!GLOBAL_MUTE && AUDIO_UNLOCKED) {
+        this.wasStopped = false;   // ⬅️ resume should NOT restart at 4s
+        this.music.play().catch(() => {});
     }
+}
+
 
     setMuted(muted) {
         this.music.muted = muted;

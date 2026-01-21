@@ -29,13 +29,15 @@
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
+isTouchDevice() { return ('ontouchstart' in window) || navigator.maxTouchPoints > 0; }
+
             /**
              * Decides whether to use HTML buttons or Canvas buttons
              */
             checkMode() {
                 const tabletElement = document.getElementById('tablet-controls');
                 // Logic: 1000px height or higher = HTML buttons
-                if (window.innerHeight >= 800) {
+                if (this.isTouchDevice() && window.innerHeight >= 800) {
                     this.useHtmlControls = true;
                     tabletElement.style.display = 'flex';
                 } else {
