@@ -84,10 +84,8 @@ pause() {
     this.isPaused = true;
     GLOBAL_PAUSE = true;
 
-    // Pause background music ONLY
     MUSIC.pause();
 
-    // Pause character-specific looping sounds
     if (this.character?.snore) {
         this.character.snore.pause();
     }
@@ -107,10 +105,9 @@ resume() {
 
     this.pauseScreen.hide();
 
-    // Resume background music if allowed
+ 
     MUSIC.resume();
 
-    // Resume character snore only if it was active
     if (this.character?.snorePlayed && !GLOBAL_MUTE) {
         this.character.snore.play().catch(() => {});
     }
@@ -133,8 +130,7 @@ checkGameOver() {
 
     setTimeout(() => {
         this.stop();
-        MUSIC.stop(); // intentional stop
-
+        MUSIC.stop(); 
         if (!GLOBAL_MUTE) {
             this.gameoversound.play();
         }
@@ -226,34 +222,98 @@ collectCoin() {
         }, 50);
     }
 
-    /**
-     * Stops all game loops, audio, and cleans up resources.
-     */
+ /**
+ * Stops all game loops, audio, and cleans up resources.
+ */
 stop() {
-    // Cancel animation frame first
+    this.stopMainLoops();
+    this.stopAllAudio();
+    this.removeGlobalListeners();
+    this.cleanupControls();
+    this.stopCharacter();
+    this.stopCollections();
+    this.stopEndboss();
+}
+
+
+/**
+ * Cancels animation frames and clears all running intervals.
+ */
+stopMainLoops() {
     if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
     if (this.intervalId) clearInterval(this.intervalId);
     if (this.bossInterval) clearInterval(this.bossInterval);
-    
-    const pauseResetAudio = a => { a.pause(); a.currentTime = 0; };
-    document.querySelectorAll("audio").forEach(pauseResetAudio);
-    if (this.handleMuteChange) document.removeEventListener('globalMuteChanged', this.handleMuteChange);
-    if (this.mobileControls && this.mobileControls.remove) this.mobileControls.remove();
-    if (this.character && this.character.stop) this.character.stop();
-    
-    const stopIf = obj => { if (obj && typeof obj.stop === 'function') obj.stop(); };
-    const stopCollection = coll => { if (coll) coll.forEach(item => stopIf(item)); };
+}
+
+/**
+ * Pauses and resets all audio elements in the document.
+ */
+stopAllAudio() {
+    const pauseReset = audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    };
+    document.querySelectorAll("audio").forEach(pauseReset);
+}
+
+/**
+ * Removes global event listeners such as mute-change handlers.
+ */
+removeGlobalListeners() {
+    if (this.handleMuteChange) {
+        document.removeEventListener('globalMuteChanged', this.handleMuteChange);
+    }
+}
+
+/**
+ * Cleans up mobile controls if they exist and support removal.
+ */
+cleanupControls() {
+    if (this.mobileControls && this.mobileControls.remove) {
+        this.mobileControls.remove();
+    }
+}
+
+/**
+ * Stops the main character if a stop() method is available.
+ */
+stopCharacter() {
+    if (this.character && typeof this.character.stop === 'function') {
+        this.character.stop();
+    }
+}
+
+/**
+ * Stops all objects in relevant collections (enemies, bottles, coins, throwable objects).
+ */
+stopCollections() {
+    const stopIf = obj => {
+        if (obj && typeof obj.stop === 'function') obj.stop();
+    };
+
+    const stopCollection = coll => {
+        if (coll) coll.forEach(item => stopIf(item));
+    };
+
     stopCollection(this.level && this.level.enemies);
     stopCollection(this.bottles);
     stopCollection(this.coins);
     stopCollection(this.throwableObjects);
-    
-    // IMPORTANT: Stop endboss specifically
+}
+
+/**
+ * Finds and stops the Endboss instance if present.
+ */
+stopEndboss() {
     const endboss = this.level.enemies.find(e => e instanceof Endboss);
-    if (endboss && endboss.stop) {
+    if (endboss && typeof endboss.stop === 'function') {
         endboss.stop();
     }
 }
+
+
+
+
 
     /**
      * Checks for bottle throw input and creates throwable object.

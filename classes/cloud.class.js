@@ -10,26 +10,22 @@ class Cloud extends moveableObject {
      static IMAGES = [ 'IMG/5_background/layers/4_clouds/1.png', 'IMG/5_background/layers/4_clouds/2.png' ]; 
     constructor() {
         super();
-
-        // pick random cloud image
         const img = Cloud.IMAGES[Math.floor(Math.random() * Cloud.IMAGES.length)];
         this.loadImage(img);
-
-        // random starting position
-        this.x = 500 + Math.random() * 1500; // spread across the level
-        this.y = 20 + Math.random() * 80;    // slight vertical variation
-
-        // cloud size
+        this.x = 500 + Math.random() * 1500;
+        this.y = 20 + Math.random() * 80;    
         this.width = 500;
         this.height = 250;
-
-        // random slow speed
         this.speed = 0.2 + Math.random() * 0.3;
-
         this.animate();
     }
 
 
+    /**
+ * Continuously updates the cloud's position to create a scrolling animation.
+ * Moves the cloud left each frame and respawns it on the right side once it exits the screen.
+ * Runs at approximately 60 frames per second.
+ */
 
     animate() {
         setInterval(() => {

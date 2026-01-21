@@ -65,23 +65,49 @@ class MuteButton {
      * @param {MouseEvent} event - The mouse click event.
      */
     handleClick(event) {
-        const rect = this.canvas.getBoundingClientRect();
-        const scaleX = this.canvas.width / rect.width;
-        const scaleY = this.canvas.height / rect.height;
-        const canvasX = (event.clientX - rect.left) * scaleX;
-        const canvasY = (event.clientY - rect.top) * scaleY;
-        const btn = this.getButtonPx();
-        const hitSize = btn.size * 1.5;
-        const offset = (hitSize - btn.size) / 2;
-        if (
-            canvasX >= btn.x - offset &&
-            canvasX <= btn.x + btn.size + offset &&
-            canvasY >= btn.y - offset &&
-            canvasY <= btn.y + btn.size + offset
-        ) {
+        const { canvasX, canvasY } = this.getScaledClickPos(event);
+        if (this.isInsideMuteHitbox(canvasX, canvasY)) {
             this.toggleMute();
         }
     }
+
+    /**
+     * Converts a mouse click position into scaled canvas coordinates.
+     * @param {MouseEvent} event - The mouse click event.
+     * @returns {{canvasX: number, canvasY: number}} Scaled canvas coordinates.
+     */
+    getScaledClickPos(event) {
+        const rect = this.canvas.getBoundingClientRect();
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
+
+        return {
+            canvasX: (event.clientX - rect.left) * scaleX,
+            canvasY: (event.clientY - rect.top) * scaleY
+        };
+    }
+
+    /**
+     * Determines whether a click lies inside the mute button's enlarged hitbox.
+     * @param {number} x - Scaled canvas X coordinate.
+     * @param {number} y - Scaled canvas Y coordinate.
+     * @returns {boolean} True if the click is inside the hitbox.
+     */
+    isInsideMuteHitbox(x, y) {
+        const btn = this.getButtonPx();
+        const hitSize = btn.size * 1.5;
+        const offset = (hitSize - btn.size) / 2;
+
+        return (
+            x >= btn.x - offset &&
+            x <= btn.x + btn.size + offset &&
+            y >= btn.y - offset &&
+            y <= btn.y + btn.size + offset
+        );
+    }
+
+
+
     
     /**
      * Handles touch events on the mute button for mobile devices.
@@ -89,24 +115,49 @@ class MuteButton {
      */
     handleTouch(event) {
         event.preventDefault();
+        const { canvasX, canvasY } = this.getScaledTouchPos(event);
+        if (this.isInsideMuteHitbox(canvasX, canvasY)) {
+            this.toggleMute();
+        }
+    }
+
+    /**
+     * Converts the first touch position into scaled canvas coordinates.
+     * @param {TouchEvent} event - The touch event.
+     * @returns {{canvasX: number, canvasY: number}} Scaled canvas coordinates.
+     */
+    getScaledTouchPos(event) {
         const rect = this.canvas.getBoundingClientRect();
         const scaleX = this.canvas.width / rect.width;
         const scaleY = this.canvas.height / rect.height;
         const touch = event.touches[0];
-        const canvasX = (touch.clientX - rect.left) * scaleX;
-        const canvasY = (touch.clientY - rect.top) * scaleY;
+
+        return {
+            canvasX: (touch.clientX - rect.left) * scaleX,
+            canvasY: (touch.clientY - rect.top) * scaleY
+        };
+    }
+
+    /**
+     * Determines whether a touch lies inside the mute button's enlarged hitbox.
+     * @param {number} x - Scaled canvas X coordinate.
+     * @param {number} y - Scaled canvas Y coordinate.
+     * @returns {boolean} True if the touch is inside the hitbox.
+     */
+    isInsideMuteHitbox(x, y) {
         const btn = this.getButtonPx();
         const hitSize = btn.size * 1.5;
         const offset = (hitSize - btn.size) / 2;
-        if (
-            canvasX >= btn.x - offset &&
-            canvasX <= btn.x + btn.size + offset &&
-            canvasY >= btn.y - offset &&
-            canvasY <= btn.y + btn.size + offset
-        ) {
-            this.toggleMute();
-        }
+
+        return (
+            x >= btn.x - offset &&
+            x <= btn.x + btn.size + offset &&
+            y >= btn.y - offset &&
+            y <= btn.y + btn.size + offset
+        );
     }
+
+
     
     /**
      * Toggles mute state and dispatches custom event for other audio sources.

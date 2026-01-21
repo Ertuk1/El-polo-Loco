@@ -338,7 +338,9 @@ stop() {
     document.removeEventListener('globalMuteChanged', this.handleMuteChange);
     document.removeEventListener('globalPauseChanged', this.handlePauseChange);
 }
-
+/**
+ * Character bounce mechanic for bounce after landing on enemies 
+ */
 bounce() {
     if (!this.canBounce) return;
 

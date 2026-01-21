@@ -43,15 +43,12 @@ class ThrowableObject extends moveableObject {
     
     triggerBreakingAnimation() {
         if (this.isBroken) return; // Prevent multiple triggers
-        
         this.isBroken = true;
         this.currentImageIndex = 0;
         this.speedY = 0; // Stop falling
-        
         if (!GLOBAL_MUTE) {
             this.breakSound.play();
         }
-        
         let breakIntervalId = setInterval(() => {
             const imagePath = this.IMAGES_BREAK[this.currentImageIndex];
             this.img = this.imageChache[imagePath];
@@ -70,29 +67,66 @@ throw() {
     if (!GLOBAL_MUTE) {
         this.throwSound.play();
     }
-    
-    // Mark as "has flown" after 100ms to avoid instant collision
+        
+    this.markAsFlownDelayed();
+
+    this.startRotationInterval();
+}
+
+/**
+ * Marks the bottle as "has flown" after a short delay
+ * to prevent immediate collision with the player.
+ */
+markAsFlownDelayed() {
     setTimeout(() => {
         this.hasFlown = true;
     }, 100);
-    
+}
+
+/**
+ * Starts the rotation interval that moves the bottle horizontally,
+ * cycles rotation frames, updates the image, and triggers breaking
+ * when the bottle hits the ground.
+ */
+startRotationInterval() {
     this.rotationIntervalId = setInterval(() => {
         if (this.isBroken) return;
-        
-        this.x += this.direction ? -10 : 10;
-        
-        this.currentImageIndex++;
-        if (this.currentImageIndex >= this.IMAGES_ROTATION.length) {
-            this.currentImageIndex = 0;
-        }
-        
-        const imagePath = this.IMAGES_ROTATION[this.currentImageIndex];
-        this.img = this.imageChache[imagePath];
-        
+
+        this.updateHorizontalMovement();
+        this.advanceRotationFrame();
+        this.updateRotationImage();
+
         if (this.y > 350) {
             this.stopRotation();
             this.triggerBreakingAnimation();
         }
     }, 30);
 }
+
+/**
+ * Moves the bottle horizontally based on its throw direction.
+ */
+updateHorizontalMovement() {
+    this.x += this.direction ? -10 : 10;
+}
+
+/**
+ * Advances the rotation frame index and loops it when necessary.
+ */
+advanceRotationFrame() {
+    this.currentImageIndex++;
+    if (this.currentImageIndex >= this.IMAGES_ROTATION.length) {
+        this.currentImageIndex = 0;
+    }
+}
+
+/**
+ * Updates the bottle's current image based on the rotation frame.
+ */
+updateRotationImage() {
+    const imagePath = this.IMAGES_ROTATION[this.currentImageIndex];
+    this.img = this.imageChache[imagePath];
+}
+
+
 }

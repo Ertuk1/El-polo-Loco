@@ -105,7 +105,7 @@ class Endboss extends moveableObject {
     attackInterval2(){
         setInterval(() => {
             this.triggerAttack();
-        }, 4000);
+        }, 2500);
     }
 
     /**
