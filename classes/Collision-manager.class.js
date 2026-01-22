@@ -7,6 +7,18 @@ class CollisionManager {
     constructor(world) {
         this.world = world;
     }
+
+  CharacterOffsets() {
+    const w = this.world;
+    return [
+        w.character.offsetX,
+        w.character.offsetY,
+        w.character.offsetWidth,
+        w.character.offsetHeight
+    ];
+}
+
+
     /**
  * Runs all collision checks for the current frame.
  * Skips processing if the character is dead or the game over screen is already shown.
@@ -65,14 +77,14 @@ class CollisionManager {
         const w = this.world;
         if (enemy.isDead || enemy.collidable === false) return;
 
-        if (w.character.isColliding(enemy, 5, 0, 5, 0) && this.isJumpKill(enemy)) {
+        if (w.character.isColliding(enemy, ...this.CharacterOffsets()) && this.isJumpKill(enemy)) {
             if (!(enemy instanceof Endboss)) w.character.bounce();
             this.playChickenSound(enemy);
             enemy.die();
             return;
         }
 
-        if (w.character.isColliding(enemy, 15, 15, 15, 15)) {
+        if (w.character.isColliding(enemy, ...this.CharacterOffsets())) {
             this.damageCharacter();
         }
     }
@@ -121,7 +133,7 @@ class CollisionManager {
     checkBottlePickups() {
         const w = this.world;
         w.bottles.forEach((bottle, index) => {
-            if (w.character.isColliding(bottle, 20, 20, 20, 20)) {
+            if (w.character.isColliding(bottle, ...this.CharacterOffsets())) {
                 w.bottles.splice(index, 1);
                 w.collectBottle();
             }
@@ -247,7 +259,7 @@ class CollisionManager {
         const w = this.world;
 
         w.coins.forEach((coin, index) => {
-            if (w.character.isColliding(coin, 30, 30, 30, 30)) {
+            if (w.character.isColliding(coin, ...this.CharacterOffsets())) {
                 w.collectCoin();
                 const s = w.character.collectSound.cloneNode();
                 s.volume = w.character.collectSound.volume;
@@ -268,7 +280,7 @@ class CollisionManager {
         const endboss = w.level.enemies.find(e => e instanceof Endboss);
         if (!endboss) return;
 
-        if (w.character.isColliding(endboss)) {
+        if (w.character.isColliding(endboss, ...this.CharacterOffsets())) {
             w.character.hit(25);
             w.statusbar.setPercentage(w.character.energy);
         }

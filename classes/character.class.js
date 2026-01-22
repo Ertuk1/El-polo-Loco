@@ -81,6 +81,13 @@ class Character extends moveableObject {
         'IMG/2_character_pepe/4_hurt/H-42.png',
         'IMG/2_character_pepe/4_hurt/H-43.png'
     ]
+offsetX = 20;     
+offsetY = 5;       
+offsetWidth = 20;  
+offsetHeight = 0;  
+
+
+
 
     /**
      * Initializes the character with images, sounds, and event listeners.
