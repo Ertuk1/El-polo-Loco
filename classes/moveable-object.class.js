@@ -43,7 +43,7 @@ applyGravity() {
             this.isJumping = false;
         }
 
-        console.log(this.speedY, this.y);
+       
 
     }, 1000 / 25);
 }

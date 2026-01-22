@@ -35,8 +35,9 @@ constructor(x = null){
  */
 die() {
     this.isDead = true;
+    this.collidable = false;
     this.speed = 0;
-    this.loadImage(this.IMAGES_DEAD[0]);    
+    this.loadImage(this.IMAGES_DEAD[0]);
     setTimeout(() => {
         this.removeFromWorld();
     }, 1000);

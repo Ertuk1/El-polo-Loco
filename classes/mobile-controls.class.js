@@ -51,7 +51,7 @@ class MobileControls {
             tabletElement.style.display = 'none';
             return;
         }
-        if (this.isTouchDevice() && window.innerHeight >= 800) {
+        if (this.isTouchDevice() && window.innerHeight >= 760) {
             this.useHtmlControls = true;
             tabletElement.style.display = 'flex';
         } else {
@@ -198,7 +198,7 @@ class MobileControls {
             if (this.isInButton(pos.x, pos.y, this.mobileControls.throw)) this.keyboard.D = true;
         }
     }
-    
+
         /**
      * Draws the on-screen canvas-based mobile control buttons.
      * Only renders controls when HTML mode is disabled.
