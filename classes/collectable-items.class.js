@@ -4,11 +4,11 @@
  * @extends moveableObject
  */
 class Bottle extends moveableObject {
-    Images_Bottles=[
+    Images_Bottles = [
         'IMG/6_salsa_bottle/1_salsa_bottle_on_ground.png',
         'IMG/6_salsa_bottle/2_salsa_bottle_on_ground.png'
     ]
-    
+
     /**
      * Initializes a bottle at the specified position with animation.
      * @param {number} x - The x-coordinate position of the bottle.
@@ -23,7 +23,7 @@ class Bottle extends moveableObject {
         this.height = 80;
         this.animate();
     }
-    
+
     /**
      * Starts the animation loop to cycle through bottle images.
      */
@@ -32,7 +32,7 @@ class Bottle extends moveableObject {
             this.playAnimation(this.Images_Bottles);
         }, 200);
     }
-    
+
     /**
      * Stops the animation interval for cleanup.
      */

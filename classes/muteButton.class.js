@@ -13,13 +13,13 @@ class MuteButton {
         this.ctx = canvas.getContext('2d');
         this.sounds = sounds;
         this.deviceType = window.innerWidth <= 720 ? 'mobile' : 'desktop';
-        
+
         this.buttonConfig = {
             x: 0.944,
             y: 0.156,
             size: 0.07
         };
-        
+
         const savedMuteState = localStorage.getItem('gameMuted');
         this.isMuted = savedMuteState === 'true'; // Convert string to boolean
         GLOBAL_MUTE = this.isMuted;
@@ -32,7 +32,7 @@ class MuteButton {
         document.addEventListener('click', this.handleClick);
         document.addEventListener('touchstart', this.handleTouch);
     }
-    
+
     /**
      * Converts button percentage coordinates to pixel coordinates.
      * @returns {Object} Button dimensions in pixels.
@@ -44,7 +44,7 @@ class MuteButton {
             size: this.buttonConfig.size * 720
         };
     }
-    
+
     /**
      * Draws the mute button on the canvas with appropriate icon.
      */
@@ -53,13 +53,13 @@ class MuteButton {
         const btn = this.getButtonPx();
         this.ctx.drawImage(img, btn.x, btn.y, btn.size, btn.size);
     }
-    
+
     /**
      * Legacy method - no longer needed with percentage-based positioning.
      */
     updatePosition() {
     }
-    
+
     /**
      * Handles mouse click events on the mute button.
      * @param {MouseEvent} event - The mouse click event.
@@ -108,7 +108,7 @@ class MuteButton {
 
 
 
-    
+
     /**
      * Handles touch events on the mute button for mobile devices.
      * @param {TouchEvent} event - The touch event.
@@ -158,7 +158,7 @@ class MuteButton {
     }
 
 
-    
+
     /**
      * Toggles mute state and dispatches custom event for other audio sources.
      */
@@ -169,18 +169,18 @@ class MuteButton {
         localStorage.setItem('gameMuted', this.isMuted);
         document.querySelectorAll('audio').forEach(a => a.muted = this.isMuted);
 
-       if (this.isMuted){
-        MUSIC.pause();
-       } else{
-        MUSIC.resume();
-       }
+        if (this.isMuted) {
+            MUSIC.pause();
+        } else {
+            MUSIC.resume();
+        }
 
         const muteEvent = new CustomEvent('globalMuteChanged', {
             detail: { muted: this.isMuted }
         });
         document.dispatchEvent(muteEvent);
     }
-    
+
     /**
      * Removes event listeners for cleanup.
      */

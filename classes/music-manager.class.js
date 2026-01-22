@@ -24,59 +24,59 @@ class MusicManager {
  * If the music was previously stopped, playback begins from the configured start offset.
  */
 
-play() {
-    if (GLOBAL_MUTE || !AUDIO_UNLOCKED) return;
+    play() {
+        if (GLOBAL_MUTE || !AUDIO_UNLOCKED) return;
 
-    if (this.wasStopped) {
-        this.music.currentTime = this.startOffset;
-    }
+        if (this.wasStopped) {
+            this.music.currentTime = this.startOffset;
+        }
 
-    this.music.play().catch(() => {});
-    this.wasStopped = false;
-}
-
-/**
- * Stops the music completely, resets playback to the beginning,
- * and marks the music as stopped so the next play() call restarts at the offset.
- */
-
-stop() {
-    this.music.pause();
-    this.music.currentTime = 0;
-    this.wasStopped = true;
-}
-
-/**
- * Pauses the music without resetting the playback position.
- */
-
-pause() {
-    this.music.pause();
-}
-
-/**
- * Resumes music playback if audio is unlocked and not muted.
- * Does not reset playback to the start offset.
- */
-
-resume() {
-    if (!GLOBAL_MUTE && AUDIO_UNLOCKED) {
+        this.music.play().catch(() => { });
         this.wasStopped = false;
-        this.music.play().catch(() => {});
     }
-}
 
-/**
- * Mutes or unmutes the background music.
- * Automatically pauses when muted and resumes when unmuted.
- * @param {boolean} muted - Whether the music should be muted.
- */
+    /**
+     * Stops the music completely, resets playback to the beginning,
+     * and marks the music as stopped so the next play() call restarts at the offset.
+     */
 
-setMuted(muted) {
-    this.music.muted = muted;
-    if (muted) this.pause();
-    else this.resume();
-}
+    stop() {
+        this.music.pause();
+        this.music.currentTime = 0;
+        this.wasStopped = true;
+    }
+
+    /**
+     * Pauses the music without resetting the playback position.
+     */
+
+    pause() {
+        this.music.pause();
+    }
+
+    /**
+     * Resumes music playback if audio is unlocked and not muted.
+     * Does not reset playback to the start offset.
+     */
+
+    resume() {
+        if (!GLOBAL_MUTE && AUDIO_UNLOCKED) {
+            this.wasStopped = false;
+            this.music.play().catch(() => { });
+        }
+    }
+
+    /**
+     * Mutes or unmutes the background music.
+     * Automatically pauses when muted and resumes when unmuted.
+     * @param {boolean} muted - Whether the music should be muted.
+     */
+
+    setMuted(muted) {
+        this.music.muted = muted;
+        if (muted) this.pause();
+        else this.resume();
+    }
 }
 
 const MUSIC = new MusicManager();

@@ -7,13 +7,13 @@
 
 class Cloud extends moveableObject {
 
-     static IMAGES = [ 'IMG/5_background/layers/4_clouds/1.png', 'IMG/5_background/layers/4_clouds/2.png' ]; 
+    static IMAGES = ['IMG/5_background/layers/4_clouds/1.png', 'IMG/5_background/layers/4_clouds/2.png'];
     constructor() {
         super();
         const img = Cloud.IMAGES[Math.floor(Math.random() * Cloud.IMAGES.length)];
         this.loadImage(img);
         this.x = 500 + Math.random() * 1500;
-        this.y = 20 + Math.random() * 80;    
+        this.y = 20 + Math.random() * 80;
         this.width = 500;
         this.height = 250;
         this.speed = 0.2 + Math.random() * 0.3;

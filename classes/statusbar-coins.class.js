@@ -13,7 +13,7 @@ class CoinStatusBar extends DrawableObject {
         'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png',
     ];
     percentage = 0;
-    
+
     /**
      * Initializes the coin status bar at starting position.
      */
@@ -26,7 +26,7 @@ class CoinStatusBar extends DrawableObject {
         this.height = 60;
         this.setPercentage(0);
     }
-    
+
     /**
      * Sets the coin collection percentage and updates the displayed image.
      * @param {number} percentage - The collection percentage (0-100).
@@ -36,7 +36,7 @@ class CoinStatusBar extends DrawableObject {
         let path = this.IMAGES[this.resolveImageIndex()];
         this.img = this.imageChache[path];
     }
-    
+
     /**
      * Determines which image index to use based on current collection percentage.
      * @returns {number} Image index (0-5) corresponding to collection level.

@@ -10,45 +10,45 @@ class moveableObject extends DrawableObject {
     acceeleration = 2;
     energy = 100;
     lastHit = 0;
-  
+
     /**
      * Checks if the object is above ground level.
      * @returns {boolean} True if object is above ground or is a throwable object.
      */
-    isAboveGround(){
-        if (this instanceof ThrowableObject){
-        return    true
+    isAboveGround() {
+        if (this instanceof ThrowableObject) {
+            return true
         }
         else {
-        return this.y < 175;
+            return this.y < 175;
         }
     }
-    
+
     /**
      * Applies gravity physics to the object, pulling it down over time.
      */
-applyGravity() {
-    this.gravityInterval = setInterval(() => {
+    applyGravity() {
+        this.gravityInterval = setInterval(() => {
 
-        // 1. Apply gravity when rising OR falling
-        if (this.isAboveGround() || this.speedY !== 0) {
-            this.y -= this.speedY;
-            this.speedY -= this.acceeleration;
-        }
+            // 1. Apply gravity when rising OR falling
+            if (this.isAboveGround() || this.speedY !== 0) {
+                this.y -= this.speedY;
+                this.speedY -= this.acceeleration;
+            }
 
-        // 2. Clamp to ground ONLY when falling and crossing ground
-        if (this.speedY < 0 && this.y >= 175) {
-            this.y = 175;
-            this.speedY = 0;
-            this.isJumping = false;
-        }
+            // 2. Clamp to ground ONLY when falling and crossing ground
+            if (this.speedY < 0 && this.y >= 175) {
+                this.y = 175;
+                this.speedY = 0;
+                this.isJumping = false;
+            }
 
-       
 
-    }, 1000 / 25);
-}
 
-    
+        }, 1000 / 25);
+    }
+
+
     /**
      * Stops the gravity interval for cleanup.
      */
@@ -57,33 +57,33 @@ applyGravity() {
             clearInterval(this.gravityInterval);
         }
     }
-    
+
     /**
      * Checks if this object is colliding with another moveable object.
      * @param {moveableObject} mo - The other object to check collision with.
      * @returns {boolean} True if objects are colliding.
      */
-isColliding(mo, offsetX = 0, offsetY = 0, offsetWidth = 0, offsetHeight = 0) {
-    return this.x + offsetX < mo.x + mo.width - offsetWidth &&
-           this.x + this.width - offsetWidth > mo.x + offsetX &&
-           this.y + offsetY < mo.y + mo.height - offsetHeight &&
-           this.y + this.height - offsetHeight > mo.y + offsetY;
-}
-    
+    isColliding(mo, offsetX = 0, offsetY = 0, offsetWidth = 0, offsetHeight = 0) {
+        return this.x + offsetX < mo.x + mo.width - offsetWidth &&
+            this.x + this.width - offsetWidth > mo.x + offsetX &&
+            this.y + offsetY < mo.y + mo.height - offsetHeight &&
+            this.y + this.height - offsetHeight > mo.y + offsetY;
+    }
+
     /**
      * Moves the object to the right by its speed value.
      */
     moveRight() {
         this.x += this.speed;
     }
-    
+
     /**
      * Moves the object to the left by its speed value.
      */
     moveLeft() {
         this.x -= this.speed;
     }
-    
+
     /**
      * Plays an animation by cycling through an array of image paths.
      * @param {string[]} images - Array of image paths for the animation.
@@ -94,41 +94,41 @@ isColliding(mo, offsetX = 0, offsetY = 0, offsetWidth = 0, offsetHeight = 0) {
         this.img = this.imageChache[path];
         this.currentImage++;
     }
-    
+
     /**
      * Applies damage to the object with a cooldown to prevent rapid consecutive hits.
      * @param {Object} enemy - The enemy object causing the damage.
      */
-hit(damage = 10) {
-    const now = new Date().getTime();
-    const timeSinceLastHit = now - (this.lastHit || 0);
+    hit(damage = 10) {
+        const now = new Date().getTime();
+        const timeSinceLastHit = now - (this.lastHit || 0);
 
-    if (timeSinceLastHit < 1500) {
-        return;
+        if (timeSinceLastHit < 1500) {
+            return;
+        }
+
+        this.energy -= damage;
+        if (this.energy < 0) {
+            this.energy = 0;
+        }
+        this.lastHit = now;
     }
 
-    this.energy -= damage;
-    if (this.energy < 0) {
-        this.energy = 0;
-    }
-    this.lastHit = now;
-}
-    
     /**
      * Checks if the object is currently in a hurt state.
      * @returns {boolean} True if less than 1 second has passed since last hit.
      */
-    isHurt(){
+    isHurt() {
         let timepassed = new Date().getTime() - this.lastHit;
         timepassed = timepassed / 1000;
         return timepassed < 1;
     }
-    
+
     /**
      * Checks if the object is dead (energy depleted).
      * @returns {boolean} True if energy is zero.
      */
-    isDead(){
+    isDead() {
         return this.energy == 0;
     }
 }

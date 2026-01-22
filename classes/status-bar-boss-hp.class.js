@@ -14,7 +14,7 @@ class BossStatusbar extends DrawableObject {
     ];
     percentage = 100;
     boss;
-    
+
     /**
      * Initializes the boss status bar with reference to the boss enemy.
      * @param {Endboss} boss - The endboss enemy to track health for.
@@ -28,9 +28,9 @@ class BossStatusbar extends DrawableObject {
         this.width = 200;
         this.height = 60;
         this.update();
-        this.setPercentage(100); 
+        this.setPercentage(100);
     }
-    
+
     /**
      * Sets or updates the boss reference for this status bar.
      * @param {Endboss} boss - The endboss enemy to track.
@@ -39,22 +39,22 @@ class BossStatusbar extends DrawableObject {
         this.boss = boss;
         this.update();
     }
-    
+
     /**
      * Updates the status bar by decreasing health percentage by 20.
      */
     update() {
         if (this.boss) {
             this.percentage -= 20;
-    
+
             if (this.percentage < 0) {
                 this.percentage = 0;
             }
-            
+
             this.setPercentage(this.percentage);
         }
     }
-    
+
     /**
      * Sets the health percentage and updates the displayed image.
      * @param {number} percentage - The health percentage (0-100).
@@ -64,7 +64,7 @@ class BossStatusbar extends DrawableObject {
         let path = this.IMAGES[this.resolveImageIndex()];
         this.img = this.imageChache[path];
     }
-    
+
     /**
      * Determines which image index to use based on current health percentage.
      * @returns {number} Image index (0-5) corresponding to health level.

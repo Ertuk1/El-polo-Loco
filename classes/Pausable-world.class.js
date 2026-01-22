@@ -10,8 +10,8 @@ class PausableWorld extends World {
      * @param {Keyboard} keyboard - The keyboard input handler.
      */
     constructor(canvas, keyboard) {
-        super(canvas, keyboard);   
-        
+        super(canvas, keyboard);
+
 
         this.renderer = new RenderingManager(this);
         this.isPaused = false;
@@ -25,21 +25,21 @@ class PausableWorld extends World {
             home: () => this.goHome()
         });
         this.start();
-        
+
 
     }
 
     async startBackgroundMusic() {
-    if (AUDIO_UNLOCKED) return;
+        if (AUDIO_UNLOCKED) return;
 
-    try {
-        await soundIsReady();
-        AUDIO_UNLOCKED = true;
-    } catch {
-        console.info('Audio unlock failed');
+        try {
+            await soundIsReady();
+            AUDIO_UNLOCKED = true;
+        } catch {
+            console.info('Audio unlock failed');
+        }
+
     }
- 
-}
 
     /**
      * Restarts the game by destroying current instance and creating a new one.
@@ -51,7 +51,7 @@ class PausableWorld extends World {
         const newCanvas = recreateCanvas();
         startGame(newCanvas);
     }
-    
+
     /**
      * Returns to the home screen by destroying current game instance.
      */
@@ -62,7 +62,7 @@ class PausableWorld extends World {
         const newCanvas = recreateCanvas();
         showStartScreen(newCanvas);
     }
-    
+
     /**
      * Toggles between paused and unpaused states.
      */
@@ -73,29 +73,29 @@ class PausableWorld extends World {
             this.pause();
         }
     }
-    
+
     /**
      * Draws the game world, pause button, and pause screen overlay if paused.
      */
-draw() {
-    if (this.victoryShown || this.gameOverShown) {
-        if (this.animationFrameId) {
-            cancelAnimationFrame(this.animationFrameId);
+    draw() {
+        if (this.victoryShown || this.gameOverShown) {
+            if (this.animationFrameId) {
+                cancelAnimationFrame(this.animationFrameId);
+            }
+            return;
         }
-        return;
-    }
 
-    if (this.isPaused) {
-        this.pauseScreen.draw();
+        if (this.isPaused) {
+            this.pauseScreen.draw();
+            this.pauseButton.draw();
+
+            this.animationFrameId = requestAnimationFrame(() => this.draw());
+            return;
+        }
+        super.draw();
         this.pauseButton.draw();
 
-        this.animationFrameId = requestAnimationFrame(() => this.draw());
-        return;
-    }
-    super.draw();
-    this.pauseButton.draw();
-    
 
-    this.animationFrameId = requestAnimationFrame(() => this.draw());
-}
+        this.animationFrameId = requestAnimationFrame(() => this.draw());
+    }
 }

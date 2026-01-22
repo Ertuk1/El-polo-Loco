@@ -2,7 +2,7 @@
  * PauseScreen class displaying a pause menu overlay with resume and home options.
  * Shows semi-transparent overlay over the paused game.
  */
-class PauseScreen  {
+class PauseScreen {
     /**
      * Initializes the pause screen with canvas and action callbacks.
      * @param {HTMLCanvasElement} canvas - The game canvas element.
@@ -16,12 +16,12 @@ class PauseScreen  {
         this.actions = actions;
 
         this.resumeButton = { x: 260, y: 200, w: 200, h: 60 };
-        this.homeButton   = { x: 260, y: 280, w: 200, h: 60 };
+        this.homeButton = { x: 260, y: 280, w: 200, h: 60 };
 
         this.handleClick = this.handleClick.bind(this);
 
     }
-    
+
     /**
      * Displays the pause screen and attaches event listeners.
      */
@@ -38,7 +38,7 @@ class PauseScreen  {
         this.canvas.removeEventListener('click', this.handleClick, { passive: false });
         this.canvas.removeEventListener('touchstart', this.handleClick, { passive: false });
     }
-    
+
     /**
      * Draws the pause screen overlay with buttons.
      */
@@ -48,7 +48,7 @@ class PauseScreen  {
         this.drawButton(this.resumeButton, 'Resume');
         this.drawButton(this.homeButton, 'Home');
     }
-    
+
     /**
      * Draws a single button with text.
      * @param {Object} btn - Button object with position and dimensions.
@@ -62,57 +62,57 @@ class PauseScreen  {
         this.ctx.textAlign = 'center';
         this.ctx.fillText(text, btn.x + btn.w / 2, btn.y + 42);
     }
-    
+
     /**
  * Handles click and touch events on buttons.
  * @param {Event} e - The click or touch event.
  */
-handleClick(e) {
-    e.preventDefault();
+    handleClick(e) {
+        e.preventDefault();
 
-    const { x, y } = this.getScaledPointerPos(e);
+        const { x, y } = this.getScaledPointerPos(e);
 
-    if (this.isInsideButton(x, y, this.resumeButton)) this.actions.resume();
-    if (this.isInsideButton(x, y, this.homeButton))   this.actions.home();
-}
+        if (this.isInsideButton(x, y, this.resumeButton)) this.actions.resume();
+        if (this.isInsideButton(x, y, this.homeButton)) this.actions.home();
+    }
 
-/**
- * Converts a mouse or touch event into scaled canvas coordinates.
- * @param {Event} e - The click or touch event.
- * @returns {{x: number, y: number}} Scaled canvas coordinates.
- */
-getScaledPointerPos(e) {
-    const rect = this.canvas.getBoundingClientRect();
+    /**
+     * Converts a mouse or touch event into scaled canvas coordinates.
+     * @param {Event} e - The click or touch event.
+     * @returns {{x: number, y: number}} Scaled canvas coordinates.
+     */
+    getScaledPointerPos(e) {
+        const rect = this.canvas.getBoundingClientRect();
 
-    const clientX = e.clientX ?? e.touches?.[0]?.clientX;
-    const clientY = e.clientY ?? e.touches?.[0]?.clientY;
+        const clientX = e.clientX ?? e.touches?.[0]?.clientX;
+        const clientY = e.clientY ?? e.touches?.[0]?.clientY;
 
-    if (clientX == null || clientY == null) return { x: -1, y: -1 };
+        if (clientX == null || clientY == null) return { x: -1, y: -1 };
 
-    const scaleX = this.canvas.width / rect.width;
-    const scaleY = this.canvas.height / rect.height;
+        const scaleX = this.canvas.width / rect.width;
+        const scaleY = this.canvas.height / rect.height;
 
-    return {
-        x: (clientX - rect.left) * scaleX,
-        y: (clientY - rect.top) * scaleY
-    };
-}
+        return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+        };
+    }
 
-/**
- * Checks whether a pointer coordinate lies inside a button's rectangular area.
- * @param {number} x - Scaled canvas X coordinate.
- * @param {number} y - Scaled canvas Y coordinate.
- * @param {{x:number, y:number, w:number, h:number}} btn - The button to test.
- * @returns {boolean} True if the pointer is inside the button.
- */
-isInsideButton(x, y, btn) {
-    return (
-        x >= btn.x &&
-        x <= btn.x + btn.w &&
-        y >= btn.y &&
-        y <= btn.y + btn.h
-    );
-}
+    /**
+     * Checks whether a pointer coordinate lies inside a button's rectangular area.
+     * @param {number} x - Scaled canvas X coordinate.
+     * @param {number} y - Scaled canvas Y coordinate.
+     * @param {{x:number, y:number, w:number, h:number}} btn - The button to test.
+     * @returns {boolean} True if the pointer is inside the button.
+     */
+    isInsideButton(x, y, btn) {
+        return (
+            x >= btn.x &&
+            x <= btn.x + btn.w &&
+            y >= btn.y &&
+            y <= btn.y + btn.h
+        );
+    }
 
 
 }

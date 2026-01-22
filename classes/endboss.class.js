@@ -59,7 +59,7 @@ class Endboss extends moveableObject {
     attackInterval;
     isWalking = false;
     charge = false;
-    bossHurt = false; 
+    bossHurt = false;
     isFacingLeft = true;
     target = null;
     isFacingLeft = true;
@@ -80,8 +80,8 @@ class Endboss extends moveableObject {
         this.playAlertAnimation();
         this.animateWalking();
         this.attackInterval2 = setInterval(() => {  // Store the interval ID
-        this.triggerAttack();
-    }, 4000);
+            this.triggerAttack();
+        }, 4000);
     }
 
     /**
@@ -102,7 +102,7 @@ class Endboss extends moveableObject {
     /**
      * Triggers attack sequence at regular intervals.
      */
-    attackInterval2(){
+    attackInterval2() {
         setInterval(() => {
             this.triggerAttack();
         }, 2500);
@@ -112,7 +112,7 @@ class Endboss extends moveableObject {
      * Animates the boss charging toward the player.
      */
     animateCharge() {
-        if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return;
         let direction = this.target && this.target.x > this.x ? 1 : -1;
         let chargeInterval = setInterval(() => {
             if (this.charge) {
@@ -195,7 +195,7 @@ class Endboss extends moveableObject {
      * Initiates the charging phase before an attack.
      */
     startCharge() {
-        if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return;
         this.charge = true;
         this.speed += 10;
         this.animateCharge();
@@ -205,7 +205,7 @@ class Endboss extends moveableObject {
      * Starts the attack phase after charging.
      */
     startAttack() {
-        if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return;
         this.charge = false;
         this.isAttacking = true;
         this.jumpAndAttack();
@@ -224,7 +224,7 @@ class Endboss extends moveableObject {
      * Triggers the full attack sequence: charge, attack, and reset.
      */
     triggerAttack() {
-        if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return;
         if (!this.canAttack()) return;
 
         this.startCharge();
@@ -245,7 +245,7 @@ class Endboss extends moveableObject {
     animateAttack() {
         clearInterval(this.attackInterval);
         this.attackInterval = setInterval(() => {
-            if (GLOBAL_PAUSE) return; 
+            if (GLOBAL_PAUSE) return;
             if (this.isAttacking) {
                 this.playAnimation(this.IMAGES_ATTACK);
             } else {
@@ -259,7 +259,7 @@ class Endboss extends moveableObject {
      */
     BossMove() {
         setInterval(() => {
-            if (GLOBAL_PAUSE) return; 
+            if (GLOBAL_PAUSE) return;
             if (this.isWalking && !this.isDead1 && !this.isAttacking && !this.bossHurt) {
                 this.updateFacing();
                 this.animateWalking();
@@ -272,7 +272,7 @@ class Endboss extends moveableObject {
      * Plays the alert animation when boss is not actively walking.
      */
     playAlertAnimation() {
-        if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return;
         setInterval(() => {
             if (!this.isDead1 && this.isWalking === false) {
                 this.playAnimation(this.IMAGES_WALKING);
@@ -284,7 +284,7 @@ class Endboss extends moveableObject {
      * Plays the walking animation.
      */
     animateWalking() {
-        if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return;
         this.playAnimation(this.IMAGES_WALK);
     }
 
@@ -292,7 +292,7 @@ class Endboss extends moveableObject {
      * Moves the boss left or right based on facing direction.
      */
     moveLeftBoss() {
-        if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return;
         if (this.isFacingLeft) {
             this.x -= this.speed;
         } else {
@@ -306,7 +306,7 @@ class Endboss extends moveableObject {
      */
     hit(damage) {
         if (!this.isDead1) {
-            this.bossHurt=true;
+            this.bossHurt = true;
             this.hp -= damage;
             if (!GLOBAL_MUTE) {
                 const hurtSound = new Audio('audio/fussing-rooster-in-indian-village-natural-ambience-330927.mp3');
@@ -335,10 +335,10 @@ class Endboss extends moveableObject {
                 this.playAnimation(this.IMAGES_HURT);
             }, 200);
             setTimeout(() => {
-                clearInterval(this.hurtAnimationInterval); 
-                this.hurtAnimationInterval = null; 
-                this.bossHurt = false; 
-            }, 1000); 
+                clearInterval(this.hurtAnimationInterval);
+                this.hurtAnimationInterval = null;
+                this.bossHurt = false;
+            }, 1000);
         }
     }
 
@@ -347,7 +347,7 @@ class Endboss extends moveableObject {
      */
     triggerVictory() {
         setTimeout(() => {
-            world.showVictoryScreen(); 
+            world.showVictoryScreen();
         }, 1500);
     }
 
@@ -358,7 +358,7 @@ class Endboss extends moveableObject {
         if (!this.isDead1 && !this.victoryTriggered) {
             this.isDead1 = true;
             this.victoryTriggered = true;
-  
+
             if (!GLOBAL_MUTE) {
                 const deathSound = new Audio('audio/clucking-chicken-440624.mp3');
                 deathSound.play();
@@ -375,29 +375,29 @@ class Endboss extends moveableObject {
     /**
      * Clears all active intervals for cleanup.
      */
-clearAllIntervals() {
-    if (this.walkingInterval) clearInterval(this.walkingInterval);
-    if (this.attackInterval) clearInterval(this.attackInterval);
-    if (this.attackInterval2) clearInterval(this.attackInterval2);
-    if (this.distanceCheckInterval) clearInterval(this.distanceCheckInterval);
-    if (this.hurtAnimationInterval) clearInterval(this.hurtAnimationInterval);
-}
+    clearAllIntervals() {
+        if (this.walkingInterval) clearInterval(this.walkingInterval);
+        if (this.attackInterval) clearInterval(this.attackInterval);
+        if (this.attackInterval2) clearInterval(this.attackInterval2);
+        if (this.distanceCheckInterval) clearInterval(this.distanceCheckInterval);
+        if (this.hurtAnimationInterval) clearInterval(this.hurtAnimationInterval);
+    }
 
     /**
      * Stops all boss behaviors and animations.
      */
     stop() {
-    this.clearAllIntervals();
-    this.isWalking = false;
-    this.isAttacking = false;
-    this.charge = false;
-}
+        this.clearAllIntervals();
+        this.isWalking = false;
+        this.isAttacking = false;
+        this.charge = false;
+    }
 
     /**
      * Plays the death animation sequence.
      */
     animateDeath() {
-        if (GLOBAL_PAUSE) return; 
+        if (GLOBAL_PAUSE) return;
         let deathInterval = setInterval(() => {
             this.playAnimation(this.IMAGES_DEAD);
         }, 200);

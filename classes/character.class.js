@@ -5,350 +5,350 @@
  */
 class Character extends moveableObject {
 
-height=280;
-y=175;
-speed = 3.5;
-idleTime = 0; 
-lastActionTime = 0; 
-lastHurtSoundTime = 0;
-snorePlayed = false;
-isJumping = false;
-jumpAnimationTime = 0;
-energy = 100;
+    height = 280;
+    y = 175;
+    speed = 3.5;
+    idleTime = 0;
+    lastActionTime = 0;
+    lastHurtSoundTime = 0;
+    snorePlayed = false;
+    isJumping = false;
+    jumpAnimationTime = 0;
+    energy = 100;
 
-world;
-walking_sound = new Audio('audio/running.mp3');
-hurt = new Audio('audio/hurtsound.mp3')
-snore = new Audio('audio/SnoreSound.mp3')
-IMAGES_IDLE=[
-    'IMG/2_character_pepe/1_idle/idle/I-1.png',
-    'IMG/2_character_pepe/1_idle/idle/I-2.png',
-    'IMG/2_character_pepe/1_idle/idle/I-3.png',
-    'IMG/2_character_pepe/1_idle/idle/I-4.png',
-    'IMG/2_character_pepe/1_idle/idle/I-5.png',
-    'IMG/2_character_pepe/1_idle/idle/I-6.png',
-    'IMG/2_character_pepe/1_idle/idle/I-7.png',
-    'IMG/2_character_pepe/1_idle/idle/I-8.png',
-    'IMG/2_character_pepe/1_idle/idle/I-9.png',
-    'IMG/2_character_pepe/1_idle/idle/I-10.png'
-]
+    world;
+    walking_sound = new Audio('audio/running.mp3');
+    hurt = new Audio('audio/hurtsound.mp3')
+    snore = new Audio('audio/SnoreSound.mp3')
+    IMAGES_IDLE = [
+        'IMG/2_character_pepe/1_idle/idle/I-1.png',
+        'IMG/2_character_pepe/1_idle/idle/I-2.png',
+        'IMG/2_character_pepe/1_idle/idle/I-3.png',
+        'IMG/2_character_pepe/1_idle/idle/I-4.png',
+        'IMG/2_character_pepe/1_idle/idle/I-5.png',
+        'IMG/2_character_pepe/1_idle/idle/I-6.png',
+        'IMG/2_character_pepe/1_idle/idle/I-7.png',
+        'IMG/2_character_pepe/1_idle/idle/I-8.png',
+        'IMG/2_character_pepe/1_idle/idle/I-9.png',
+        'IMG/2_character_pepe/1_idle/idle/I-10.png'
+    ]
 
-IMAGES_LONG_IDLE = [
-    'IMG/2_character_pepe/1_idle/long_idle/I-11.png',
-    'IMG/2_character_pepe/1_idle/long_idle/I-12.png',
-    'IMG/2_character_pepe/1_idle/long_idle/I-13.png',
-    'IMG/2_character_pepe/1_idle/long_idle/I-14.png',
-    'IMG/2_character_pepe/1_idle/long_idle/I-15.png',
-    'IMG/2_character_pepe/1_idle/long_idle/I-16.png',
-    'IMG/2_character_pepe/1_idle/long_idle/I-17.png',
-    'IMG/2_character_pepe/1_idle/long_idle/I-18.png',
-    'IMG/2_character_pepe/1_idle/long_idle/I-19.png',
-    'IMG/2_character_pepe/1_idle/long_idle/I-20.png',
-]
+    IMAGES_LONG_IDLE = [
+        'IMG/2_character_pepe/1_idle/long_idle/I-11.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-12.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-13.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-14.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-15.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-16.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-17.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-18.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-19.png',
+        'IMG/2_character_pepe/1_idle/long_idle/I-20.png',
+    ]
 
-IMAGES_WALKING = [
-    'IMG/2_character_pepe/2_walk/W-21.png',
-    'IMG/2_character_pepe/2_walk/W-22.png',
-    'IMG/2_character_pepe/2_walk/W-23.png',
-    'IMG/2_character_pepe/2_walk/W-24.png',
-    'IMG/2_character_pepe/2_walk/W-25.png',
-    'IMG/2_character_pepe/2_walk/W-26.png'
-]
+    IMAGES_WALKING = [
+        'IMG/2_character_pepe/2_walk/W-21.png',
+        'IMG/2_character_pepe/2_walk/W-22.png',
+        'IMG/2_character_pepe/2_walk/W-23.png',
+        'IMG/2_character_pepe/2_walk/W-24.png',
+        'IMG/2_character_pepe/2_walk/W-25.png',
+        'IMG/2_character_pepe/2_walk/W-26.png'
+    ]
 
-IMAGES_JUMPING = [
-    'IMG/2_character_pepe/3_jump/J-31.png',
-    'IMG/2_character_pepe/3_jump/J-32.png',
-    'IMG/2_character_pepe/3_jump/J-33.png',
-    'IMG/2_character_pepe/3_jump/J-34.png',
-    'IMG/2_character_pepe/3_jump/J-35.png',
-    'IMG/2_character_pepe/3_jump/J-36.png',
-    'IMG/2_character_pepe/3_jump/J-37.png',
-    'IMG/2_character_pepe/3_jump/J-38.png',
-    'IMG/2_character_pepe/3_jump/J-39.png',
-]
+    IMAGES_JUMPING = [
+        'IMG/2_character_pepe/3_jump/J-31.png',
+        'IMG/2_character_pepe/3_jump/J-32.png',
+        'IMG/2_character_pepe/3_jump/J-33.png',
+        'IMG/2_character_pepe/3_jump/J-34.png',
+        'IMG/2_character_pepe/3_jump/J-35.png',
+        'IMG/2_character_pepe/3_jump/J-36.png',
+        'IMG/2_character_pepe/3_jump/J-37.png',
+        'IMG/2_character_pepe/3_jump/J-38.png',
+        'IMG/2_character_pepe/3_jump/J-39.png',
+    ]
 
-IMAGES_DEAD = [
-    'IMG/2_character_pepe/5_dead/D-51.png',
-    'IMG/2_character_pepe/5_dead/D-52.png',
-    'IMG/2_character_pepe/5_dead/D-53.png',
-    'IMG/2_character_pepe/5_dead/D-54.png',
-    'IMG/2_character_pepe/5_dead/D-55.png',
-    'IMG/2_character_pepe/5_dead/D-56.png',
-]
+    IMAGES_DEAD = [
+        'IMG/2_character_pepe/5_dead/D-51.png',
+        'IMG/2_character_pepe/5_dead/D-52.png',
+        'IMG/2_character_pepe/5_dead/D-53.png',
+        'IMG/2_character_pepe/5_dead/D-54.png',
+        'IMG/2_character_pepe/5_dead/D-55.png',
+        'IMG/2_character_pepe/5_dead/D-56.png',
+    ]
 
-IMAGES_HURT = [
-    'IMG/2_character_pepe/4_hurt/H-41.png',
-    'IMG/2_character_pepe/4_hurt/H-42.png',
-    'IMG/2_character_pepe/4_hurt/H-43.png'
-]
+    IMAGES_HURT = [
+        'IMG/2_character_pepe/4_hurt/H-41.png',
+        'IMG/2_character_pepe/4_hurt/H-42.png',
+        'IMG/2_character_pepe/4_hurt/H-43.png'
+    ]
 
-/**
- * Initializes the character with images, sounds, and event listeners.
- * Sets up animation loops and gravity physics.
- */
-constructor(){
-   super().loadImage('IMG/2_character_pepe/2_walk/W-21.png') 
-   this.canBounce = true;
-   this.loadImages(this.IMAGES_WALKING)
-   this.loadImages(this.IMAGES_JUMPING)
-   this.loadImages(this.IMAGES_DEAD)
-   this.loadImages(this.IMAGES_HURT)
-   this.loadImages(this.IMAGES_HURT);
-   this.loadImages(this.IMAGES_IDLE);
-   this.loadImages(this.IMAGES_LONG_IDLE);
-   this.animate();
-   this.applyGravity();
-   this.lastActionTime = Date.now();
-   this.collectSound = new Audio('audio/collectcoin.mp3');
-   this.collectSound.volume = 0.4;
-   this.collectSound.currentTime = 3.5;
-   this.jumpSound = new Audio('audio/jump.mp3');
-this.snore.addEventListener('ended', () => {
-    if (this.snorePlayed && !GLOBAL_MUTE && !GLOBAL_PAUSE) {
-        this.snore.play();
+    /**
+     * Initializes the character with images, sounds, and event listeners.
+     * Sets up animation loops and gravity physics.
+     */
+    constructor() {
+        super().loadImage('IMG/2_character_pepe/2_walk/W-21.png')
+        this.canBounce = true;
+        this.loadImages(this.IMAGES_WALKING)
+        this.loadImages(this.IMAGES_JUMPING)
+        this.loadImages(this.IMAGES_DEAD)
+        this.loadImages(this.IMAGES_HURT)
+        this.loadImages(this.IMAGES_HURT);
+        this.loadImages(this.IMAGES_IDLE);
+        this.loadImages(this.IMAGES_LONG_IDLE);
+        this.animate();
+        this.applyGravity();
+        this.lastActionTime = Date.now();
+        this.collectSound = new Audio('audio/collectcoin.mp3');
+        this.collectSound.volume = 0.4;
+        this.collectSound.currentTime = 3.5;
+        this.jumpSound = new Audio('audio/jump.mp3');
+        this.snore.addEventListener('ended', () => {
+            if (this.snorePlayed && !GLOBAL_MUTE && !GLOBAL_PAUSE) {
+                this.snore.play();
+            }
+
+            this.handlePauseChange = (event) => {
+                const { paused } = event.detail;
+                if (paused) {
+                    this.snore.pause();
+                }
+            };
+            document.addEventListener('globalPauseChanged', this.handlePauseChange);
+        });
+
+        this.handleMuteChange = (event) => {
+            const { muted } = event.detail;
+            if (muted) {
+                this.snore.pause();
+            } else if (this.snorePlayed) {
+                this.snore.play().catch(e => { });
+            }
+        };
+        document.addEventListener('globalMuteChanged', this.handleMuteChange);
     }
 
-this.handlePauseChange = (event) => {
-const { paused } = event.detail;
-    if (paused) {
+    /**
+     * Plays the death animation and sets physics properties for death state.
+     */
+    playDeadState() {
+        this.playAnimation(this.IMAGES_DEAD);
         this.snore.pause();
+        this.hurt.pause();
+        this.speedY = 15;
     }
-};
-document.addEventListener('globalPauseChanged', this.handlePauseChange);
-   });
 
-   this.handleMuteChange = (event) => {
-       const { muted } = event.detail;
-       if (muted) {
-           this.snore.pause();
-       } else if (this.snorePlayed) {
-           this.snore.play().catch(e => {});
-       }
-   };
-   document.addEventListener('globalMuteChanged', this.handleMuteChange);
-}
+    /**
+     * Plays the hurt animation and hurt sound with cooldown timing.
+     */
+    playHurtState() {
+        this.playAnimation(this.IMAGES_HURT);
+        this.snore.pause();
+        this.resetIdleTimer();
 
-/**
- * Plays the death animation and sets physics properties for death state.
- */
-playDeadState() {
-    this.playAnimation(this.IMAGES_DEAD);
-    this.snore.pause();
-    this.hurt.pause();
-    this.speedY = 15;
-}
-
-/**
- * Plays the hurt animation and hurt sound with cooldown timing.
- */
-playHurtState() {
-    this.playAnimation(this.IMAGES_HURT);
-    this.snore.pause();
-    this.resetIdleTimer();
-
-    const now = Date.now();
-    if (now - this.lastHurtSoundTime > 1000) {
-        if (!GLOBAL_MUTE) this.hurt.play();
-        this.lastHurtSoundTime = now;
-    }
-}
-
-/**
- * Plays the jumping animation and stops other sounds.
- */
-playJumpState() {
-    this.playAnimation(this.IMAGES_JUMPING);
-    this.snore.pause();
-    this.hurt.pause();
-}
-
-/**
- * Plays the long idle/sleeping animation and starts snoring sound.
- */
-playLongIdleState() {
-    this.playAnimation(this.IMAGES_LONG_IDLE);
-    if (!this.snorePlayed && !GLOBAL_MUTE && !GLOBAL_PAUSE) this.snore.play();
-    this.snorePlayed = true;
-    this.hurt.pause();
-}
-
-/**
- * Plays the standard idle animation.
- */
-playIdleState() {
-    this.playAnimation(this.IMAGES_IDLE);
-    this.snore.pause();
-    this.hurt.pause();
-}
-
-/**
- * Plays the walking animation and resets snoring state.
- */
-playWalkState() {
-    this.playAnimation(this.IMAGES_WALKING);
-    this.snore.pause();
-    this.snorePlayed = false;
-    this.hurt.pause();
-}
-
-/**
- * Determines which animation state to play based on character status.
- * Priority: dead > hurt > jumping > long idle > idle > walking.
- */
-resolveAnimationState() {
-    if (this.isDead()) return this.playDeadState();
-    if (this.isHurt()) return this.playHurtState();
-    if (this.isJumping) {
-        if (Date.now() - this.jumpAnimationTime < 300) {
-            return this.playJumpState();
-        } else {
-            this.isJumping = false;
+        const now = Date.now();
+        if (now - this.lastHurtSoundTime > 1000) {
+            if (!GLOBAL_MUTE) this.hurt.play();
+            this.lastHurtSoundTime = now;
         }
     }
-    if (this.isAboveGround()) return this.playJumpState();
-    if (this.idleTime >= 5000) return this.playLongIdleState();
-    if (this.idleTime > 0) return this.playIdleState();
 
-    this.playWalkState();
-}
-
-/**
- * Checks if the player is currently pressing any movement keys.
- * @returns {boolean} True if any movement key is pressed.
- */
-isPlayerMoving() {
-    return this.world.keyboard.RIGHT || 
-           this.world.keyboard.LEFT || 
-           this.world.keyboard.UP || 
-           this.world.keyboard.SPACE;
-}
-
-/**
- * Plays the walking sound if not globally muted.
- */
-playWalkingSound() {
-    if (!GLOBAL_MUTE) this.walking_sound.play();
-}
-
-/**
- * Updates the camera position to follow the character.
- */
-updateCamera() {
-    this.world.camera_x = -this.x + 100;
-}
-
-/**
- * Handles keyboard input for character movement and updates idle timer.
- */
-handleMovementInput() {
-    const isMoving = this.isPlayerMoving();
-
-    this.handleRightMovement();
-    this.handleLeftMovement();
-    this.handleJumpInput();
-
-    if (!isMoving) this.updateIdleTime();
-}
-/** * Handles right movement input and updates character state. */
-handleRightMovement() {
-    const k = this.world.keyboard;
-    if (k.RIGHT && this.x < this.world.level.level_end_x && !this.world.bossIntroActive) {
-        this.moveRight();
-        this.otherDirection = false;
-        this.playWalkingSound();
-        this.resetIdleTimer();
+    /**
+     * Plays the jumping animation and stops other sounds.
+     */
+    playJumpState() {
+        this.playAnimation(this.IMAGES_JUMPING);
+        this.snore.pause();
+        this.hurt.pause();
     }
-}
-/** * Handles left movement input and updates character state. */
-handleLeftMovement() {
-    const k = this.world.keyboard;
-    if (k.LEFT && this.x > 0 && !this.world.bossIntroActive) {
-        this.moveLeft();
-        this.otherDirection = true;
-        this.playWalkingSound();
-        this.resetIdleTimer();
+
+    /**
+     * Plays the long idle/sleeping animation and starts snoring sound.
+     */
+    playLongIdleState() {
+        this.playAnimation(this.IMAGES_LONG_IDLE);
+        if (!this.snorePlayed && !GLOBAL_MUTE && !GLOBAL_PAUSE) this.snore.play();
+        this.snorePlayed = true;
+        this.hurt.pause();
     }
-}
-/** * Handles jump input and triggers jump animation and sound. */
-handleJumpInput() {
-    const k = this.world.keyboard;
-    if ((k.UP || k.SPACE) && !this.isAboveGround() && !this.world.bossIntroActive) {
-        this.jump();
-        if (!GLOBAL_MUTE) this.jumpSound.play();
-        this.resetIdleTimer();
+
+    /**
+     * Plays the standard idle animation.
+     */
+    playIdleState() {
+        this.playAnimation(this.IMAGES_IDLE);
+        this.snore.pause();
+        this.hurt.pause();
     }
-}
 
-
-
-
-/**
- * Starts the animation loops for movement and state animations.
- * Respects GLOBAL_PAUSE state to prevent updates when paused.
- */
-animate() {
-    this.movementInterval = setInterval(() => {
-         if (GLOBAL_PAUSE) return; 
-        this.walking_sound.pause();
-        this.handleMovementInput();
-        this.updateCamera();
-    }, 1000 / 60);
-
-    this.animationInterval = setInterval(() => {
-         if (GLOBAL_PAUSE) return; 
-        this.resolveAnimationState();
-    }, 1000 / 10);
-}
-
-/**
- * Makes the character jump by setting vertical speed.
- */
-jump() {
-    this.speedY = 30;
-    this.isJumping = true;
-    this.jumpAnimationTime = Date.now();
-    this.currentImage = 0
-}
-
-/**
- * Resets the idle timer to track player inactivity.
- */
-resetIdleTimer() {
-    this.idleTime = 0;
-    this.lastActionTime = Date.now();
-}
-
-/**
- * Updates the idle time based on player inactivity.
- */
-updateIdleTime() {
-    if ( !this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) {
-        this.idleTime = Date.now() - this.lastActionTime;
+    /**
+     * Plays the walking animation and resets snoring state.
+     */
+    playWalkState() {
+        this.playAnimation(this.IMAGES_WALKING);
+        this.snore.pause();
+        this.snorePlayed = false;
+        this.hurt.pause();
     }
-}
 
-/**
- * Stops all intervals, pauses sounds, and removes event listeners.
- * Used for cleanup when the character is destroyed.
- */
-stop() {
-    if (this.movementInterval) clearInterval(this.movementInterval);
-    if (this.animationInterval) clearInterval(this.animationInterval);
-    this.snore.pause();
-    this.snorePlayed = false;
-    document.removeEventListener('globalMuteChanged', this.handleMuteChange);
-    document.removeEventListener('globalPauseChanged', this.handlePauseChange);
-}
-/**
- * Character bounce mechanic for bounce after landing on enemies
- */
-bounce() {
-    
+    /**
+     * Determines which animation state to play based on character status.
+     * Priority: dead > hurt > jumping > long idle > idle > walking.
+     */
+    resolveAnimationState() {
+        if (this.isDead()) return this.playDeadState();
+        if (this.isHurt()) return this.playHurtState();
+        if (this.isJumping) {
+            if (Date.now() - this.jumpAnimationTime < 300) {
+                return this.playJumpState();
+            } else {
+                this.isJumping = false;
+            }
+        }
+        if (this.isAboveGround()) return this.playJumpState();
+        if (this.idleTime >= 5000) return this.playLongIdleState();
+        if (this.idleTime > 0) return this.playIdleState();
 
-    this.speedY = 25; // bounce height
-    this.isJumping = true;  // Add this line
-    this.jumpAnimationTime = Date.now();  // Add this line
-    this.currentImage = 0
-}
+        this.playWalkState();
+    }
+
+    /**
+     * Checks if the player is currently pressing any movement keys.
+     * @returns {boolean} True if any movement key is pressed.
+     */
+    isPlayerMoving() {
+        return this.world.keyboard.RIGHT ||
+            this.world.keyboard.LEFT ||
+            this.world.keyboard.UP ||
+            this.world.keyboard.SPACE;
+    }
+
+    /**
+     * Plays the walking sound if not globally muted.
+     */
+    playWalkingSound() {
+        if (!GLOBAL_MUTE) this.walking_sound.play();
+    }
+
+    /**
+     * Updates the camera position to follow the character.
+     */
+    updateCamera() {
+        this.world.camera_x = -this.x + 100;
+    }
+
+    /**
+     * Handles keyboard input for character movement and updates idle timer.
+     */
+    handleMovementInput() {
+        const isMoving = this.isPlayerMoving();
+
+        this.handleRightMovement();
+        this.handleLeftMovement();
+        this.handleJumpInput();
+
+        if (!isMoving) this.updateIdleTime();
+    }
+    /** * Handles right movement input and updates character state. */
+    handleRightMovement() {
+        const k = this.world.keyboard;
+        if (k.RIGHT && this.x < this.world.level.level_end_x && !this.world.bossIntroActive) {
+            this.moveRight();
+            this.otherDirection = false;
+            this.playWalkingSound();
+            this.resetIdleTimer();
+        }
+    }
+    /** * Handles left movement input and updates character state. */
+    handleLeftMovement() {
+        const k = this.world.keyboard;
+        if (k.LEFT && this.x > 0 && !this.world.bossIntroActive) {
+            this.moveLeft();
+            this.otherDirection = true;
+            this.playWalkingSound();
+            this.resetIdleTimer();
+        }
+    }
+    /** * Handles jump input and triggers jump animation and sound. */
+    handleJumpInput() {
+        const k = this.world.keyboard;
+        if ((k.UP || k.SPACE) && !this.isAboveGround() && !this.world.bossIntroActive) {
+            this.jump();
+            if (!GLOBAL_MUTE) this.jumpSound.play();
+            this.resetIdleTimer();
+        }
+    }
+
+
+
+
+    /**
+     * Starts the animation loops for movement and state animations.
+     * Respects GLOBAL_PAUSE state to prevent updates when paused.
+     */
+    animate() {
+        this.movementInterval = setInterval(() => {
+            if (GLOBAL_PAUSE) return;
+            this.walking_sound.pause();
+            this.handleMovementInput();
+            this.updateCamera();
+        }, 1000 / 60);
+
+        this.animationInterval = setInterval(() => {
+            if (GLOBAL_PAUSE) return;
+            this.resolveAnimationState();
+        }, 1000 / 10);
+    }
+
+    /**
+     * Makes the character jump by setting vertical speed.
+     */
+    jump() {
+        this.speedY = 30;
+        this.isJumping = true;
+        this.jumpAnimationTime = Date.now();
+        this.currentImage = 0
+    }
+
+    /**
+     * Resets the idle timer to track player inactivity.
+     */
+    resetIdleTimer() {
+        this.idleTime = 0;
+        this.lastActionTime = Date.now();
+    }
+
+    /**
+     * Updates the idle time based on player inactivity.
+     */
+    updateIdleTime() {
+        if (!this.world.keyboard.RIGHT && !this.world.keyboard.LEFT) {
+            this.idleTime = Date.now() - this.lastActionTime;
+        }
+    }
+
+    /**
+     * Stops all intervals, pauses sounds, and removes event listeners.
+     * Used for cleanup when the character is destroyed.
+     */
+    stop() {
+        if (this.movementInterval) clearInterval(this.movementInterval);
+        if (this.animationInterval) clearInterval(this.animationInterval);
+        this.snore.pause();
+        this.snorePlayed = false;
+        document.removeEventListener('globalMuteChanged', this.handleMuteChange);
+        document.removeEventListener('globalPauseChanged', this.handlePauseChange);
+    }
+    /**
+     * Character bounce mechanic for bounce after landing on enemies
+     */
+    bounce() {
+
+
+        this.speedY = 25; // bounce height
+        this.isJumping = true;  // Add this line
+        this.jumpAnimationTime = Date.now();  // Add this line
+        this.currentImage = 0
+    }
 
 }

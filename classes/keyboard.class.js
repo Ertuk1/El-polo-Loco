@@ -5,12 +5,12 @@
 // Update your Keyboard class
 class Keyboard {
     constructor() {
-         this.LEFT = false;
-         this.RIGHT = false;
-         this.UP = false;
-         this.DOWN = false;
-         this.SPACE = false;
-         this.D = false;
+        this.LEFT = false;
+        this.RIGHT = false;
+        this.UP = false;
+        this.DOWN = false;
+        this.SPACE = false;
+        this.D = false;
     }
 }
 
@@ -24,9 +24,9 @@ window.addEventListener('keydown', (e) => {
     if (gameKeys.includes(e.key)) {
         e.preventDefault();
     }
-    
 
-    switch(e.key) {
+
+    switch (e.key) {
         case 'ArrowRight':
         case 'Right':
             keyboard.RIGHT = true;
@@ -55,7 +55,7 @@ window.addEventListener('keydown', (e) => {
 
 
 window.addEventListener('keyup', (e) => {
-    switch(e.key) {
+    switch (e.key) {
         case 'ArrowRight':
         case 'Right':
             keyboard.RIGHT = false;

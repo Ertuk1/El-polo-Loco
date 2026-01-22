@@ -13,7 +13,7 @@ class BottleStatusBar extends DrawableObject {
         'IMG/7_statusbars/1_statusbar/3_statusbar_bottle/orange/100.png',
     ];
     percentage = 0;
-    
+
     /**
      * Initializes the bottle status bar at starting position.
      */
@@ -26,7 +26,7 @@ class BottleStatusBar extends DrawableObject {
         this.height = 60;
         this.setPercentage(0);
     }
-    
+
     /**
      * Sets the bottle collection percentage and updates the displayed image.
      * @param {number} percentage - The collection percentage (0-100).
@@ -52,8 +52,8 @@ class BottleStatusBar extends DrawableObject {
             return 2;
         } else if (this.percentage > 16.6) {
             return 1;
-        } 
-            return 0;
-        
+        }
+        return 0;
+
     }
 }

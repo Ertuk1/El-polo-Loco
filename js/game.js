@@ -5,7 +5,8 @@ let GLOBAL_MUTE = false;
 let AUDIO_UNLOCKED = false;
 const savedMuteState = localStorage.getItem('gameMuted');
 if (savedMuteState !== null) {
-    GLOBAL_MUTE = savedMuteState === 'true';}
+    GLOBAL_MUTE = savedMuteState === 'true';
+}
 
 /**
  * Waits for the user's first click to unlock audio playback.
@@ -13,7 +14,7 @@ if (savedMuteState !== null) {
  * @returns {Promise<void>} Resolves when audio can safely be played.
  */
 
- function soundIsReady() {
+function soundIsReady() {
     return new Promise((resolve, reject) => {
         const to = setTimeout(() => {
             reject('User didnt interact. Sound cannot be played.');
@@ -26,7 +27,7 @@ if (savedMuteState !== null) {
     });
 }
 
-  
+
 // Global image cache
 const IMAGE_CACHE = {};
 const AUDIO_CACHE = {};
@@ -124,7 +125,7 @@ function getOrCreateImage(src) {
     if (IMAGE_CACHE[src]) {
         return IMAGE_CACHE[src];
     }
-    
+
     // Create new image and cache it
     const img = new Image();
     img.src = src;
@@ -255,8 +256,8 @@ function preloadAssets(canvas, callback) {
         if (loaded === total) callback();
     };
 
-    preloadImages(IMAGE_PATHS, updateProgress, () => {});
-    preloadAudios(AUDIO_PATHS, updateProgress, () => {});
+    preloadImages(IMAGE_PATHS, updateProgress, () => { });
+    preloadAudios(AUDIO_PATHS, updateProgress, () => { });
 }
 
 /**

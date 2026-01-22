@@ -31,7 +31,7 @@ class VictoryScreen {
         this.victoryImg.src = 'IMG/9_intro_outro_screens/win/won_1.png';
         this.handleClick = this.handleClick.bind(this);
     }
-    
+
     /**
      * Displays the victory screen and attaches event listeners.
      */
@@ -41,7 +41,7 @@ class VictoryScreen {
         this.canvas.addEventListener("click", this.handleClick);
         this.canvas.addEventListener("touchstart", this.handleClick, { passive: false });
     }
-    
+
     /**
      * Hides the victory screen and removes event listeners.
      */
@@ -49,7 +49,7 @@ class VictoryScreen {
         this.canvas.removeEventListener("click", this.handleClick);
         this.canvas.removeEventListener("touchstart", this.handleClick, { passive: false });
     }
-    
+
     /**
      * Converts event coordinates to canvas coordinates accounting for scaling.
      * @param {Event} event - The mouse or touch event.
@@ -66,7 +66,7 @@ class VictoryScreen {
             y: (clientY - rect.top) * scaleY
         };
     }
-    
+
     /**
      * Checks if coordinates are inside a button area.
      * @param {number} x - X-coordinate to check.
@@ -82,7 +82,7 @@ class VictoryScreen {
             y <= btn.y + btn.h
         );
     }
-    
+
     /**
      * Handles click and touch events on buttons.
      * @param {Event} event - The click or touch event.
@@ -93,13 +93,13 @@ class VictoryScreen {
         if (this.isInside(x, y, this.replayButton)) {
             this.hide();
             this.onReplay();
-        } 
+        }
         else if (this.isInside(x, y, this.homeButton)) {
             this.hide();
             this.onHome();
         }
     }
-    
+
     /**
      * Draws the semi-transparent overlay background.
      */
@@ -107,7 +107,7 @@ class VictoryScreen {
         this.ctx.fillStyle = "rgba(0,0,0,0.8)";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
-    
+
     /**
      * Draws the victory image centered on screen.
      */
@@ -120,7 +120,7 @@ class VictoryScreen {
             220
         );
     }
-    
+
     /**
      * Draws a single button with text.
      * @param {Object} btn - Button object with position and dimensions.
@@ -134,7 +134,7 @@ class VictoryScreen {
         this.ctx.font = "66px zabras";
         this.ctx.fillText(text, this.canvas.width / 2, btn.y + 40);
     }
-    
+
     /**
      * Draws the complete victory screen with all elements.
      */
