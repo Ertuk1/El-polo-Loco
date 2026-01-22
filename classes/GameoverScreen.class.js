@@ -25,13 +25,16 @@ class GameOverScreen {
     /**
      * Displays the game over screen and attaches event listeners.
      */
-    show() {
-        this.gameOverImage.onload = () => this.drawGameOver();
+show() {
+    if (this.gameOverImage.complete) {
         this.drawGameOver();
-        this.canvas.addEventListener('click', this.handleClick);
-        this.canvas.addEventListener('touchstart', this.handleClick);
-        this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
+    } else {
+        this.gameOverImage.onload = () => this.drawGameOver();
     }
+    this.canvas.addEventListener('click', this.handleClick);
+    this.canvas.addEventListener('touchstart', this.handleClick);
+    this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
+}
 
     /**
      * Draws the game over image and buttons on the canvas.
@@ -39,7 +42,8 @@ class GameOverScreen {
     drawGameOver() {
         const { ctx, canvas, replayButton, homeButton } = this;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(this.gameOverImage, 0, -80, canvas.width, canvas.height);
+        ctx.fillStyle = "black"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(this.gameOverImage, 0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'white';
         ctx.font = '66px zabras';
         ctx.textAlign = 'center';
