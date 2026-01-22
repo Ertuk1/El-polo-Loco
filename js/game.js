@@ -156,6 +156,8 @@ function recreateCanvas() {
     newCanvas.id = 'canvas';
     newCanvas.width = 720;
     newCanvas.height = 480;
+    canvas.style.width = "100%";
+    canvas.style.height = "auto";
 
     container.appendChild(newCanvas);
     return newCanvas;

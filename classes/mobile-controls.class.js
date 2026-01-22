@@ -12,66 +12,12 @@ class MobileControls {
         this.keyboard = keyboard;
         this.useHtmlControls = false;
 
-        this.mobileControls = {
-            left: { x: 0.05, y: 0.80, w: 0.12, h: 0.12 },
-            right: { x: 0.20, y: 0.80, w: 0.12, h: 0.12 },
-            throw: { x: 0.70, y: 0.80, w: 0.12, h: 0.12 },
-            jump: { x: 0.85, y: 0.80, w: 0.12, h: 0.12 }
-        };
 
-        this.initCanvasListeners();
-        this.initHtmlListeners();
-        this.checkMode();
-    }
-    /**
- * Detects whether the current device supports touch input.
- * @returns {boolean} True if the device has touch capabilities.
- */
+        this.initHtmlListeners(keyboard);
 
-    isTouchDevice() { return ('ontouchstart' in window) || navigator.maxTouchPoints > 0; }
-    /**
- * Determines whether the device uses a precise pointer such as a mouse.
- * @returns {boolean} True if the device supports fine pointer input.
- */
-
-    isClickDevice() {
-        return window.matchMedia("(pointer: fine)").matches;
+       
     }
 
-
-    /**
-     * Determines whether to use HTML-based mobile controls or canvas-based controls.
-     * Chooses the mode based on device type and screen height.
-     */
-
-    checkMode() {
-        const tabletElement = document.getElementById('tablet-controls');
-        if (this.isClickDevice()) {
-            this.useHtmlControls = false;
-            tabletElement.style.display = 'none';
-            return;
-        }
-        if (this.isTouchDevice() && window.innerHeight >= 760) {
-            this.useHtmlControls = true;
-            tabletElement.style.display = 'flex';
-        } else {
-            this.useHtmlControls = false;
-            tabletElement.style.display = 'none';
-        }
-    }
-
-    /**
- * Initializes touch event listeners for canvas-based mobile controls.
- * Handles touchstart, touchend, and touchmove events.
- */
-
-    initCanvasListeners() {
-        this.handleTouchStartBound = this.handleTouchStart.bind(this);
-        this.handleTouchEndBound = this.handleTouchEnd.bind(this);
-        this.canvas.addEventListener('touchstart', this.handleTouchStartBound, { passive: false });
-        this.canvas.addEventListener('touchend', this.handleTouchEndBound, { passive: false });
-        this.canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-    }
 
     /**
  * Initializes touch and mouse event listeners for HTML-based mobile control buttons.
@@ -107,33 +53,7 @@ class MobileControls {
         bindBtn('btn-throw', 'D');
     }
 
-    /**
- * Converts a relative button definition (percentage-based) into pixel coordinates.
- * @param {Object} btn - Button object containing x, y, w, and h as relative values.
- * @returns {Object} Pixel-based button dimensions.
- */
 
-    getButtonPx(btn) {
-        return {
-            x: btn.x * this.canvas.width,
-            y: btn.y * this.canvas.height,
-            w: btn.w * this.canvas.width,
-            h: btn.h * this.canvas.height
-        };
-    }
-
-    /**
- * Checks whether a given coordinate lies inside a button's area.
- * @param {number} x - X coordinate in canvas space.
- * @param {number} y - Y coordinate in canvas space.
- * @param {Object} button - The button to test against.
- * @returns {boolean} True if the coordinate is inside the button.
- */
-
-    isInButton(x, y, button) {
-        const b = this.getButtonPx(button);
-        return (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h);
-    }
 
     /**
  * Converts a touch event position into scaled canvas coordinates.
@@ -150,29 +70,7 @@ class MobileControls {
             y: (touch.clientY - rect.top) * scaleY
         };
     }
-    /**
- * Handles touchstart events for canvas-based controls.
- * Updates keyboard state based on active touches.
- * @param {TouchEvent} e - The touchstart event.
- */
 
-    handleTouchStart(e) {
-        if (this.useHtmlControls) return; // Ignore canvas touches if using HTML
-        e.preventDefault();
-        this.updateKeyboardState(e.touches);
-    }
-
-    /**
- * Handles touchend events for canvas-based controls.
- * Updates keyboard state after touches are removed.
- * @param {TouchEvent} e - The touchend event.
- */
-
-    handleTouchEnd(e) {
-        if (this.useHtmlControls) return;
-        e.preventDefault();
-        this.updateKeyboardState(e.touches);
-    }
 
     /**
  * Updates the virtual keyboard state based on all active touches.
@@ -197,33 +95,6 @@ class MobileControls {
             }
             if (this.isInButton(pos.x, pos.y, this.mobileControls.throw)) this.keyboard.D = true;
         }
-    }
-
-    /**
- * Draws the on-screen canvas-based mobile control buttons.
- * Only renders controls when HTML mode is disabled.
- * @param {CanvasRenderingContext2D} ctx - The canvas rendering context.
- */
-    draw(ctx) {
-        if (this.useHtmlControls) return;
-
-        const btns = [
-            { b: this.mobileControls.left, t: '←' },
-            { b: this.mobileControls.right, t: '→' },
-            { b: this.mobileControls.jump, t: '↑' },
-            { b: this.mobileControls.throw, t: 'D' }
-        ];
-
-        btns.forEach(item => {
-            const p = this.getButtonPx(item.b);
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            ctx.fillRect(p.x, p.y, p.w, p.h);
-            ctx.fillStyle = 'white';
-            ctx.font = '30px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(item.t, p.x + p.w / 2, p.y + p.h / 2);
-        });
     }
     /**
      * Removes touch event listeners for cleanup.

@@ -13,7 +13,9 @@ class StartScreen {
         this.ctx = this.canvas.getContext('2d');
         this.startCallback = startCallback;
         this.playButton = { x: 260, y: 320, width: 200, height: 60 };
-        this.instructionsButton = { x: 260, y: 400, width: 200, height: 60 };
+        this.instructionsButton = { x: 260, y:  240, width: 200, height: 60 };
+        this.impressumButton = { x: 260, y:400, width: 200, height: 60 };
+
         this.backButton = {
             x: (this.canvas.width - 200) / 2,
             y: (this.canvas.height - 60) / 2,
@@ -57,6 +59,7 @@ class StartScreen {
         ctx.drawImage(this.startImage, 0, 0, canvas.width, canvas.height);
         this.drawButton(playButton, 'PLAY', 66);
         this.drawButton(instructionsButton, 'HOW TO PLAY', 36);
+        this.drawButton(this.impressumButton, 'IMPRESSUM', 36);
     }
 
     /**
@@ -132,7 +135,7 @@ class StartScreen {
 
         if (text === 'BACK') {
             ctx.shadowColor = 'white';
-            ctx.shadowBlur = 25;
+            ctx.shadowBlur = 35;
             ctx.fillStyle = 'white';
             ctx.font = `${fontSize + 10}px zabras`;
         } else {
@@ -205,7 +208,8 @@ class StartScreen {
         }
         return (
             this.isInside(x, y, this.playButton) ||
-            this.isInside(x, y, this.instructionsButton)
+            this.isInside(x, y, this.instructionsButton) ||
+            this.isInside(x, y, this.impressumButton)
         );
     }
 
@@ -278,7 +282,20 @@ class StartScreen {
             this.showingInstructions = true;
             this.draw();
         }
+
+        else if (this.isInside(canvasX, canvasY, this.impressumButton)) {
+    this.openImpressum();
+}
+
     }
+
+/**
+ * Opens the external Impressum page in a new tab.
+ */
+openImpressum() {
+    window.open('Impressum.html', '_blank');
+}
+
 
 
     /**

@@ -17,7 +17,6 @@ class RenderingManager {
         this.renderBackgroundLayer();
         this.renderUILayer();
         this.renderForegroundLayer();
-        this.renderMobileControls();
         this.ctx.restore();
 
         if (w.isPaused) w.pauseScreen.draw();
@@ -84,16 +83,6 @@ class RenderingManager {
     }
 
 
-    /**
-     * Renders mobile touch controls when running on a touch-enabled device.
-     */
-    renderMobileControls() {
-        const w = this.world;
-
-        if ("ontouchstart" in window) {
-            w.mobileControls.draw(this.ctx);
-        }
-    }
 
 
     /**
