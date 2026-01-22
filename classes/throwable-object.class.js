@@ -42,10 +42,10 @@ class ThrowableObject extends moveableObject {
     }
 
     triggerBreakingAnimation() {
-        if (this.isBroken) return; // Prevent multiple triggers
+        if (this.isBroken) return; 
         this.isBroken = true;
         this.currentImageIndex = 0;
-        this.speedY = 0; // Stop falling
+        this.speedY = 0;
         if (!GLOBAL_MUTE) {
             this.breakSound.play();
         }
@@ -66,7 +66,7 @@ class ThrowableObject extends moveableObject {
     applyBottleGravity() {
         this.gravityInterval = setInterval(() => {
 
-            // 1. Apply gravity when rising OR falling
+            
             if (this.isAboveGround() || this.speedY !== 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceeleration;

@@ -126,7 +126,7 @@ function getOrCreateImage(src) {
         return IMAGE_CACHE[src];
     }
 
-    // Create new image and cache it
+    
     const img = new Image();
     img.src = src;
     IMAGE_CACHE[src] = img;
@@ -173,10 +173,10 @@ async function startGame(canvasParam) {
     initlevel1();
     world = new PausableWorld(canvas, keyboard);
 
-    await soundIsReady();   // wait for user interaction
+    await soundIsReady();   
     AUDIO_UNLOCKED = true;
     MUSIC.stop();
-    MUSIC.play();           // now guaranteed to work
+    MUSIC.play();           
 }
 
 

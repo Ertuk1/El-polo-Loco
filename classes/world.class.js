@@ -27,7 +27,23 @@ class World {
     bossHpBarVisible = false;
     gameOverShown = false;
     keyboard = new Keyboard();
+             coins = [
+            new Coins(300, 80),
+            new Coins(600, 80),
+            new Coins(900, 80),
+            new Coins(1200, 80),
+            new Coins(1500, 80),
+        ]
 
+            bottles = [
+            new Bottle(300, 380),
+            new Bottle(600, 380),
+            new Bottle(900, 380),
+            new Bottle(1200, 380),
+            new Bottle(1500, 380),
+            new Bottle(1800, 380),
+        ];
+        
     /**
      * Initializes the game world with all entities, UI elements, and game logic.
      * @param {HTMLCanvasElement} canvas - The game canvas element.
@@ -44,22 +60,7 @@ class World {
         this.bossIntroActive = false;
         this.setWorld();
         this.bottleImage.src = 'IMG/6_salsa_bottle/salsa_bottle.png';
-        this.bottles = [
-            new Bottle(300, 380),
-            new Bottle(600, 380),
-            new Bottle(900, 380),
-            new Bottle(1200, 380),
-            new Bottle(1500, 380),
-            new Bottle(1800, 380),
-        ];
         this.bossHpBarVisible = false;
-        this.coins = [
-            new Coins(300, 80),
-            new Coins(600, 80),
-            new Coins(900, 80),
-            new Coins(1200, 80),
-            new Coins(1500, 80),
-        ]
         this.totalCoins = this.coins.length;
         this.totalBottles = this.bottles.length;
         this.bottleCount = 0;
@@ -67,12 +68,7 @@ class World {
         const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
         this.bossHpBar = new BossStatusbar(endboss);
         endboss.target = this.character;
-
         this.sounds = [this.walkingSound, this.bottleThrowSound, this.chickenSound].filter(Boolean);
-
-
-
-
     };
 
     /**
@@ -379,7 +375,7 @@ class World {
         MUSIC.stop();
 
         new VictoryScreen(this.canvas, {
-            replay: () => { startGame(recreateCanvas()); MUSIC.play(); }, // <-- works here },
+            replay: () => { startGame(recreateCanvas()); MUSIC.play(); }, 
             home: () => showStartScreen(recreateCanvas())
         }).show();
     }
