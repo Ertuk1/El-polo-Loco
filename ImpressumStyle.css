@@ -1,0 +1,58 @@
+body{
+    margin: 5%;
+}
+.impressum {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.impressum h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.impressum h2 {
+  font-size: 18px;
+  margin-top: 25px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.impressum p {
+  margin-top: 10px;
+  font-size: 18px;
+  line-height: 1.8;
+  color: #222;
+  
+}
+
+.impressum p {
+  font-size: 18px;
+}
+
+@media (max-width: 1024px) {
+  .impressum p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .impressum p {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .impressum p {
+    font-size: 14px;
+  }
+}
+
+
+
+

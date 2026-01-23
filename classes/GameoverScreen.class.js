@@ -94,7 +94,6 @@ show() {
     handleClick(event) {
         event.preventDefault();
         const { canvasX, canvasY } = this.getCanvasCoords(event);
-
         if (this.isInsideButton(canvasX, canvasY, this.replayButton)) {
             this.startReplay();
         } else if (this.isInsideButton(canvasX, canvasY, this.homeButton)) {
@@ -120,7 +119,6 @@ show() {
      * Starts a new game by recreating the canvas and calling the replay callback.
      */
     startReplay() {
-
         const newCanvas = recreateCanvas();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.onReplay(newCanvas);

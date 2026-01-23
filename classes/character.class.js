@@ -350,8 +350,6 @@ offsetHeight = 0;
      * Character bounce mechanic for bounce after landing on enemies
      */
     bounce() {
-
-
         this.speedY = 25; // bounce height
         this.isJumping = true;  // Add this line
         this.jumpAnimationTime = Date.now();  // Add this line
