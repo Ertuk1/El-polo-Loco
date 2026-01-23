@@ -83,7 +83,7 @@ class ThrowableObject extends moveableObject {
  * Sets initial speed, gravity, sound, and rotation.
  */
     throw() {
-        this.speedY = 30;
+        this.speedY = 20;
         this.applyBottleGravity()
 
         if (!GLOBAL_MUTE) {

@@ -148,19 +148,13 @@ class CollisionManager {
         const w = this.world;
         const endboss = w.level.enemies.find(e => e instanceof Endboss);
         if (!endboss) return;
-
         w.throwableObjects.forEach(bottle => {
             if (!this.isBottleValid(bottle, w)) return;
-
             const bottleInFront = this.isBottleInFrontOfBoss(bottle, endboss);
             const correctHeight = this.isBottleAtCorrectHeight(bottle, endboss);
             const isAboveBoss = bottle.y + bottle.height < endboss.y + 20;
-
             if (isAboveBoss) return;
-
             const hit = this.isBottleHittingBoss(bottle, endboss);
-
-
             if (hit && bottleInFront && correctHeight) {
                 this.handleBossHit(bottle, w, endboss);
             }

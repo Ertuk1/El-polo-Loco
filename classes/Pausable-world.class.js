@@ -95,7 +95,6 @@ class PausableWorld extends World {
         super.draw();
         this.pauseButton.draw();
 
-
         this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
 }

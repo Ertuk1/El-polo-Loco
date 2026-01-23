@@ -21,7 +21,7 @@ class MuteButton {
         };
 
         const savedMuteState = localStorage.getItem('gameMuted');
-        this.isMuted = savedMuteState === 'true'; // Convert string to boolean
+        this.isMuted = savedMuteState === 'true';
         GLOBAL_MUTE = this.isMuted;
         this.soundOnImg = new Image();
         this.soundOnImg.src = 'IMG/muteButtons/icons8-ton-67.png';

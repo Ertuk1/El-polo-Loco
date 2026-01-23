@@ -58,25 +58,16 @@ function preloadImages(paths, onProgress, onDone) {
     let loaded = 0;
     const total = paths.length;
 
+    const finish = () => (++loaded === total) && onDone();
+
     paths.forEach(src => {
         const img = new Image();
         img.src = src;
-
-        img.onload = () => {
-            IMAGE_CACHE[src] = img;
-            loaded++;
-            onProgress();
-            if (loaded === total) onDone();
-        };
-
-        img.onerror = () => {
-            console.warn("Image failed:", src);
-            loaded++;
-            onProgress();
-            if (loaded === total) onDone();
-        };
+        img.onload = () => { IMAGE_CACHE[src] = img; onProgress(); finish(); };
+        img.onerror = () => { console.warn("Image failed:", src); onProgress(); finish(); };
     });
 }
+
 
 /**
  * Preloads all audio files and stores them in the global AUDIO_CACHE.
@@ -89,29 +80,19 @@ function preloadImages(paths, onProgress, onDone) {
 function preloadAudios(paths, onProgress, onDone) {
     let loaded = 0;
     const total = paths.length;
+    const finish = () => (++loaded === total) && onDone();
 
     paths.forEach(src => {
-        const audio = new Audio();
-        audio.src = src;
+        const audio = new Audio(src);
         audio.preload = 'auto';
 
-        audio.addEventListener('canplaythrough', () => {
-            AUDIO_CACHE[src] = audio;
-            loaded++;
-            onProgress();
-            if (loaded === total) onDone();
-        }, { once: true });
-
-        audio.onerror = () => {
-            console.warn("Audio failed:", src);
-            loaded++;
-            onProgress();
-            if (loaded === total) onDone();
-        };
+        audio.oncanplaythrough = () => { AUDIO_CACHE[src] = audio; onProgress(); finish(); };
+        audio.onerror = () => { console.warn("Audio failed:", src); onProgress(); finish(); };
 
         audio.load();
     });
 }
+
 
 /**
  * Retrieves an image from the cache or creates and caches it if missing.
@@ -139,27 +120,57 @@ function getOrCreateImage(src) {
  * @returns {HTMLCanvasElement|null} The newly created canvas or null if container missing.
  */
 
-function recreateCanvas() {
-    const container = document.getElementById('gameContainer'); // ← must match HTML
-
+/**
+ * Retrieves the game container element from the DOM.
+ * @returns {HTMLElement|null} The container element, or null if not found.
+ */
+function getContainer() {
+    const container = document.getElementById('gameContainer');
     if (!container) {
         console.error("gameContainer not found");
         return null;
     }
+    return container;
+}
 
+/**
+ * Removes the existing canvas element from the container, if present.
+ * @param {HTMLElement} container - The game container element.
+ */
+function removeOldCanvas(container) {
     const oldCanvas = container.querySelector('canvas');
-    if (oldCanvas) {
-        oldCanvas.remove();
-    }
+    if (oldCanvas) oldCanvas.remove();
+}
 
-    const newCanvas = document.createElement('canvas');
-    newCanvas.id = 'canvas';
-    newCanvas.width = 720;
-    newCanvas.height = 480;
+/**
+ * Creates a new canvas element with predefined dimensions and ID.
+ * @returns {HTMLCanvasElement} The newly created canvas element.
+ */
+function createNewCanvas() {
+    const canvas = document.createElement('canvas');
+    canvas.id = 'canvas';
+    canvas.width = 720;
+    canvas.height = 480;
+    return canvas;
+}
 
+/**
+ * Recreates the canvas inside the game container.
+ * Removes any existing canvas, creates a new one, and appends it.
+ * @returns {HTMLCanvasElement|null} The new canvas element, or null if container not found.
+ */
+function recreateCanvas() {
+    const container = getContainer();
+    if (!container) return null;
+
+    removeOldCanvas(container);
+
+    const newCanvas = createNewCanvas();
     container.appendChild(newCanvas);
+
     return newCanvas;
 }
+
 
 /**
  * Starts the actual gameplay by initializing the level and world.
@@ -239,25 +250,21 @@ function showStartScreen() {
  * @param {Function} callback - Called when all assets have finished loading.
  */
 
+
 function preloadAssets(canvas, callback) {
-    const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
+  const total = IMAGE_PATHS.length + AUDIO_PATHS.length;
+  let loaded = 0;
 
-    const total = IMAGE_PATHS.length + AUDIO_PATHS.length;
-    let loaded = 0;
+  const updateProgress = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white'; ctx.font = '30px Arial'; ctx.textAlign = 'center';
+    ctx.fillText(`Loading... ${++loaded}/${total}`, canvas.width / 2, canvas.height / 2);
+    if (loaded === total) callback();
+  };
 
-    const updateProgress = () => {
-        loaded++;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'white';
-        ctx.font = '30px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(`Loading... ${loaded}/${total}`, canvas.width / 2, canvas.height / 2);
-
-        if (loaded === total) callback();
-    };
-
-    preloadImages(IMAGE_PATHS, updateProgress, () => { });
-    preloadAudios(AUDIO_PATHS, updateProgress, () => { });
+  preloadImages(IMAGE_PATHS, updateProgress, () => {});
+  preloadAudios(AUDIO_PATHS, updateProgress, () => {});
 }
 
 /**

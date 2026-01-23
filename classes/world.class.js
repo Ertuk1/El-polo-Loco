@@ -26,24 +26,25 @@ class World {
     bossHpBar = new BossStatusbar(this.level.enemies[0]);
     bossHpBarVisible = false;
     gameOverShown = false;
+    bottleCount = 0;
     keyboard = new Keyboard();
-             coins = [
-            new Coins(300, 80),
-            new Coins(600, 80),
-            new Coins(900, 80),
-            new Coins(1200, 80),
-            new Coins(1500, 80),
-        ]
+    coins = [
+        new Coins(300, 80),
+        new Coins(600, 80),
+        new Coins(900, 80),
+        new Coins(1200, 80),
+        new Coins(1500, 80),
+    ]
 
-            bottles = [
-            new Bottle(300, 380),
-            new Bottle(600, 380),
-            new Bottle(900, 380),
-            new Bottle(1200, 380),
-            new Bottle(1500, 380),
-            new Bottle(1800, 380),
-        ];
-        
+    bottles = [
+        new Bottle(300, 380),
+        new Bottle(600, 380),
+        new Bottle(900, 380),
+        new Bottle(1200, 380),
+        new Bottle(1500, 380),
+        new Bottle(1800, 380),
+    ];
+
     /**
      * Initializes the game world with all entities, UI elements, and game logic.
      * @param {HTMLCanvasElement} canvas - The game canvas element.
@@ -63,7 +64,6 @@ class World {
         this.bossHpBarVisible = false;
         this.totalCoins = this.coins.length;
         this.totalBottles = this.bottles.length;
-        this.bottleCount = 0;
         this.runboss();
         const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
         this.bossHpBar = new BossStatusbar(endboss);
@@ -95,13 +95,10 @@ class World {
      */
     resume() {
         if (!this.isPaused) return;
-
         this.isPaused = false;
         GLOBAL_PAUSE = false;
 
         this.pauseScreen.hide();
-
-
         MUSIC.resume();
 
         if (this.character?.snorePlayed && !GLOBAL_MUTE) {
@@ -156,12 +153,19 @@ class World {
                 this.bossHpBarVisible = true;
                 this.bossIntroActive = true;
 
-                setTimeout(() => {
-                    endboss.isWalking = true;
-                    this.bossIntroActive = false;
-                }, 3000);
+               this.bossIntro(endboss); 
             }
         }
+    }
+
+     /**
+     * Timer for endboss to start Walking and ending the bossintro
+     */
+    bossIntro(endboss) {
+        return setTimeout(() => {
+            endboss.isWalking = true;
+            this.bossIntroActive = false;
+        }, 3000);
     }
 
     /**
@@ -324,7 +328,6 @@ class World {
             let bottle = new ThrowableObject(bottleX, this.character.y + 150, this.character.otherDirection);
             this.throwableObjects.push(bottle);
 
-            // Set cooldown
             this.throwCooldown = true;
             setTimeout(() => {
                 this.throwCooldown = false;
@@ -375,7 +378,7 @@ class World {
         MUSIC.stop();
 
         new VictoryScreen(this.canvas, {
-            replay: () => { startGame(recreateCanvas()); MUSIC.play(); }, 
+            replay: () => { startGame(recreateCanvas()); MUSIC.play(); },
             home: () => showStartScreen(recreateCanvas())
         }).show();
     }

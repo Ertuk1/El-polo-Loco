@@ -197,7 +197,7 @@ class Endboss extends moveableObject {
     startCharge() {
         if (GLOBAL_PAUSE) return;
         this.charge = true;
-        this.speed += 10;
+        this.speed += 6;
         this.animateCharge();
     }
 

@@ -11,47 +11,46 @@ class MobileControls {
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.useHtmlControls = false;
-
-
-        this.initHtmlListeners(keyboard);
-
-       
+        this.initHtmlListeners(keyboard);       
     }
-
-
-    /**
- * Initializes touch and mouse event listeners for HTML-based mobile control buttons.
- * Maps button presses to keyboard input states.
+/**
+ * Creates event listeners for a control button and binds them to keyboard states.
+ * @param {string} id - The HTML element ID of the button.
+ * @param {string[]} keys - Keyboard keys to toggle when the button is pressed.
  */
+bindControlButton(id, keys) {
+  const el = document.getElementById(id);
+  if (!el) return;
 
-    initHtmlListeners() {
-        const bindBtn = (id, keyProperty, extraKey = null) => {
-            const el = document.getElementById(id);
-            if (!el) return;
+  /**
+   * Sets the keyboard state for the given keys.
+   * @param {boolean} state - True when pressed, false when released.
+   */
+  const setState = (state) => (e) => {
+    e.preventDefault();
+    keys.forEach(k => this.keyboard[k] = state);
+  };
 
-            const start = (e) => {
-                e.preventDefault();
-                this.keyboard[keyProperty] = true;
-                if (extraKey) this.keyboard[extraKey] = true;
-            };
+  el.addEventListener('touchstart', setState(true), { passive: false });
+  el.addEventListener('touchend', setState(false), { passive: false });
+  el.addEventListener('mousedown', setState(true));
+  el.addEventListener('mouseup', setState(false));
+}
 
-            const end = (e) => {
-                e.preventDefault();
-                this.keyboard[keyProperty] = false;
-                if (extraKey) this.keyboard[extraKey] = false;
-            };
+/**
+ * Initializes HTML listeners for all mobile control buttons.
+ */
+initHtmlListeners() {
+  const controls = [
+    { id: 'btn-left', keys: ['LEFT'] },
+    { id: 'btn-right', keys: ['RIGHT'] },
+    { id: 'btn-jump', keys: ['UP','SPACE'] },
+    { id: 'btn-throw', keys: ['D'] }
+  ];
 
-            el.addEventListener('touchstart', start, { passive: false });
-            el.addEventListener('touchend', end, { passive: false });
-            el.addEventListener('mousedown', start);
-            el.addEventListener('mouseup', end);
-        };
+  controls.forEach(({id, keys}) => this.bindControlButton(id, keys));
+}
 
-        bindBtn('btn-left', 'LEFT');
-        bindBtn('btn-right', 'RIGHT');
-        bindBtn('btn-jump', 'UP', 'SPACE');
-        bindBtn('btn-throw', 'D');
-    }
 
 
 
@@ -79,12 +78,7 @@ class MobileControls {
  */
 
     updateKeyboardState(touches) {
-        this.keyboard.LEFT = false;
-        this.keyboard.RIGHT = false;
-        this.keyboard.UP = false;
-        this.keyboard.SPACE = false;
-        this.keyboard.D = false;
-
+        KeyboardControlls()
         for (let touch of touches) {
             const pos = this.getTouchPos(touch);
             if (this.isInButton(pos.x, pos.y, this.mobileControls.left)) this.keyboard.LEFT = true;
@@ -96,6 +90,18 @@ class MobileControls {
             if (this.isInButton(pos.x, pos.y, this.mobileControls.throw)) this.keyboard.D = true;
         }
     }
+
+    /**
+     * sets all keyboard booleans to false 
+     */
+    KeyboardControlls(){
+        this.keyboard.LEFT = false;
+        this.keyboard.RIGHT = false;
+        this.keyboard.UP = false;
+        this.keyboard.SPACE = false;
+        this.keyboard.D = false;
+    }
+
     /**
      * Removes touch event listeners for cleanup.
      */

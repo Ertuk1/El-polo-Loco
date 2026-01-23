@@ -2,82 +2,38 @@
  * Keyboard class tracking the pressed state of game control keys.
  * Used to handle player input for movement and actions.
  */
-// Update your Keyboard class
 class Keyboard {
-    constructor() {
-        this.LEFT = false;
-        this.RIGHT = false;
-        this.UP = false;
-        this.DOWN = false;
-        this.SPACE = false;
-        this.D = false;
-    }
+  constructor() {
+    this.LEFT = this.RIGHT = this.UP = this.DOWN = this.SPACE = this.D = false;
+  }
 }
 
+const keyboard = new Keyboard();
 
-let keyboard = new Keyboard();
+/**
+ * Maps DOM key values to keyboard properties.
+ */
+const keyMap = {
+  ArrowRight: 'RIGHT', Right: 'RIGHT',
+  ArrowLeft: 'LEFT', Left: 'LEFT',
+  ArrowUp: 'UP', Up: 'UP',
+  ArrowDown: 'DOWN', Down: 'DOWN',
+  ' ': 'SPACE',
+  d: 'D', D: 'D'
+};
 
+/**
+ * Updates keyboard state based on event type.
+ * @param {KeyboardEvent} e - The key event.
+ * @param {boolean} state - True for keydown, false for keyup.
+ */
+function updateKeyState(e, state) {
+  const prop = keyMap[e.key];
+  if (prop) {
+    e.preventDefault();
+    keyboard[prop] = state;
+  }
+}
 
-window.addEventListener('keydown', (e) => {
-
-    const gameKeys = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', ' ', 'd', 'D'];
-    if (gameKeys.includes(e.key)) {
-        e.preventDefault();
-    }
-
-
-    switch (e.key) {
-        case 'ArrowRight':
-        case 'Right':
-            keyboard.RIGHT = true;
-            break;
-        case 'ArrowLeft':
-        case 'Left':
-            keyboard.LEFT = true;
-            break;
-        case 'ArrowUp':
-        case 'Up':
-            keyboard.UP = true;
-            break;
-        case 'ArrowDown':
-        case 'Down':
-            keyboard.DOWN = true;
-            break;
-        case ' ':
-            keyboard.SPACE = true;
-            break;
-        case 'd':
-        case 'D':
-            keyboard.D = true;
-            break;
-    }
-});
-
-
-window.addEventListener('keyup', (e) => {
-    switch (e.key) {
-        case 'ArrowRight':
-        case 'Right':
-            keyboard.RIGHT = false;
-            break;
-        case 'ArrowLeft':
-        case 'Left':
-            keyboard.LEFT = false;
-            break;
-        case 'ArrowUp':
-        case 'Up':
-            keyboard.UP = false;
-            break;
-        case 'ArrowDown':
-        case 'Down':
-            keyboard.DOWN = false;
-            break;
-        case ' ':
-            keyboard.SPACE = false;
-            break;
-        case 'd':
-        case 'D':
-            keyboard.D = false;
-            break;
-    }
-});
+window.addEventListener('keydown', e => updateKeyState(e, true));
+window.addEventListener('keyup', e => updateKeyState(e, false));
