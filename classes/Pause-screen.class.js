@@ -10,19 +10,31 @@ class PauseScreen {
      * @param {Function} actions.resume - Function to call when resume is clicked.
      * @param {Function} actions.home - Function to call when home is clicked.
      */
-        resumeButton = { x: 260, y: 200, w: 200, h: 60 };
-        homeButton = { x: 260, y: 280, w: 200, h: 60 };
+    resumeButton = { x: 260, y: 200, w: 200, h: 60 };
+    homeButton = { x: 260, y: 280, w: 200, h: 60 };
 
     constructor(canvas, actions) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.actions = actions;
-
-
-
         this.handleClick = this.handleClick.bind(this);
 
     }
+
+        /**
+     * Updates the cursor style when hovering over pause menu buttons.
+     * @param {MouseEvent} event - Mouse movement event.
+     */
+    handleHover(event) {
+        const { x, y } = this.getScaledPointerPos(event);
+
+        const hover =
+            this.isInsideButton(x, y, this.resumeButton) ||
+            this.isInsideButton(x, y, this.homeButton);
+
+        this.canvas.style.cursor = hover ? 'pointer' : 'default';
+    }
+
 
     /**
      * Displays the pause screen and attaches event listeners.
@@ -31,6 +43,8 @@ class PauseScreen {
         this.draw();
         this.canvas.addEventListener('click', this.handleClick, { passive: false });
         this.canvas.addEventListener('touchstart', this.handleClick, { passive: false });
+        this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
+
     }
 
     /**
@@ -39,6 +53,7 @@ class PauseScreen {
     hide() {
         this.canvas.removeEventListener('click', this.handleClick, { passive: false });
         this.canvas.removeEventListener('touchstart', this.handleClick, { passive: false });
+        this.canvas.removeEventListener('mousemove', this.handleHover);
     }
 
     /**
@@ -65,10 +80,10 @@ class PauseScreen {
         this.ctx.fillText(text, btn.x + btn.w / 2, btn.y + 42);
     }
 
-    /**
- * Handles click and touch events on buttons.
- * @param {Event} e - The click or touch event.
- */
+        /**
+     * Handles click and touch events on buttons.
+     * @param {Event} e - The click or touch event.
+     */
     handleClick(e) {
         e.preventDefault();
 

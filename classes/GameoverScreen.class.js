@@ -38,7 +38,7 @@ show() {
         this.gameOverImage.onload = () => this.drawGameOver();
     }
     this.canvas.addEventListener('click', this.handleClick);
-    this.canvas.addEventListener('touchstart', this.handleClick);
+    this.canvas.addEventListener('touchstart', this.handleClick, {passive: false});
     this.canvas.addEventListener('mousemove', this.handleHover.bind(this));
 }
 

@@ -18,11 +18,14 @@ class VictoryScreen {
         this.initButtons();
         this.initVictoryImage();
         this.handleClick = this.handleClick.bind(this);
+        this.handleHover = this.handleHover.bind(this);
+        this.canvas.addEventListener("mousemove", this.handleHover);
+
     }
-      /**
-     * initializes the buttons 
-     */
-    initButtons(){
+    /**
+   * initializes the buttons 
+   */
+    initButtons() {
         this.replayButton = {
             x: canvas.width / 2 - 220,
             y: canvas.height / 2 + 40,
@@ -30,17 +33,41 @@ class VictoryScreen {
             h: 60
         };
         this.homeButton = {
-            x: canvas.width / 2 + 20,  
-            y: canvas.height / 2 + 40, 
+            x: canvas.width / 2 + 20,
+            y: canvas.height / 2 + 40,
             w: 200,
             h: 60
         };
     }
 
     /**
+     * Updates the mouse cursor based on hover state over the Replay or Home button.
+     * @param {MouseEvent} event - The mousemove event providing cursor position.
+     */
+    handleHover(event) {
+        const { x, y } = this.getCanvasCoords(event);
+
+        const replayHover =
+            x >= this.replayButton.x &&
+            x <= this.replayButton.x + this.replayButton.w &&
+            y >= this.replayButton.y &&
+            y <= this.replayButton.y + this.replayButton.h;
+
+        const homeHover =
+            x >= this.homeButton.x &&
+            x <= this.homeButton.x + this.homeButton.w &&
+            y >= this.homeButton.y &&
+            y <= this.homeButton.y + this.homeButton.h;
+
+        this.canvas.style.cursor = (replayHover || homeHover) ? "pointer" : "default";
+    }
+
+
+
+    /**
      * initializes the Victory Image
      */
-    initVictoryImage(){
+    initVictoryImage() {
         this.victoryImg = new Image();
         this.victoryImg.src = 'IMG/9_intro_outro_screens/win/won_1.png';
     }
@@ -145,7 +172,7 @@ class VictoryScreen {
 
         this.ctx.fillStyle = "white";
         this.ctx.textAlign = "center";
-        this.ctx.font = "66px zabras"; 
+        this.ctx.font = "66px zabras";
         this.ctx.fillText(text, btn.x + btn.w / 2, btn.y + btn.h / 2 + 12);
     }
 

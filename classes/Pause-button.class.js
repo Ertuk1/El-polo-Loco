@@ -29,7 +29,25 @@ class PauseButton {
     /**
      * init eventlisteners for click handling pause button
      */
-    initListeners() { this.canvas.addEventListener('click', this.handleClick, { passive: false }); this.canvas.addEventListener('touchstart', this.handleTouch, { passive: false }); }
+initListeners() {
+    this.canvas.addEventListener('click', this.handleClick, { passive: false });
+    this.canvas.addEventListener('touchstart', this.handleTouch, { passive: false });
+    this.canvas.addEventListener('mousemove', this.handleHover.bind(this), {passive: false});
+}
+
+/**
+ * checks hover for pause or mute
+ * @param {MouseEvent|TouchEvent} event - Mouse-/Touch‑Event
+ */
+handleHover(event) {
+  const { canvasX, canvasY } = this.getScaledClickPos(event);
+  const pauseHover = this.isInsidePauseHitbox(canvasX, canvasY);
+  const m = { x: 0.944 * this.canvas.width, y: 0.156 * this.canvas.height, size: 0.07 * this.canvas.width };
+  const o = (m.size * 1.5 - m.size) / 2;
+  const muteHover = canvasX >= m.x - o && canvasX <= m.x + m.size + o && canvasY >= m.y - o && canvasY <= m.y + m.size + o;
+  this.canvas.style.cursor = (pauseHover || muteHover) ? "pointer" : "default";
+}
+
 
     /**
      * Converts button percentage coordinates to pixel coordinates.
