@@ -15,21 +15,34 @@ class VictoryScreen {
         this.ctx = canvas.getContext("2d");
         this.onReplay = callbacks.replay;
         this.onHome = callbacks.home;
+        this.initButtons();
+        this.initVictoryImage();
+        this.handleClick = this.handleClick.bind(this);
+    }
+      /**
+     * initializes the buttons 
+     */
+    initButtons(){
         this.replayButton = {
-            x: canvas.width / 2 - 100,
+            x: canvas.width / 2 - 220,
             y: canvas.height / 2 + 40,
             w: 200,
             h: 60
         };
         this.homeButton = {
-            x: canvas.width / 2 - 100,
-            y: canvas.height / 2 + 120,
+            x: canvas.width / 2 + 20,  
+            y: canvas.height / 2 + 40, 
             w: 200,
             h: 60
         };
+    }
+
+    /**
+     * initializes the Victory Image
+     */
+    initVictoryImage(){
         this.victoryImg = new Image();
         this.victoryImg.src = 'IMG/9_intro_outro_screens/win/won_1.png';
-        this.handleClick = this.handleClick.bind(this);
     }
 
     /**
@@ -122,18 +135,20 @@ class VictoryScreen {
     }
 
     /**
-     * Draws a single button with text.
-     * @param {Object} btn - Button object with position and dimensions.
-     * @param {string} text - Text to display on the button.
+     * Draws a button with centered text.
+     * @param {Object} btn - Button rectangle {x, y, w, h}.
+     * @param {string} text - Text to display inside the button.
      */
     drawButton(btn, text) {
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(btn.x, btn.y, btn.w, btn.h);
+
         this.ctx.fillStyle = "white";
         this.ctx.textAlign = "center";
-        this.ctx.font = "66px zabras";
-        this.ctx.fillText(text, this.canvas.width / 2, btn.y + 40);
+        this.ctx.font = "66px zabras"; 
+        this.ctx.fillText(text, btn.x + btn.w / 2, btn.y + btn.h / 2 + 12);
     }
+
 
     /**
      * Draws the complete victory screen with all elements.

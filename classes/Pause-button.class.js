@@ -8,22 +8,28 @@ class PauseButton {
      * @param {HTMLCanvasElement} canvas - The game canvas element.
      * @param {Function} onClick - Callback function when button is clicked.
      */
-    constructor(canvas, onClick) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.onClick = onClick;
-
-        this.buttonConfig = {
+    /**
+     * button touch points 
+     */
+    buttonConfig = {
             x: 0.88,
             y: 0.175,
             size: 0.04
         };
 
+
+    constructor(canvas, onClick) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.onClick = onClick
         this.handleClick = this.handleClick.bind(this);
         this.handleTouch = this.handleTouch.bind(this);
-        canvas.addEventListener('click', this.handleClick, { passive: false });
-        canvas.addEventListener('touchstart', this.handleTouch, { passive: false });
+        this.initListeners();
     }
+    /**
+     * init eventlisteners for click handling pause button
+     */
+    initListeners() { this.canvas.addEventListener('click', this.handleClick, { passive: false }); this.canvas.addEventListener('touchstart', this.handleTouch, { passive: false }); }
 
     /**
      * Converts button percentage coordinates to pixel coordinates.

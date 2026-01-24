@@ -27,38 +27,77 @@ class ThrowableObject extends moveableObject {
         this.width = 50;
         this.direction = direction;
         this.hasFlown = false;
-        this.spawnProtection = true; setTimeout(() => { this.spawnProtection = false; }, 150);
-        this.loadImage('IMG/6_salsa_bottle/salsa_bottle.png');
-        this.loadImages(this.IMAGES_ROTATION);
-        this.loadImages(this.IMAGES_BREAK);
+        this.initSpawnProtection()
+        this.initImages()
         this.throw();
     }
 
+    /**
+ * Enables spawn protection for a short time
+ * to prevent immediate collision after creation.
+ */
+    initSpawnProtection() { this.spawnProtection = true; setTimeout(() => { this.spawnProtection = false; }, 150); }
+    /**
+ * Loads the default bottle image and
+ * preloads rotation and break animation frames.
+ */
+    initImages() { this.loadImage('IMG/6_salsa_bottle/salsa_bottle.png'); this.loadImages(this.IMAGES_ROTATION); this.loadImages(this.IMAGES_BREAK); }
+    /**
+ * Stops the bottle rotation animation
+ * by clearing the active interval.
+ */
     stopRotation() {
         if (this.rotationIntervalId) {
             clearInterval(this.rotationIntervalId);
             this.rotationIntervalId = null;
         }
     }
-
+    /**
+     * Triggers the bottle breaking animation sequence.
+     * Plays the crack sound, resets state, and starts the splash frame loop.
+     */
     triggerBreakingAnimation() {
-        if (this.isBroken) return; 
+        if (this.isBroken) return;
         this.isBroken = true;
         this.currentImageIndex = 0;
         this.speedY = 0;
+
+        this.playBreakSound();
+        this.startBreakAnimationLoop();
+    }
+
+    /**
+     * Plays the bottle crack sound if global mute is not active.
+     */
+    playBreakSound() {
         if (!GLOBAL_MUTE) {
             this.breakSound.play();
         }
-        let breakIntervalId = setInterval(() => {
-            const imagePath = this.IMAGES_BREAK[this.currentImageIndex];
-            this.img = this.imageChache[imagePath];
+    }
 
+    /**
+     * Starts the interval loop that cycles through splash images
+     * until the breaking animation sequence is complete.
+     */
+    startBreakAnimationLoop() {
+        let breakIntervalId = setInterval(() => {
+            this.updateBreakFrame();
             this.currentImageIndex++;
+
             if (this.currentImageIndex >= this.IMAGES_BREAK.length) {
                 clearInterval(breakIntervalId);
             }
         }, 100);
     }
+
+    /**
+     * Updates the current image to the next splash frame.
+     */
+    updateBreakFrame() {
+        const imagePath = this.IMAGES_BREAK[this.currentImageIndex];
+        this.img = this.imageChache[imagePath];
+    }
+
     /**
      * Applies custom gravity to the bottle.
      * Updates vertical position and reduces speedY over time.
@@ -66,7 +105,7 @@ class ThrowableObject extends moveableObject {
     applyBottleGravity() {
         this.gravityInterval = setInterval(() => {
 
-            
+
             if (this.isAboveGround() || this.speedY !== 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceeleration;

@@ -9,12 +9,11 @@ class PausableWorld extends World {
      * @param {HTMLCanvasElement} canvas - The game canvas element.
      * @param {Keyboard} keyboard - The keyboard input handler.
      */
+
+    isPaused = false;
     constructor(canvas, keyboard) {
         super(canvas, keyboard);
-
-
         this.renderer = new RenderingManager(this);
-        this.isPaused = false;
         this.pauseButton = new PauseButton(
             this.canvas,
             () => this.togglePause()
@@ -28,7 +27,10 @@ class PausableWorld extends World {
 
 
     }
-
+    /**
+     * 
+     * @returns the background music if resolved
+     */
     async startBackgroundMusic() {
         if (AUDIO_UNLOCKED) return;
 

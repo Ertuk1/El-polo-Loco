@@ -28,7 +28,6 @@ function soundIsReady() {
 }
 
 
-// Global image cache
 const IMAGE_CACHE = {};
 const AUDIO_CACHE = {};
 
@@ -102,7 +101,6 @@ function preloadAudios(paths, onProgress, onDone) {
  */
 
 function getOrCreateImage(src) {
-    // Return cached image if it exists
     if (IMAGE_CACHE[src]) {
         return IMAGE_CACHE[src];
     }
@@ -192,7 +190,8 @@ async function startGame(canvasParam) {
 
 
 
-// === Global Mute Control ===
+/** global mute controll */
+
 let GLOBAL_PAUSE = false;
 const originalPlay = HTMLMediaElement.prototype.play;
 /**
@@ -233,7 +232,6 @@ function initStartScreen() {
  */
 
 function showStartScreen() {
-    // Clean up existing world if it exists
     if (world) {
         world.stop();
         world = null;
@@ -263,52 +261,25 @@ function preloadAssets(canvas, callback) {
     if (loaded === total) callback();
   };
 
+  function checkOrientation() {
+    const overlay = document.getElementById('rotateOverlay');
+
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const isTablet = Math.min(window.innerWidth, window.innerHeight) >= 600;
+
+    if (isTablet && isPortrait) {
+        overlay.style.display = 'flex';
+    } else {
+        overlay.style.display = 'none';
+    }
+}
+
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', checkOrientation);
+window.addEventListener('load', checkOrientation);
+
+
   preloadImages(IMAGE_PATHS, updateProgress, () => {});
   preloadAudios(AUDIO_PATHS, updateProgress, () => {});
 }
 
-/**
- * Detects whether the current device is a mobile device based on the user agent.
- * @returns {boolean} True if the device is mobile.
- */
-
-function isMobile() {
-    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
-/**
- * Checks the device orientation and displays or hides the rotate overlay.
- * Ensures mobile users rotate their device for proper gameplay.
- */
-
-function checkOrientation() {
-    const rotateOverlay = document.getElementById('rotateOverlay');
-
-    if (!isMobile()) {
-        rotateOverlay.style.display = 'none';
-        return;
-    }
-
-    const isPortrait = window.innerHeight > window.innerWidth;
-
-    if (isPortrait) {
-        rotateOverlay.style.display = 'flex';
-    } else {
-        rotateOverlay.style.display = 'none';
-    }
-}
-
-/**
- * Listens for screen size or orientation changes and updates the rotate overlay accordingly.
- */
-
-window.addEventListener('resize', checkOrientation);
-window.addEventListener('orientationchange', checkOrientation);
-
-/**
- * Performs an initial orientation check when the page finishes loading.
- */
-
-window.addEventListener('load', () => {
-    checkOrientation();
-});

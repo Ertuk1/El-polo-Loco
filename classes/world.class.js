@@ -10,24 +10,33 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    statusbar = new StatusBar();
-    throwableObjects = []
-    isDead = false;
+
     chickenSound = new Audio('audio/chicken.mp3')
     gameoversound = new Audio('audio/gameover.mp3');
-    bottles = [];
-    bottleCount = 0;
+
     bottleImage = new Image('')
     coinImage = new Image('')
+
+    bottles = [];
+    throwableObjects = []
     coins = [];
-    coinsCount = 0;
+   
+    statusbar = new StatusBar();
     coinStatusBar = new CoinStatusBar();
     bottleStatusBar = new BottleStatusBar();
     bossHpBar = new BossStatusbar(this.level.enemies[0]);
+    keyboard = new Keyboard();
+    collisionManager = new CollisionManager(this);
+    renderer = new RenderingManager(this);
+    
+    bossIntroActive = false;
     bossHpBarVisible = false;
     gameOverShown = false;
+    bossHpBarVisible = false;
+    isDead = false;
+
     bottleCount = 0;
-    keyboard = new Keyboard();
+    coinsCount = 0;
     coins = [
         new Coins(300, 80),
         new Coins(600, 80),
@@ -44,6 +53,9 @@ class World {
         new Bottle(1500, 380),
         new Bottle(1800, 380),
     ];
+    totalCoins = this.coins.length;
+    totalBottles = this.bottles.length;
+    sounds = [this.walkingSound, this.bottleThrowSound, this.chickenSound].filter(Boolean);
 
     /**
      * Initializes the game world with all entities, UI elements, and game logic.
@@ -52,24 +64,27 @@ class World {
      */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext('2d');
-        this.renderer = new RenderingManager(this);
-        this.collisionManager = new CollisionManager(this);
         this.canvas = canvas;
         this.keyboard = keyboard;
         this.muteButton = new MuteButton(this.canvas);
         this.mobileControls = new MobileControls(this.canvas, this.keyboard);
-        this.bossIntroActive = false;
         this.setWorld();
-        this.bottleImage.src = 'IMG/6_salsa_bottle/salsa_bottle.png';
-        this.bossHpBarVisible = false;
-        this.totalCoins = this.coins.length;
-        this.totalBottles = this.bottles.length;
+        this.initendboss()
         this.runboss();
+ 
+    };
+
+    /**
+     * 
+     * @returns endboss instances updates the hp and helps locking on to character
+     */
+    initendboss(){
+        
         const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
         this.bossHpBar = new BossStatusbar(endboss);
         endboss.target = this.character;
-        this.sounds = [this.walkingSound, this.bottleThrowSound, this.chickenSound].filter(Boolean);
-    };
+        return
+    }
 
     /**
      * Pauses the game by stopping game logic and showing pause screen.

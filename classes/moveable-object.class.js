@@ -29,22 +29,16 @@ class moveableObject extends DrawableObject {
      */
     applyGravity() {
         this.gravityInterval = setInterval(() => {
-
-            // 1. Apply gravity when rising OR falling
             if (this.isAboveGround() || this.speedY !== 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceeleration;
             }
 
-            // 2. Clamp to ground ONLY when falling and crossing ground
             if (this.speedY < 0 && this.y >= 175) {
                 this.y = 175;
                 this.speedY = 0;
                 this.isJumping = false;
             }
-
-
-
         }, 1000 / 25);
     }
 

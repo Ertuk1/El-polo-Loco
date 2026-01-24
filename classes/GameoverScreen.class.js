@@ -10,17 +10,23 @@ class GameOverScreen {
      * @param {Function} callbacks.replay - Function to call when replay is clicked.
      * @param {Function} callbacks.home - Function to call when home is clicked.
      */
+
+    replayButton = { x: 180, y: 400, width: 200, height: 60 };
+    homeButton   = { x: 420, y: 400, width: 200, height: 60 };
+
+    gameOverImage = new Image();
+
     constructor(canvas, callbacks) {
         this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
         this.onReplay = callbacks.replay;
         this.onHome = callbacks.home;
-        this.replayButton = { x: 260, y: 320, width: 200, height: 60 };
-        this.homeButton = { x: 260, y: 400, width: 200, height: 60 };
-        this.gameOverImage = new Image();
+
         this.gameOverImage.src = 'IMG/9_intro_outro_screens/game_over/you lost.png';
         this.handleClick = this.handleClick.bind(this);
     }
+
+
 
     /**
      * Displays the game over screen and attaches event listeners.

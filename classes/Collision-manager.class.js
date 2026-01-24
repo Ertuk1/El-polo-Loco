@@ -49,7 +49,7 @@ class CollisionManager {
             if (bottle.isBroken || !bottle.hasFlown) return;
 
             w.level.enemies.forEach(enemy => {
-                if (enemy instanceof Endboss) return; // Boss wird woanders behandelt
+                if (enemy instanceof Endboss) return; 
 
                 if (enemy.isColliding(bottle)) {
                     bottle.stopRotation();

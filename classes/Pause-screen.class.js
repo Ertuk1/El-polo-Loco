@@ -10,13 +10,15 @@ class PauseScreen {
      * @param {Function} actions.resume - Function to call when resume is clicked.
      * @param {Function} actions.home - Function to call when home is clicked.
      */
+        resumeButton = { x: 260, y: 200, w: 200, h: 60 };
+        homeButton = { x: 260, y: 280, w: 200, h: 60 };
+
     constructor(canvas, actions) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.actions = actions;
 
-        this.resumeButton = { x: 260, y: 200, w: 200, h: 60 };
-        this.homeButton = { x: 260, y: 280, w: 200, h: 60 };
+
 
         this.handleClick = this.handleClick.bind(this);
 

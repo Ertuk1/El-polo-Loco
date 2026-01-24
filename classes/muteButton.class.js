@@ -8,30 +8,39 @@ class MuteButton {
      * @param {HTMLCanvasElement} canvas - The game canvas element.
      * @param {Array} sounds - Optional array of sound objects to control.
      */
-    constructor(canvas, sounds) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.sounds = sounds;
-        this.deviceType = window.innerWidth <= 720 ? 'mobile' : 'desktop';
 
-        this.buttonConfig = {
-            x: 0.944,
-            y: 0.156,
-            size: 0.07
-        };
+buttonConfig = { x: 0.944, y: 0.156, size: 0.07 };
 
-        const savedMuteState = localStorage.getItem('gameMuted');
-        this.isMuted = savedMuteState === 'true';
-        GLOBAL_MUTE = this.isMuted;
-        this.soundOnImg = new Image();
-        this.soundOnImg.src = 'IMG/muteButtons/icons8-ton-67.png';
-        this.soundOffImg = new Image();
-        this.soundOffImg.src = 'IMG/muteButtons/icons8-ton-stummschalten-67.png';
-        this.handleClick = this.handleClick.bind(this);
-        this.handleTouch = this.handleTouch.bind(this);
-        document.addEventListener('click', this.handleClick);
-        document.addEventListener('touchstart', this.handleTouch);
-    }
+constructor(canvas, sounds) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.sounds = sounds;
+    this.deviceType = window.innerWidth <= 720 ? 'mobile' : 'desktop';
+    const savedMuteState = localStorage.getItem('gameMuted');
+    this.isMuted = savedMuteState === 'true';
+    GLOBAL_MUTE = this.isMuted;
+    this.initImages();
+    this.bindHandlers();
+    this.initListeners();
+}
+
+initImages() {
+    this.soundOnImg = new Image();
+    this.soundOnImg.src = 'IMG/muteButtons/icons8-ton-67.png';
+    this.soundOffImg = new Image();
+    this.soundOffImg.src = 'IMG/muteButtons/icons8-ton-stummschalten-67.png';
+}
+
+bindHandlers() {
+    this.handleClick = this.handleClick.bind(this);
+    this.handleTouch = this.handleTouch.bind(this);
+}
+
+initListeners() {
+    document.addEventListener('click', this.handleClick);
+    document.addEventListener('touchstart', this.handleTouch);
+}
+
 
     /**
      * Converts button percentage coordinates to pixel coordinates.
@@ -52,12 +61,6 @@ class MuteButton {
         const img = this.isMuted ? this.soundOffImg : this.soundOnImg;
         const btn = this.getButtonPx();
         this.ctx.drawImage(img, btn.x, btn.y, btn.size, btn.size);
-    }
-
-    /**
-     * Legacy method - no longer needed with percentage-based positioning.
-     */
-    updatePosition() {
     }
 
     /**
@@ -106,9 +109,6 @@ class MuteButton {
         );
     }
 
-
-
-
     /**
      * Handles touch events on the mute button for mobile devices.
      * @param {TouchEvent} event - The touch event.
@@ -138,24 +138,6 @@ class MuteButton {
         };
     }
 
-    /**
-     * Determines whether a touch lies inside the mute button's enlarged hitbox.
-     * @param {number} x - Scaled canvas X coordinate.
-     * @param {number} y - Scaled canvas Y coordinate.
-     * @returns {boolean} True if the touch is inside the hitbox.
-     */
-    isInsideMuteHitbox(x, y) {
-        const btn = this.getButtonPx();
-        const hitSize = btn.size * 1.5;
-        const offset = (hitSize - btn.size) / 2;
-
-        return (
-            x >= btn.x - offset &&
-            x <= btn.x + btn.size + offset &&
-            y >= btn.y - offset &&
-            y <= btn.y + btn.size + offset
-        );
-    }
 
 
 

@@ -6,17 +6,16 @@
 class MusicManager {
     static instance;
     music;
-
+    startOffset = 4;
+    wasStopped = true;
+    
     constructor() {
         if (MusicManager.instance) {
             return MusicManager.instance;
         }
-
         this.music = new Audio('audio/BackgroundMusic.mp3');
         this.music.loop = true;
         this.music.volume = 0.15;
-        this.startOffset = 4;
-        this.wasStopped = true;
         MusicManager.instance = this;
     }
     /**

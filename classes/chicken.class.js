@@ -8,7 +8,7 @@ class chicken extends moveableObject {
     y = 385;
     width = 80;
     IMAGES_WALKING = [
-        'IMG/3_enemies_chicken/chicken_normal/1_walk//1_w.png',
+        'IMG/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
         'IMG/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
         'IMG/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
     ]
@@ -20,7 +20,7 @@ class chicken extends moveableObject {
      * @param {number|null} x - The x-coordinate for the chicken, or null for random placement.
      */
     constructor(x = null) {
-        super().loadImage('IMG/3_enemies_chicken/chicken_normal/1_walk//2_w.png');
+        super().loadImage('IMG/3_enemies_chicken/chicken_normal/1_walk/2_w.png');
         this.loadImages(this.IMAGES_WALKING);
         this.imageDead = this.loadImage('IMG/3_enemies_chicken/chicken_normal/2_dead/dead.png');
         this.x = x !== null ? x : 250 + Math.random() * 500;

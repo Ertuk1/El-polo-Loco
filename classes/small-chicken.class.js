@@ -16,6 +16,8 @@ class SmallChicken extends moveableObject {
     IMAGES_DEAD = ['IMG/3_enemies_chicken/chicken_small/2_dead/dead.png']
     isDead = false;
     iscollidable = true;
+    deathSoundPlayed = false;
+    imageDead = this.loadImage('IMG/3_enemies_chicken/chicken_small/2_dead/dead.png')
 
     /**
      * Initializes a small chicken enemy at a random or specified position.
@@ -24,12 +26,9 @@ class SmallChicken extends moveableObject {
     constructor(x = null) {
         super().loadImage('IMG/3_enemies_chicken/chicken_small/1_walk/2_w.png');
         this.loadImages(this.IMAGES_WALKING);
-        this.imageDead = this.loadImage('IMG/3_enemies_chicken/chicken_small/2_dead/dead.png');
         this.x = x !== null ? x : 250 + Math.random() * 500;
         this.animate();
-        this.isDead = false;
         this.speed = 0.2 + Math.random() * 0.3;
-        this.deathSoundPlayed = false;
     }
 
     /**

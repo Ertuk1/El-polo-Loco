@@ -49,6 +49,8 @@ class Endboss extends moveableObject {
     height = 400;
     width = 250;
     y = 60;
+    x = 2500;
+    speed = 10;
     isDead1 = false;
     walkingInterval;
     attackInterval;
@@ -74,12 +76,10 @@ class Endboss extends moveableObject {
         this.loadImages(this.IMAGES_WALK);
         this.loadImages(this.IMAGES_ATTACK)
         this.loadImages(this.IMAGES_HURT)
-        this.x = 2500;
-        this.speed = 10;
         this.BossMove();
         this.playAlertAnimation();
         this.animateWalking();
-        this.attackInterval2 = setInterval(() => {  // Store the interval ID
+        this.attackInterval2 = setInterval(() => {  
             this.triggerAttack();
         }, 4000);
     }

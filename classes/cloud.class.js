@@ -31,7 +31,6 @@ class Cloud extends moveableObject {
         setInterval(() => {
             this.x -= this.speed;
 
-            // respawn cloud when it leaves the screen
             if (this.x < -this.width) {
                 this.x = 2200 + Math.random() * 500;
                 this.y = 20 + Math.random() * 80;

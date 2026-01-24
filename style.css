@@ -3,14 +3,26 @@
         src: url('fonts/Zabars.ttf') format('truetype');
     }
 
+
+
+
+
+
+    html , body {
+        height:100%;
+    }
+
     body {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        min-height: 100dvh;
+        min-height: 100vh;
         background-image: url('IMG/5_background/first_half_background.png');
-        background-size: cover;
+        background-size: 100% 100%;
+
+        background-position: center;
+        background-repeat: no-repeat;
+
         font-family: 'zabras';
         margin: 0;
         touch-action: none;
@@ -24,12 +36,12 @@
 
 
     .rotate-message {
-        width: 100dvh;
-        height: 100dvh;
+        width: 100%;
+        height: 100%;
     }
 
     .rotate-message img {
-        width: 100dvh;
+        width: 100%;
         height: 100dvh;
         object-fit: contain;
         /* keeps aspect ratio */
@@ -48,66 +60,128 @@
         display: block;
     }
 
-    @media (min-width: 1025px) {
+    
+    button {
+        font-family: 'zabras';
+        cursor: pointer;
+
+    }
+
+    .control-group {
+        position: absolute;
+        bottom: 20px;
+        display: flex;
+        gap: 20px;
+        z-index: 10;
+        pointer-events: auto;
+        /* Buttons bleiben klickbar */
+    }
+
+    /* Linke Gruppe: Left / Right */
+    #tablet-controls .control-group:first-child {
+        left: 20px;
+    }
+
+    /* Rechte Gruppe: Throw / Jump */
+    #tablet-controls .control-group:last-child {
+        right: 20px;
+    }
+
+
+    .mobile-btn {
+        width: clamp(48px, 64px, 72px);
+        height: clamp(48px, 64px, 72px);
+        background: rgba(0, 0, 0, 0.45);
+        border: 2px solid white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: clamp(18px, 22px, 26px);
+        font-weight: bold;
+        touch-action: none;
+        user-select: none;
+    }
+
+    #rotateOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+
+
+    /* Footer Styling */
+    .site-footer {
+        text-align: center;
+        padding: 15px 10px;
+        background: #222;
+        color: #fff;
+        font-size: 14px;
+        margin-top: 20px;
+        border-top: 2px solid #444;
+        position: relative;
+        z-index: 10;
+    }
+
+    .site-footer a {
+        color: #4db8ff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .site-footer a:hover {
+        text-decoration: underline;
+    }
+
+    @media (min-width: 1400px) {
         #tablet-controls {
             display: none;
         }
     }
 
-    @media (min-width: 769px) and (max-width: 1280px) {
+   
+@media (max-width: 1369px) and (max-height: 1369px) {
 
-        /* Keep canvas centered and scaled */
-        #gameContainer {
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        /* Tablet control size */
-        .mobile-btn {
-            width: 64px;
-            height: 64px;
-            font-size: 24px;
-        }
-
-        /* Make controls stick to bottom of the SCREEN, not the container */
-        #tablet-controls {
-            position: fixed;
-            bottom: 20px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 30px;
-            z-index: 9999;
-            pointer-events: none;
-            /* groups stay transparent */
-        }
-
-        /* Re-enable pointer events on actual buttons */
-        #tablet-controls .control-group {
-            pointer-events: auto;
-        }
-
-        /* Left group */
-        #tablet-controls .control-group:first-child {
-            position: relative;
-            left: 0;
-        }
-
-        /* Right group */
-        #tablet-controls .control-group:last-child {
-            position: relative;
-            right: 0;
-        }
+    #tablet-controls {
+        position: fixed;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 30px;
+        z-index: 9999;
+        pointer-events: none;
     }
 
 
-    @media (min-width: 481px) and (max-width: 768px) {
+
+    .mobile-btn {
+        width: 64px;
+        height: 64px;
+        font-size: 24px;
+    }
+
+    h1 {
+        display: none;
+    }
+}
+
+
+
+
+    @media (min-width: 481px) and (max-width: 882px) {
 
         /* Slightly smaller container for small tablets */
         #gameContainer {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 auto;;
         }
 
         /* Button size for small tablets */
@@ -204,9 +278,50 @@
     }
 
     /* Kleine Höhe */
-    @media (max-height: 630px) {
+    @media (max-height: 539px) {
         #gameContainer {
             max-width: 500px;
+            height: 100dvh;
+        }
+/* Smaller mobile buttons */
+        .mobile-btn {
+            width: 38px;
+            height: 38px;
+            font-size: 18px;
+        }
+
+        /* Controls INSIDE the canvas area */
+        #tablet-controls {
+            position: absolute;
+            bottom: 12px;
+            /* inside canvas */
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 20;
+            pointer-events: none;
+            /* groups transparent */
+        }
+
+        /* Re-enable pointer events on actual buttons */
+        #tablet-controls .control-group {
+            pointer-events: auto;
+            display: flex;
+            gap: 14px;
+        }
+
+        /* Left group */
+        #tablet-controls .control-group:first-child {
+            position: relative;
+            left: 0;
+        }
+
+        /* Right group */
+        #tablet-controls .control-group:last-child {
+            position: relative;
+            right: 0;
         }
 
         h1 {
@@ -219,83 +334,6 @@
 
 
 
-    button {
-        font-family: 'zabras';
-        cursor: pointer;
-
-    }
-
-    .control-group {
-        position: absolute;
-        bottom: 20px;
-        display: flex;
-        gap: 20px;
-        z-index: 10;
-        pointer-events: auto;
-        /* Buttons bleiben klickbar */
-    }
-
-    /* Linke Gruppe: Left / Right */
-    #tablet-controls .control-group:first-child {
-        left: 20px;
-    }
-
-    /* Rechte Gruppe: Throw / Jump */
-    #tablet-controls .control-group:last-child {
-        right: 20px;
-    }
-
-
-    .mobile-btn {
-        width: clamp(48px, 64px, 72px);
-        height: clamp(48px, 64px, 72px);
-        background: rgba(0, 0, 0, 0.45);
-        border: 2px solid white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: clamp(18px, 22px, 26px);
-        font-weight: bold;
-        touch-action: none;
-        user-select: none;
-    }
-
-    #rotateOverlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.9);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-
-
-
-    /* Footer Styling */
-    .site-footer {
-        text-align: center;
-        padding: 15px 10px;
-        background: #222;
-        color: #fff;
-        font-size: 14px;
-        margin-top: 20px;
-        border-top: 2px solid #444;
-        position: relative;
-        z-index: 10;
-    }
-
-    .site-footer a {
-        color: #4db8ff;
-        text-decoration: none;
-        font-weight: bold;
-    }
-
-    .site-footer a:hover {
-        text-decoration: underline;
-    }
 
     @media (max-width: 600px) {
         .site-footer {
@@ -306,4 +344,13 @@
         .site-footer p {
             margin: 5px 0;
         }
+
+    @media screen and (orientation: portrait)
+ {
+
+    #rotateOverlay {
+        display: flex!important;
+    }
+}
+
     }
