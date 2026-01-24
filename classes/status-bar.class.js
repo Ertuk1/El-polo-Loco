@@ -1,65 +1,48 @@
-/**
- * StatusBar class displaying the player character's health bar.
- * Shows health percentage with visual bar that depletes as character takes damage.
- * @extends DrawableObject
- */
 class StatusBar extends DrawableObject {
-    IMAGES = [
-        'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/0.png',
-        'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/20.png',
-        'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/40.png',
-        'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/60.png',
-        'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/80.png',
-        'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/100.png',
-    ]
-    percentage = 100;
-
-
-    /**
-     * Initializes the health status bar at starting position with full health.
-     */
-    constructor() {
+    constructor({ images, x, y, width = 200, height = 60, startPercentage = 100, thresholds }) {
         super();
-        this.loadImages(this.IMAGES)
-        this.x = 40;
-        this.y = 0;
-        this.width = 200;
-        this.height = 60;
-        this.setPercentage(100)
+
+        this.IMAGES = images;
+        this.thresholds = thresholds;
+        this.percentage = startPercentage;
+
+        this.loadImages(this.IMAGES);
+
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+
+        this.setPercentage(this.percentage);
     }
 
+    
     /**
-     * Sets the health percentage and updates the displayed image.
-     * @param {number} percentage - The health percentage (0-100).
-     */
+ * Updates the internal percentage value and refreshes the displayed image
+ * based on the resolved threshold index.
+ *
+ * @param {number} percentage - A value between 0 and 100 representing the current fill level.
+ */
+
     setPercentage(percentage) {
-        this.percentage = percentage
-        let path = this.IMAGES[this.resolveImageIndex()]
+        this.percentage = percentage;
+        const path = this.IMAGES[this.resolveImageIndex()];
         this.img = this.imageChache[path];
     }
 
-    /**
-     * Determines which image index to use based on current health percentage.
-     * @returns {number} Image index (0-5) corresponding to health level.
-     */
+/**
+ * Determines the correct image index for the current percentage.
+ * Iterates through the threshold list from highest to lowest and returns
+ * the first index whose threshold is met or exceeded.
+ *
+ * @returns {number} The index of the image corresponding to the current percentage.
+ */
     resolveImageIndex() {
-        if (this.percentage == 100) {
-            return 5
+        for (let i = this.thresholds.length - 1; i >= 0; i--) {
+            if (this.percentage >= this.thresholds[i]) {
+                return i;
+            }
         }
-        else if (this.percentage > 80) {
-            return 4
-        }
-        else if (this.percentage > 60) {
-            return 3
-        }
-        else if (this.percentage > 40) {
-            return 2
-        }
-        else if (this.percentage > 20) {
-            return 1
-        }
-        else {
-            return 0;
-        }
+        return 0;
     }
 }

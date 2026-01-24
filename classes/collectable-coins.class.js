@@ -16,10 +16,11 @@ class Coins extends moveableObject {
         this.y = y;
         this.width = 100;
         this.height = 80;
-        this.offsetX = 15;
-this.offsetY = 20;
-this.offsetWidth = 30;
-this.offsetHeight = 30;
+this.offsetX = this.width * 0.60;     
+this.offsetY = this.height * 0.40;     
+this.offsetWidth = this.width * 0.60;  
+this.offsetHeight = this.height * 0.60; 
+
 
     }
 }

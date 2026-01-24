@@ -22,7 +22,11 @@ class Bottle extends moveableObject {
         this.width = 100;
         this.height = 80;
         this.animate();
-        this.offsetX = 8; this.offsetY = 5; this.offsetWidth = 16; this.offsetHeight = 10;
+        this.offsetX = this.width * 0.60;      // 20% links abschneiden
+this.offsetY = this.height * 0.40;     // 20% oben abschneiden
+this.offsetWidth = this.width * 0.60;  // 40% rechts abschneiden
+this.offsetHeight = this.height * 0.60; // 40% unten abschneiden
+
     }
 
     /**

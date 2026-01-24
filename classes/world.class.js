@@ -20,15 +20,58 @@ class World {
     bottles = [];
     throwableObjects = []
     coins = [];
-   
-    statusbar = new StatusBar();
-    coinStatusBar = new CoinStatusBar();
-    bottleStatusBar = new BottleStatusBar();
-    bossHpBar = new BossStatusbar(this.level.enemies[0]);
+
+    statusbar = new StatusBar({
+        images: [
+            'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/0.png',
+            'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/20.png',
+            'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/40.png',
+            'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/60.png',
+            'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/80.png',
+            'IMG/7_statusbars/1_statusbar/2_statusbar_health/orange/100.png',
+        ],
+        x: 40,
+        y: 0,
+        startPercentage: 100,
+        thresholds: [0, 20, 40, 60, 80, 100]
+    });
+
+    coinStatusBar = new StatusBar({
+        images: [
+            'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png',
+            'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/20.png',
+            'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/40.png',
+            'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/60.png',
+            'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/80.png',
+            'IMG/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png',
+        ],
+        x: 40,
+        y: 40,
+        startPercentage: 0,
+        thresholds: [0, 20, 40, 60, 80, 100]
+    });
+
+    bottleStatusBar = new StatusBar({
+        images: [
+            'IMG/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png',
+            'IMG/7_statusbars/1_statusbar/3_statusbar_bottle/orange/20.png',
+            'IMG/7_statusbars/1_statusbar/3_statusbar_bottle/orange/40.png',
+            'IMG/7_statusbars/1_statusbar/3_statusbar_bottle/orange/60.png',
+            'IMG/7_statusbars/1_statusbar/3_statusbar_bottle/orange/80.png',
+            'IMG/7_statusbars/1_statusbar/3_statusbar_bottle/orange/100.png',
+        ],
+        x: 40,
+        y: 80,
+        startPercentage: 0,
+        thresholds: [0, 20, 40, 60, 80, 100]
+    });
+
+    bossHpBar = new BossStatusBar(this.level.enemies[0]);
+
     keyboard = new Keyboard();
     collisionManager = new CollisionManager(this);
     renderer = new RenderingManager(this);
-    
+
     bossIntroActive = false;
     bossHpBarVisible = false;
     gameOverShown = false;
@@ -71,17 +114,17 @@ class World {
         this.setWorld();
         this.initendboss()
         this.runboss();
- 
+
     };
 
     /**
      * 
      * @returns endboss instances updates the hp and helps locking on to character
      */
-    initendboss(){
-        
+    initendboss() {
+
         const endboss = this.level.enemies.find(enemy => enemy instanceof Endboss);
-        this.bossHpBar = new BossStatusbar(endboss);
+        this.bossHpBar = new BossStatusBar(endboss);
         endboss.target = this.character;
         return
     }
@@ -168,14 +211,14 @@ class World {
                 this.bossHpBarVisible = true;
                 this.bossIntroActive = true;
 
-               this.bossIntro(endboss); 
+                this.bossIntro(endboss);
             }
         }
     }
 
-     /**
-     * Timer for endboss to start Walking and ending the bossintro
-     */
+    /**
+    * Timer for endboss to start Walking and ending the bossintro
+    */
     bossIntro(endboss) {
         return setTimeout(() => {
             endboss.isWalking = true;
@@ -223,7 +266,7 @@ class World {
         this.coinsCount += 1;
         let percentage = (this.coinsCount / this.totalCoins) * 100;
         this.coinStatusBar.setPercentage(percentage);
-        console.log('coin collected')
+
     }
 
     /**

@@ -162,6 +162,10 @@ offsetHeight = 0;
      * Plays the jumping animation and stops other sounds.
      */
     playJumpState() {
+        if (this.currentAnimation !== 'jump') {
+            this.currentImage = 0;
+            this.currentAnimation = 'jump';
+        }
         this.playAnimation(this.IMAGES_JUMPING);
         this.snore.pause();
         this.hurt.pause();
@@ -210,7 +214,9 @@ offsetHeight = 0;
                 this.isJumping = false;
             }
         }
-        if (this.isAboveGround()) return this.playJumpState();
+        if (this.isAboveGround() || this.isJumping) {
+        return this.playJumpState();
+    }
         if (this.idleTime >= 5000) return this.playLongIdleState();
         if (this.idleTime > 0) return this.playIdleState();
 
@@ -312,8 +318,10 @@ offsetHeight = 0;
         this.speedY = 30;
         this.isJumping = true;
         this.jumpAnimationTime = Date.now();
-        this.currentImage = 0
+        this.currentImage = 0;
+        this.currentAnimation = 'jump';
     }
+
 
     /**
      * Resets the idle timer to track player inactivity.
@@ -349,9 +357,11 @@ offsetHeight = 0;
      */
     bounce() {
         this.speedY = 25;
-        this.isJumping = true;  
-        this.jumpAnimationTime = Date.now();  
-        this.currentImage = 0
+        this.isJumping = true;
+        this.jumpAnimationTime = Date.now();
+        this.currentImage = 0;
+        this.currentAnimation = 'jump';
     }
+
 
 }
