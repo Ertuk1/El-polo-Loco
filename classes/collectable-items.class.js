@@ -22,6 +22,7 @@ class Bottle extends moveableObject {
         this.width = 100;
         this.height = 80;
         this.animate();
+        this.offsetX = 8; this.offsetY = 5; this.offsetWidth = 16; this.offsetHeight = 10;
     }
 
     /**

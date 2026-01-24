@@ -10,6 +10,11 @@ class moveableObject extends DrawableObject {
     acceeleration = 2;
     energy = 100;
     lastHit = 0;
+    offsetX = 0;
+    offsetY = 0;
+    offsetWidth = 0;
+    offsetHeight = 0;
+
 
     /**
      * Checks if the object is above ground level.
@@ -57,12 +62,15 @@ class moveableObject extends DrawableObject {
      * @param {moveableObject} mo - The other object to check collision with.
      * @returns {boolean} True if objects are colliding.
      */
-    isColliding(mo, offsetX = 0, offsetY = 0, offsetWidth = 0, offsetHeight = 0) {
-        return this.x + offsetX < mo.x + mo.width - offsetWidth &&
-            this.x + this.width - offsetWidth > mo.x + offsetX &&
-            this.y + offsetY < mo.y + mo.height - offsetHeight &&
-            this.y + this.height - offsetHeight > mo.y + offsetY;
+    isColliding(mo) {
+        return (
+            this.x + this.offsetX < mo.x + mo.width - mo.offsetWidth &&
+            this.x + this.width - this.offsetWidth > mo.x + mo.offsetX &&
+            this.y + this.offsetY < mo.y + mo.height - mo.offsetHeight &&
+            this.y + this.height - this.offsetHeight > mo.y + mo.offsetY
+        );
     }
+
 
     /**
      * Moves the object to the right by its speed value.

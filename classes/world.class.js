@@ -117,7 +117,7 @@ class World {
         MUSIC.resume();
 
         if (this.character?.snorePlayed && !GLOBAL_MUTE) {
-            this.character.snore.play().catch(() => { });
+            this.character.snore.play();
         }
     }
 
@@ -223,6 +223,7 @@ class World {
         this.coinsCount += 1;
         let percentage = (this.coinsCount / this.totalCoins) * 100;
         this.coinStatusBar.setPercentage(percentage);
+        console.log('coin collected')
     }
 
     /**

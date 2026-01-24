@@ -30,7 +30,7 @@ class MusicManager {
             this.music.currentTime = this.startOffset;
         }
 
-        this.music.play().catch(() => { });
+        this.music.play();
         this.wasStopped = false;
     }
 
@@ -61,7 +61,7 @@ class MusicManager {
     resume() {
         if (!GLOBAL_MUTE && AUDIO_UNLOCKED) {
             this.wasStopped = false;
-            this.music.play().catch(() => { });
+            this.music.play();
         }
     }
 

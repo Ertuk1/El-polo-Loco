@@ -28,6 +28,7 @@ class chicken extends moveableObject {
         this.isDead = false;
         this.collidable = true;
         this.speed = 0.15 + Math.random() * 0.25;
+        this.offsetX = 10; this.offsetY = 5; this.offsetWidth = 20; this.offsetHeight = 10;
     }
 
     /**

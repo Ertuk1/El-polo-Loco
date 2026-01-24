@@ -34,14 +34,10 @@ class PausableWorld extends World {
     async startBackgroundMusic() {
         if (AUDIO_UNLOCKED) return;
 
-        try {
-            await soundIsReady();
-            AUDIO_UNLOCKED = true;
-        } catch {
-            console.info('Audio unlock failed');
-        }
-
+        await soundIsReady().catch(() => {});
+        AUDIO_UNLOCKED = true;
     }
+
 
     /**
      * Restarts the game by destroying current instance and creating a new one.

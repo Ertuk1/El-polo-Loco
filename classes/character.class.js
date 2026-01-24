@@ -128,8 +128,6 @@ offsetHeight = 0;
             const { muted } = event.detail;
             if (muted) {
                 this.snore.pause();
-            } else if (this.snorePlayed) {
-                this.snore.play().catch(e => { });
             }
         };
         document.addEventListener('globalMuteChanged', this.handleMuteChange);

@@ -8,15 +8,6 @@ class CollisionManager {
         this.world = world;
     }
 
-  CharacterOffsets() {
-    const w = this.world;
-    return [
-        w.character.offsetX,
-        w.character.offsetY,
-        w.character.offsetWidth,
-        w.character.offsetHeight
-    ];
-}
 
 
     /**
@@ -77,14 +68,14 @@ class CollisionManager {
         const w = this.world;
         if (enemy.isDead || enemy.collidable === false) return;
 
-        if (w.character.isColliding(enemy, ...this.CharacterOffsets()) && this.isJumpKill(enemy)) {
+        if (w.character.isColliding(enemy) && this.isJumpKill(enemy)) {
             if (!(enemy instanceof Endboss)) w.character.bounce();
             this.playChickenSound(enemy);
             enemy.die();
             return;
         }
 
-        if (w.character.isColliding(enemy, ...this.CharacterOffsets())) {
+        if (w.character.isColliding(enemy)) {
             this.damageCharacter();
         }
     }
@@ -133,7 +124,7 @@ class CollisionManager {
     checkBottlePickups() {
         const w = this.world;
         w.bottles.forEach((bottle, index) => {
-            if (w.character.isColliding(bottle, ...this.CharacterOffsets())) {
+            if (w.character.isColliding(bottle)) {
                 w.bottles.splice(index, 1);
                 w.collectBottle();
             }
@@ -253,7 +244,7 @@ class CollisionManager {
         const w = this.world;
 
         w.coins.forEach((coin, index) => {
-            if (w.character.isColliding(coin, ...this.CharacterOffsets())) {
+            if (w.character.isColliding(coin)) {
                 w.collectCoin();
                 const s = w.character.collectSound.cloneNode();
                 s.volume = w.character.collectSound.volume;
@@ -274,7 +265,7 @@ class CollisionManager {
         const endboss = w.level.enemies.find(e => e instanceof Endboss);
         if (!endboss) return;
 
-        if (w.character.isColliding(endboss, ...this.CharacterOffsets())) {
+        if (w.character.isColliding(endboss)) {
             w.character.hit(25);
             w.statusbar.setPercentage(w.character.energy);
         }

@@ -82,6 +82,11 @@ class Endboss extends moveableObject {
         this.attackInterval2 = setInterval(() => {  
             this.triggerAttack();
         }, 4000);
+        this.offsetX = 60;
+        this.offsetY = 60;
+        this.offsetWidth = 120;
+        this.offsetHeight = 120;
+
     }
 
     /**
@@ -150,6 +155,9 @@ class Endboss extends moveableObject {
         this.x += 5 * direction;
 
         if (this.y >= 60) {
+            this.isWalking=true;
+            this.isAttacking=false;
+            this.charge = false;
             this.y = 60;
             clearInterval(interval);
         }
@@ -197,7 +205,7 @@ class Endboss extends moveableObject {
     startCharge() {
         if (GLOBAL_PAUSE) return;
         this.charge = true;
-        this.speed += 6;
+        this.speed += 10;
         this.animateCharge();
     }
 
@@ -217,8 +225,10 @@ class Endboss extends moveableObject {
     endAttack() {
         this.isAttacking = false;
         this.isWalking = true;
-        this.speed -= 10;
+        this.charge = false;
+        this.speed = 10;
     }
+
 
     /**
      * Triggers the full attack sequence: charge, attack, and reset.
