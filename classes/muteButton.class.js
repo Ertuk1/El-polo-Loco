@@ -9,7 +9,7 @@ class MuteButton {
      * @param {Array} sounds - Optional array of sound objects to control.
      */
 
-buttonConfig = { x: 0.944, y: 0.156, size: 0.07 };
+buttonConfig = { x: 0.89, y: 0.156, size: 0.07 };
 
 constructor(canvas, sounds) {
     this.canvas = canvas;

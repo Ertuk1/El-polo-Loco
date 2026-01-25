@@ -56,10 +56,12 @@
          */
         drawStartScreen() {
             const { ctx, canvas, playButton, instructionsButton } = this;
+            ctx.filter = 'blur(2px)'
             ctx.drawImage(this.startImage, 0, 0, canvas.width, canvas.height);
+            ctx.filter = 'none'
             this.drawButton(playButton, 'PLAY', 66);
             this.drawButton(instructionsButton, 'HOW TO PLAY', 36);
-            this.drawButton(this.impressumButton, 'IMPRESSUM', 36);
+            this.drawButton(this.impressumButton, 'LEGAL NOTICE', 36);
         }
 
         /**

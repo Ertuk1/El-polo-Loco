@@ -12,7 +12,7 @@ class PauseButton {
      * button touch points 
      */
     buttonConfig = {
-            x: 0.88,
+            x: 0.82,
             y: 0.175,
             size: 0.04
         };
