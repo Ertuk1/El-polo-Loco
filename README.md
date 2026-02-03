@@ -40,9 +40,10 @@ Controls	Keyboard + Touch UI
 📦 Installation & Setup
 1. Clone the repository
 bash
-git clone https://github.com/yourusername/el-polo-loco.git
+git clone https://github.com/Ertuk1/el-polo-loco.git
 cd el-polo-loco
 2. Run the game
 Open index.html in your browser.
 
 No build tools. No dependencies. Pure front‑end.
+
